@@ -1,0 +1,228 @@
+% sections_1_2.tex : title, abstract, Section 1 (Introduction) and Section 2 (Methods)
+% for the LRC-BART revision (Phase 5b, 2026-09-09).
+% Standalone body: \input this file into a wrapper carrying the preamble of
+% paper/main.tex. Cites keys in paper/ref.bib and 05-writing/ref_additions.bib
+% (merged in 05-writing/build/merged.bib).
+%
+% Theorem numbering. The main text states three results, Theorems 1 to 3, whose
+% proofs are in the Web Appendix (03-theory/appendix_new.tex). The mapping is
+%   Theorem 1  = Theorem A1 (bounded local influence) with Corollary A1;
+%   Theorem 2  = Theorem A2(a),(b) and Theorem A3 (detection and the map), merged;
+%   Theorem 3  = Theorem A4 (ESS calibration).
+% With the paper's preamble (\newtheorem{theorem}{Theorem}[section]) these print as
+% Theorems 2.1 to 2.3; dropping the [section] option in the preamble gives 1 to 3.
+% Web-appendix cross references are written as "Web Appendix B" etc. in text.
+
+\providecommand{\SIMRESULT}[1]{\textbf{[SIM:\ #1]}}
+
+\title{Locally Robust Commensurate BART for Borrowing External Controls}
+\author{}
+\date{}
+\maketitle
+
+\begin{abstract}
+Real-world data (RWD) can supplement the control arm of a randomized controlled trial (RCT), but the comparability of external and trial controls may vary with patient characteristics. Study-level meta-analytic predictive, commensurate, and power priors apply a common borrowing parameter across patients. We propose locally robust commensurate Bayesian additive regression trees (LRC-BART) to model the RCT control surface as a pooled BART surface plus a sparse discrepancy ensemble. A spike-and-slab commensurate prior on each discrepancy leaf allows borrowing to vary across covariate regions. The spike represents commensurability and the slab serves as the vague component of a robust meta-analytic predictive prior. Tree partitions determine the regions over which each component applies. All leaf marginals are exact, so the sampler targets the exact posterior. A variance-based prior effective sample size is defined at the RCT-standardized control mean and calibrated against the RWD posterior with an explicit ceiling. We prove that the RWD-induced shift of a leaf estimate is bounded and vanishes at a Gaussian rate under conflict, that the posterior probability of a small local discrepancy is consistent under fixed partitions and representability of the discrepancy, and that the calibration is monotone and well posed. A covariate-resolved map reports posterior compatibility at each patient profile; realized regional effective sizes summarize borrowing. Simulations with Gaussian and survival outcomes and a single-arm myeloma trial with a registry control illustrate the method.
+\end{abstract}
+
+\doublespacing
+
+%==============================================================================
+\section{Introduction}
+\label{sec:intro}
+%==============================================================================
+
+Real-world data can supplement a randomized trial when collecting a sufficiently large control arm is difficult. Their usefulness depends on whether external outcomes represent the outcomes trial patients would have experienced under control. Trial selection, treatment practice and outcome ascertainment may vary with age, disease stage and prior therapy. External and trial controls may therefore be comparable for some patient profiles and differ substantially for others.
+
+A common borrowing parameter may overborrow where sources differ or discard useful information where they agree. We propose a Bayesian tree model with borrowing that varies over learned covariate regions. We accompany the treatment-effect estimate with profile-specific summaries of compatibility and external information.
+
+Established borrowing priors act on a study-level parameter. The MAP prior of \citet{Neuenschwander2010MAP} and \citet{schmidli2014robust} treats historical and current control parameters as exchangeable and uses the current parameter's posterior predictive distribution as its prior. Robust MAP mixes it with a vague component to accommodate conflict. The commensurate prior of \citet{Hobbs2011,Hobbs2012}, $\theta\given\theta_0\sim\Normal(\theta_0,1/\tau)$, learns the precision $\tau$ under a spike-and-slab hyperprior. The power prior of \citet{IbrahimChen2000} discounts the historical likelihood by $a_0$; the normalizations of \citet{Duan2006} and \citet{Neuenschwander2009PP} allow a prior on $a_0$. With a single historical study, the normal MAP, commensurate and power-prior forms nearly coincide \citep{RoverFriede2020,RoverFriede2025}. Their common heterogeneity or discount scale does not depend on patient covariates.
+
+Locally robust commensurate BART (LRC-BART) models both control sources with a pooled Bayesian additive regression tree (BART) surface $f$ and a sparse discrepancy ensemble $g$. The RWD follow $f$ and RCT controls follow $f+g$. Each leaf of $g$ has a small-scale commensurate spike and an outcome-scale vague slab. Its posterior state allows local agreement or a discrepancy over regions learned by the tree partitions.
+
+The decomposition follows Bayesian causal forests \citep{Hahn2020BCF}, using source membership in place of treatment. The leaf prior combines commensurate shrinkage \citep{Hobbs2011} with a vague component \citep{schmidli2014robust}; its relation to single-study MAP \citep{RoverFriede2025} is shared with those established priors. Calibration averages variance-based precision ratios, motivated by the normal-prior ESS of \citet{neuenschwander2020}.
+
+The leaf mixture lets borrowing vary over learned regions, with separate priors for the external mean and discrepancy (Web Appendix~G.6). Closed-form leaf marginals permit exact tree updates. We calibrate a variance-based ESS at the RCT-standardized control mean, with targets stated relative to its RWD-only ceiling. The conditional theory establishes bounded leaf influence that vanishes at a Gaussian rate under conflict, map consistency under fixed partitions and representability, and monotone calibration. The posterior of $g$ supplies a profile-specific compatibility probability alongside information summaries. Accelerated failure time (AFT) data augmentation accommodates right censoring; a single-arm variant represents uncertainty about an unobserved trial control surface.
+
+\subsection{Related work}
+\label{sec:related}
+
+A second group of methods lets the amount of borrowing vary with covariates, through propensity-score strata \citep{Wang2019PSPP,Chen2020PSCL}, a commensurate precision that depends on the covariates through kernel local regression \citep{Jin2023CAHB}, exchangeability over sources or over latent patient classes \citep{Kaizer2018MEM,Kotalik2021,Alt2024LEAP}, a global congruence statistic \citep{Jiang2023elastic}, or clustering of the patients on the covariates before the outcome model is fitted \citep{Bi2026SAMHC,Chandra2023}; Web Appendix~G.0 reviews them, and the closest kernel-local relative of our borrowing map is the covariate-adaptive historical control borrowing of \citet{Jin2023CAHB}.
+
+Among tree methods, \citet{ZhouJi2021} is the most directly related approach. They fit one BART ensemble \citep{Chipman2010BART} to RCT and external controls with the data source as a splitting covariate, so that trees pool the sources wherever they do not split on the source; borrowing is implicit and has no parameter, and their discussion proposes as future work a prior discouraging source splits together with a source offset whose scale controls borrowing. We model the proposed offset nonparametrically and give it a calibratable prior. \citet{Pan2022} apply BART to patient-level borrowing across subgroups. HE-BART \citep{Wundervald2022HEBART} places group-specific random effects inside each terminal node with a shared precision, the structural precedent for a hierarchical parameter inside a leaf, with the aim of mixed-effects prediction rather than controlling historical borrowing for a current study. flexBART \citep{Deshpande2025flexBART} lets a tree assign several levels of a categorical predictor to one branch, which with the source as predictor gives the implicit borrowing of \citet{ZhouJi2021} in a richer split space. None of these places a commensurate prior on a leaf, and among the covariate-adaptive methods only \citet{Jin2023CAHB} and \citet{Alt2024LEAP} report borrowing at the resolution of a patient profile, with CAHB using nonparametric kernel estimates. LRC-BART instead uses joint BART surfaces and spike-and-slab discrepancy leaves.
+
+Section~\ref{sec:methods} develops the method, Section~\ref{sec:sim} evaluates it in simulations, Section~\ref{sec:application} illustrates a single-arm myeloma comparison, and Section~\ref{sec:discussion} discusses limitations. Proofs are in the Web Appendix.
+
+%==============================================================================
+\section{Methods}
+\label{sec:methods}
+%==============================================================================
+
+\subsection{Setting and estimands}
+\label{sec:setting}
+
+We observe an RCT with $N$ subjects, of whom $n_1$ are controls and $N-n_1$ are treated, and an external source of $n_2$ RWD controls. For subject $i$ we record the outcome $y_i$, the covariate vector $x_i\in\mathbb R^p$, and the source $g_i\in\{1,2\}$, with $g_i=1$ for an RCT control and $g_i=2$ for an RWD control; $D_i=\mathbf 1\{g_i=1\}$ indicates an RCT control. Continuous outcomes are modelled as Gaussian given the covariates. Survival outcomes are modelled on the log scale under a log-normal AFT model with right censoring, and $y_i$ then denotes the log survival time, observed or imputed as described in Section~\ref{sec:posterior}.
+
+The estimands are standardized to the RCT covariate distribution. Let $f_T(x)$ be the mean outcome under treatment and $f_1(x)$ the mean outcome of an RCT control at covariate $x$. For Gaussian outcomes the average treatment effect is $\mathrm{ATE}=N^{-1}\sum_{i\le N}\{f_T(x_i)-f_1(x_i)\}$, the average over all $N$ RCT profiles, treated and control. For survival outcomes we report the ratio of population median survival times $q_{0.5}(\bar S_T)/q_{0.5}(\bar S_1)$, where $\bar S_a(t)=N^{-1}\sum_i S_a(t\given x_i)$ is the arm-$a$ survival function standardized to the RCT profiles, and the ratio of restricted mean survival times $\int_0^{t^\ast}\bar S_T(t)\,\dd t/\int_0^{t^\ast}\bar S_1(t)\,\dd t$ at a horizon $t^\ast$ inside the follow-up. The treatment surface $f_T$ is estimated from the RCT treated subjects alone with standard BART or AFT-BART. External observations inform the control surface $f_1$. We define effective sample size through the RCT-standardized control mean $\mu=N^{-1}\sum_{i\le N}f_1(x_i)$.
+
+Both ensembles below are BART models \citep{Chipman2010BART}. A BART surface is a sum of $H$ regression trees, $\sum_{h=1}^H m(x;T_h,\theta_h)$, where $T_h$ is a binary tree whose internal nodes split on one covariate at one cutpoint and whose terminal nodes (leaves) $\ell=1,\dots,L_h$ carry means $\theta_{h\ell}$, and $m(x;T_h,\theta_h)$ returns the mean of the leaf to which $x$ is routed. The tree prior splits a node at depth $d$ with probability $\alpha(1+d)^{-\beta}$, chooses the splitting variable and cutpoint uniformly, and the leaf means are independent $\Normal(0,\lambda^2)$ with $\lambda=(\max y-\min y)/(2k\sqrt H)$ and $k=2$, the range rule, so that the sum of $H$ trees spans the outcome range with high prior probability.
+
+\subsection{The model}
+\label{sec:model}
+
+The two control sources are modelled jointly as
+\begin{equation}
+y_i=f(x_i)+D_i\,g(x_i)+\varepsilon_i,\qquad \varepsilon_i\sim\Normal(0,\sigma^2_{g_i}),
+\label{eq:model}
+\end{equation}
+Here $f(x)$ is the external-control response mean and $f_1(x)=f(x)+g(x)$ is the RCT-control response mean, with a separate residual variance for each source. A profile $x$ is a vector of patient characteristics. The surfaces describe conditional means at that profile; individual outcomes also contain the residual variation in \eqref{eq:model}. For survival outcomes these are means of log survival time. Both surfaces are estimated jointly.
+
+We write the pooled BART surface explicitly as
+\[
+f(x)=\sum_{h=1}^{H_f}\mu^f_{h,\ell_h^f(x)},\qquad
+\mu^f_{h\ell}\given T_h^f\indep\Normal(0,\lambda_f^2),\qquad
+\lambda_f=\frac{\max y-\min y}{2k\sqrt{H_f}},\quad k=2,
+\]
+where $T_h^f$ is the $h$th tree, $\ell_h^f(x)$ is its leaf containing $x$, and $\mu^f_{h\ell}$ is that leaf's contribution to the mean. The trees have independent split priors with $(\alpha_f,\beta_f)=(0.95,2)$. We use $H_f=50$ in the simulations; the application uses $H_f=10$. Observations sharing leaves contribute to estimating $f(x)$, so its precision depends on information across profiles.
+
+The discrepancy surface $g$ has $H_g=5$ trees with split prior $(\alpha_g,\beta_g)=(0.5,3)$: a tree is a stump a priori with probability one half and rarely deeper than two levels. Let $\theta_{h\ell}$ denote the constant discrepancy contribution in leaf $\ell$ of tree $h$. Let $T_g$ denote the discrepancy partitions and $\ell_h(x)$ the leaf reached by $x$ in tree $h$, so that $g(x)=\sum_{h=1}^{H_g}\theta_{h,\ell_h(x)}$. The leaf contributions have the independent mixture prior
+\begin{equation}
+\theta_{h\ell}\given w,\tau_0^2,\tau_1^2
+\iid w\,\Normal(0,\tau_0^2)+(1-w)\,\Normal(0,\tau_1^2).
+\label{eq:leafprior}
+\end{equation}
+Equivalently, let $z_{h\ell}\given w\iid\Ber(w)$. Given these indicators and the scales, the leaf contributions are independent normals with mean zero and variance $\tau_{1-z_{h\ell}}^2$: $z=1$ selects the narrow spike $\tau_0^2$ and $z=0$ the wider slab $\tau_1^2$.
+
+At a fixed $x$, summing these contributions and integrating their indicators induces the mixture prior
+\[
+f_1(x)\given f,T_g,w,\tau_0^2,\tau_1^2
+\sim\sum_{m=0}^{H_g}\binom{H_g}{m}w^m(1-w)^{H_g-m}
+\Normal\!\left(f(x),m\tau_0^2+(H_g-m)\tau_1^2\right),
+\]
+where $m$ is the number of reached leaves in the spike. The commensurate component $m=H_g$ has variance $H_g\tau_0^2$; the all-slab component $m=0$ has variance $H_g\tau_1^2$. Switching one reached leaf from $z=1$ to $z=0$ increases the component variance by $\tau_1^2-\tau_0^2$, permitting a larger local departure. Every component remains centered at the external mean $f(x)$. This prior concerns the latent control mean; observation variance enters through \eqref{eq:model}.
+
+We set $w\sim\mathrm{Beta}(1,1)$ and $\tau_0^2\sim\text{scaled-Inv-}\chi^2(\nu_0,s_0^2)$ with $\nu_0=3$. The range rule fixes $\tau_1^2=(\max y-\min y)^2/(4k^2H_g)$. We require $\tau_0^2<\tau_1^2$ (Assumption A1 of the Web Appendix); the sampler draws $\tau_0^2$ from its conditional truncated to $(0,\tau_1^2)$. The residual variances carry independent inverse-gamma priors. Section~\ref{sec:ess} calibrates the spike scale $\tau_0$ through the full ensemble's effective sample size.
+
+\begin{samepage}
+Under an untruncated scale prior, integrating $z$ and $\tau_0^2$ gives the leaf marginal $w\,t_{\nu_0}(\theta;0,s_0^2)+(1-w)\Normal(\theta;0,\tau_1^2)$. The sampler uses the truncated scale prior, whose spike marginal is not exactly Student-$t$.\par
+\end{samepage}
+
+Three special cases place the model among its comparators. With $w=1$ every leaf is in the spike and the model is a commensurate BART (C-BART) with a single commensurability scale $\tau_0^2$; with $w=1$ and $\tau_0^2\to0$ the discrepancy vanishes and the model is BART fitted to the pooled controls (BART-CP); with $w=0$ every leaf is in the slab and $g$ is a free nonparametric source offset regularized by the range rule, the tree analogue of BART with the source indicator as a covariate (BART-PP). LRC-BART with $w$ learned from the data moves between these per leaf.
+
+Separate ensembles allow the complexity of the external mean and that of the source discrepancy to be controlled independently. A small $g$ ensemble with shallow trees expresses our prior preference for discrepancies that are simpler than the outcome surface. The fixed-partition calculation in Web Appendix~G.6 describes how the number of discrepancy contributions affects their prior cost; it does not establish a detection threshold for the fitted model or rule out regional borrowing with shared leaves. At the population level, $f$ and $f+g$ are identified on their respective source supports, and their difference is identified on the intersection. Outside that intersection, decomposition or prediction requires extrapolation. A $g$ leaf with no RCT controls has its prior conditional on the partition and current hyperparameters, but shared leaves and learned hyperparameters can transmit trial information beyond trial support (Web Appendix~E).
+
+\subsection{Posterior computation}
+\label{sec:posterior}
+
+We use Markov chain Monte Carlo with the backfitting scheme of \citet{Chipman2010BART}, one tree at a time with the others held fixed. The tree-move factors are closed form: conditional on $(\tau_0^2,\tau_1^2,w)$ the leaf prior \eqref{eq:leafprior} is a finite Gaussian mixture. For a leaf of an $f$ tree the partial residuals $r_i=y_i-f_{-h}(x_i)-D_ig(x_i)$ come from both sources with their own variances; with $A=n_1/\sigma_1^2+n_2/\sigma_2^2$ and $B=S_1/\sigma_1^2+S_2/\sigma_2^2$, where $n_g$ and $S_g$ are the count and sum of the source-$g$ residuals in the leaf, the observation-level factors $\prod_i\phi(r_i;0,\sigma^2_{g_i})$ cancel from every tree-move ratio and the leaf factor is
+\begin{equation}
+M_f=(1+\lambda_f^2A)^{-1/2}\exp\Bigl\{\frac{\lambda_f^2B^2}{2(1+\lambda_f^2A)}\Bigr\},
+\label{eq:Mf}
+\end{equation}
+the heteroscedastic BART marginal. A $g$ leaf uses residuals $r_i=y_i-f(x_i)-g_{-h}(x_i)$ from RCT controls in that leaf, with count $n_1$ and mean $\bar y_1$, and writing $v_1=\sigma_1^2/n_1$,
+\begin{equation}
+M_g=\frac{w\,\phi(\bar y_1;0,\tau_0^2+v_1)+(1-w)\,\phi(\bar y_1;0,\tau_1^2+v_1)}{\phi(\bar y_1;0,v_1)},
+\label{eq:Mg}
+\end{equation}
+with $M_g=1$ for a leaf with no RCT controls. Grow, prune and change moves multiply the tree-prior and proposal ratios by the affected leaf factors; a grow move contributes $M_LM_R/M_P$. Each collapsed tree move is followed immediately by conditional leaf and indicator draws. This ordering preserves the joint posterior (Lemma A1 and Proposition A1 of Web Appendix~A).
+
+Conditional on the trees, we update the leaf parameters conjugately. An $f$ leaf draws $\mu^f_{h\ell}\sim\Normal\bigl(\lambda_f^2B/(1+\lambda_f^2A),\ \lambda_f^2/(1+\lambda_f^2A)\bigr)$. A $g$ leaf is updated as a block: first
+\begin{equation}
+P(z=1\given\bar y_1)=\frac{w\,\phi(\bar y_1;0,\tau_0^2+v_1)}{w\,\phi(\bar y_1;0,\tau_0^2+v_1)+(1-w)\,\phi(\bar y_1;0,\tau_1^2+v_1)},
+\label{eq:zpost}
+\end{equation}
+then $\theta\given z\sim\Normal\bigl(\tau_{1-z}^2\bar y_1/(\tau_{1-z}^2+v_1),\ \tau_{1-z}^2v_1/(\tau_{1-z}^2+v_1)\bigr)$. With $K_0$ spike leaves among the $L_g$ leaves of $g$ and $S_0$ the sum of their squared means, the hyperparameters update as $\tau_0^2\given\cdot\sim\text{scaled-Inv-}\chi^2\bigl(\nu_0+K_0,(\nu_0s_0^2+S_0)/(\nu_0+K_0)\bigr)$ truncated to $(0,\tau_1^2)$ and $w\given\cdot\sim\mathrm{Beta}(1+K_0,1+L_g-K_0)$, and the residual variances update from their inverse-gamma conditionals using the residuals $y_i-f(x_i)-D_ig(x_i)$ of each source. The range rule fixes $\tau_1^2$ on the outcome scale. An $f$ leaf with one source is an ordinary BART leaf. The minimum leaf size is five, using pooled data for $f$ and RCT controls for $g$. A sweep costs a standard BART on $n_1+n_2$ observations plus a small ensemble on $n_1$.
+
+For survival outcomes, $y_i=\log T_i$ denotes log time. At each iteration censored values are imputed from $\Normal(f(x_i)+D_ig(x_i),\sigma_{g_i}^2)$ truncated to $(\log C_i,\infty)$, where $C_i$ is the censoring time, and used in the subsequent tree and parameter updates. The treatment-arm AFT-BART uses the same augmentation.
+
+\subsection{Prior effective sample size and calibration}
+\label{sec:ess}
+
+We calibrate the spike scale through a variance-based effective sample size (ESS) for the standardized control mean. Stage 1 fits $f$ to the RWD alone and estimates $V_\mu^f=\Var(N^{-1}\sum_i f(x_i)\given\text{RWD})$. For a normal prior of variance $V$ and a reference observation with distribution $\Normal(\mu,\sigma_1^2)$, $\sigma_1^2/V$ equals the expected local-information-ratio (ELIR) ESS of \citet{neuenschwander2020}. The marginal BART and scale-mixture priors here are generally nonnormal. We therefore use the precision ratios below as working information summaries; they are not exact marginal ELIR values. For survival outcomes, $\sigma_1^2$ sets uncensored log-time reference units, not the information in one censored observation.
+
+For fixed discrepancy partitions $\mathcal T$, let $a_{h\ell}$ be the proportion of the $N$ standardization profiles in leaf $\ell$ of tree $h$. Independence of the leaf priors gives
+\[
+\mu_g=\sum_{h,\ell}a_{h\ell}\theta_{h\ell},\qquad
+V_g(\mathcal T,z,\tau_0^2)=\sum_{h,\ell}a_{h\ell}^2
+ \{z_{h\ell}\tau_0^2+(1-z_{h\ell})\tau_1^2\}.
+\]
+A standardized mean can involve several leaves in each tree. Its prior average must therefore integrate over all their indicators; a binomial count of $H_g$ indicators suffices only when one leaf per tree has positive standardization weight, including a pointwise profile. Web Appendix~D gives the general leaf-state average.
+
+For calibration we set every discrepancy leaf to the spike as an informative reference. Define $c_g=\E_{T_h}[\sum_\ell a_{h\ell}^2]$, estimated by Monte Carlo under the tree prior; $c_g=1$ for stumps. We replace the random sum $\sum_{h,\ell}a_{h\ell}^2$ by $c_gH_g$ and define
+\begin{equation}
+\mathrm{ESS}_0(s_0^2)=\sigma_1^2\,\E_{\tau_0^2\sim\text{scaled-Inv-}\chi^2(\nu_0,s_0^2)}\Bigl[\frac1{V_\mu^f+c_gH_g\tau_0^2}\Bigr].
+\label{eq:ess0}
+\end{equation}
+This averages inverse conditional variances over the untruncated scale law, with the mean partition coefficient substituted before inversion. The fitting prior truncates the scale at $\tau_1^2$; equation~\eqref{eq:ess0} is the calibration convention used for all reported results. It differs from averaging over the full partition prior or computing the information of the marginal mixture. We calibrate this informative reference and report $w$ separately. Conditional on $w$, the probability that all leaves reached by a profile are in the spike is $w^{H_g}$; for a standardized mean involving $L_+$ distinct leaves it is $w^{L_+}$.
+
+The ceiling of \eqref{eq:ess0} is $\sigma_1^2/V_\mu^f$. It includes the regularization of the RWD-only BART. For a single fixed tree with a flat leaf prior and RWD support in every target leaf, it equals $n_2\sigma_1^2/\sigma_2^2$ when source leaf proportions match and decreases by the factor $\sum_\ell a_\ell^2/\pi_\ell$ under covariate shift (Theorem~\ref{thm:ess}(d)). This equality and direction of change need not hold under finite leaf-prior regularization. We recommend a sensitivity ladder of fractions of the fitted ceiling when overlap is poor.
+
+We divide the Stage-1 draws into $B$ blocks and rescale their variances $V^{(b)}$ to have mean $V_\mu^f$. On a grid $\mathcal S$, the Pr-rule is
+\begin{equation}
+\hat s^2_{0\star}=\inf\bigl\{s_0^2\in\mathcal S:\widehat G(s_0^2)\ge q\bigr\},\qquad
+\widehat G(s_0^2)=\frac1B\sum_{b=1}^B\mathbf 1\bigl\{\mathrm{ESS}_0(V^{(b)};s_0^2)\le N_{\rm target}\bigr\},
+\label{eq:prrule}
+\end{equation}
+with $q=0.95$. If the requested target is at or above the whole-chain ceiling, the implementation instead returns the smallest grid scale and flags the fit as capped; this is a separate override of \eqref{eq:prrule}. If no grid value satisfies the rule, it returns and flags the largest scale.
+
+The reported realized ESS is $\E_{\rm post}[\sigma_1^2/\{V_\mu^f+V_g(\mathcal T,z,\tau_0^2)\}]$, with exact squared leaf proportions at each posterior state. Here $V_g$ is a prior variance evaluated at learned states, not the posterior variance of $\mu_g$ or a measured reduction in posterior uncertainty. Regional summaries standardize separately within each region and are not additive.
+
+The application uses the pointwise summary $\mathrm{ESS}(x)=\hat\sigma_1^2/\{V_f(x)+H_g\bar\tau_0^2\}$, where $V_f(x)=\Var\{f(x)\given\mathrm{RWD}\}$ is the Stage-1 uncertainty in the conditional mean and $\bar\tau_0^2$ is the fitted mean spike variance. The denominator combines uncertainty in that mean with the allowed source discrepancy. An ESS of $m$ equates this working variance to $\hat\sigma_1^2/m$, the variance of a mean of $m$ independent reference controls with the same profile and residual variance $\hat\sigma_1^2$. For survival these reference observations are uncensored log times. This expresses precision in estimating a mean at $x$, rather than uncertainty in an individual outcome or a count of matched registry patients. In the single-arm application it describes prior external support; compatibility cannot be checked against concurrent trial controls. Appendix~D distinguishes this plug-in from averaging pointwise precision over the scale prior.
+
+\subsection{The borrowing map and its guarantees}
+\label{sec:map}
+
+We summarize compatibility over covariate space by the posterior probability that the local discrepancy is smaller than a threshold $c>0$ fixed in advance on the outcome scale,
+\begin{equation}
+\mathcal B_c(x)=P\bigl(|g(x)|<c\given\text{data}\bigr),
+\label{eq:map}
+\end{equation}
+computed as the fraction of posterior draws, together with the posterior mean and interval of $g(x)$ and the pointwise ESS of Section~\ref{sec:ess}. We also retain the all-spike probability $B(x)$, the posterior probability that every leaf covering $x$ belongs to the spike, as a diagnostic; its prior scale is $w^{H_g}$ and, as Theorem~\ref{thm:map} explains, its limiting value need not identify the true compatibility state, whereas $\mathcal B_c$ is consistent under the stated conditions. In the simulation study $c=0.5$, one third of the RCT residual standard deviation for Gaussian outcomes and $0.5$ on the log-time scale for survival outcomes.
+
+We give three theoretical results. The first two concern leaf-level inference and condition on the pooled surface $f$, on the partition of the $g$ trees, and on $(\sigma_1^2,\tau_0^2,\tau_1^2,w)$, and consider a $g$ leaf with $n$ RCT controls, residual mean $\bar y$, and $v=\sigma_1^2/n$. Write $\rho_j=\tau_j^2/(\tau_j^2+v)$ for $j\in\{0,1\}$, so that $\hat\theta_1=\rho_1\bar y$ is the slab estimate, close to the RCT-only residual mean, and $\hat\theta_0=\rho_0\bar y$ the spike-shrunk estimate, close to zero, that is, to the pooled surface. Let $p=P(z=0\given\bar y)$ be the posterior slab probability and
+\begin{equation}
+\kappa=\frac12\Bigl(\frac1{\tau_0^2+v}-\frac1{\tau_1^2+v}\Bigr),\qquad
+a=\log\frac{1-w}{w}+\frac12\log\frac{\tau_0^2+v}{\tau_1^2+v},\qquad C=e^{-a}.
+\label{eq:kappa}
+\end{equation}
+
+\begin{theorem}[Bounded local influence]\label{thm:influence}
+Under Assumption A1, $0<w<1$, and the conditioning above, $\theta\given\bar y$ is the mixture $p\,\Normal(\hat\theta_1,\rho_1v)+(1-p)\,\Normal(\hat\theta_0,\rho_0v)$ with $\logit p=a+\kappa\bar y^2$, and the shift of the posterior mean relative to the slab estimate, $I(\bar y)=\E[\theta\given\bar y]-\hat\theta_1=-(1-p)(\rho_1-\rho_0)\bar y$, satisfies
+\[
+\sup_{\bar y}|I(\bar y)|\le\sqrt{2v\max\{\log C,\tfrac12\}},\qquad 1-p\le Ce^{-\kappa\bar y^2},
+\]
+so $I(\bar y)\to0$ at a Gaussian rate as $|\bar y|\to\infty$. With $w=1$ (C-BART) the shift is $-(\rho_1-\rho_0)\bar y$, linear and unbounded, and with $w=1$, $\tau_0^2\to0$ (BART-CP) it is $-\rho_1\bar y$.
+\end{theorem}
+
+Theorem~\ref{thm:influence} is Theorem A1 of Web Appendix~B. It bounds the spike-induced shift relative to the slab estimate, on the scale of an RCT leaf standard error. The slab itself shrinks toward the pooled surface by $\rho_1$, the range-rule regularization applied to a BART leaf. C-BART and BART-CP have unbounded conditional shifts. Corollary A1 extends the bound to the standardized control mean at fixed $g$ partitions; the corresponding C-BART and BART-CP shifts are linear and unbounded unless the linear functional vanishes.
+
+\begin{theorem}[Detection and the borrowing map]\label{thm:map}
+Under Assumption A1, $0<w<1$, and the conditioning above, let the RCT residuals in the leaf be $d+\epsilon_i$ with $\epsilon_i\iid\Normal(0,\sigma_1^2)$, where $d$ is the true local discrepancy.
+\begin{enumerate}[label=(\alph*),leftmargin=2.2em]
+\item The spike probability $P(z=1\given\bar y)=\{1+\exp(a+\kappa\bar y^2)\}^{-1}$ is decreasing in $|\bar y|$, and when $\log\frac w{1-w}+\frac12\log\frac{\tau_1^2+v}{\tau_0^2+v}>0$ it equals one half at
+\[
+d_{1/2}=\Bigl[\frac{2(\tau_0^2+v)(\tau_1^2+v)}{\tau_1^2-\tau_0^2}\Bigl\{\log\frac w{1-w}+\frac12\log\frac{\tau_1^2+v}{\tau_0^2+v}\Bigr\}\Bigr]^{1/2},
+\]
+so the probability that the leaf abstains at true shift $d$ is $\bar\Phi\{(d_{1/2}-d)/\sqrt v\}+\bar\Phi\{(d_{1/2}+d)/\sqrt v\}$, with $\bar\Phi$ the standard normal survival function.
+\item For a single $g$ tree, $\mathcal B_c(x)=p\,\Psi_1(c)+(1-p)\,\Psi_0(c)$ with $\Psi_j(c)=P\{|\Normal(\rho_j\bar y,\rho_jv)|<c\}$, and as $n\to\infty$ with $|d|\ne c$, $\mathcal B_c(x)\to\mathbf 1\{|d|<c\}$ almost surely.
+\item As $n\to\infty$ with $\tau_0^2$ fixed, the spike probability converges to a limit in $(0,1)$ that is at most $\frac{w\tau_1}{(1-w)\tau_0}\exp\{-\frac{d^2}2(\tau_0^{-2}-\tau_1^{-2})\}$ for $d\ne0$ and exceeds $w$ for $d=0$; it tends to zero only as $|d|/\tau_0\to\infty$, or for every fixed $d\ne0$ if $\tau_0^2\to0$ with $n$.
+\end{enumerate}
+\end{theorem}
+
+Theorem~\ref{thm:map} combines Theorems A2 and A3 of Web Appendix~C. The ensemble extension requires fixed partitions and a discrepancy representable on their additive span. The leaf results also condition on $f$; they do not establish consistency under the full posterior over both ensembles. Further interpretation is given in Web Appendix~G.3.
+
+\begin{theorem}[Monotone, well-posed calibration]\label{thm:ess}
+Fix $\sigma_1^2>0$, $V>0$, $c_gH_g>0$, $N_{\rm target}>0$ and $q\in(0,1)$, and write $\mathrm{ESS}_0(V;s)$ for \eqref{eq:ess0} at $V_\mu^f=V$ and $s=s_0^2$.
+\begin{enumerate}[label=(\alph*),leftmargin=2.2em]
+\item $s\mapsto\mathrm{ESS}_0(V;s)$ is continuous, convex, and strictly decreasing on $(0,\infty)$, with limits $\sigma_1^2/V$ as $s\downarrow0$ and $0$ as $s\uparrow\infty$, under the untruncated calibration prior in \eqref{eq:ess0}. Under truncation to $(0,\tau_1^2)$, continuity and strict decrease remain, but the limit as $s\uparrow\infty$ is $\sigma_1^2/(V+c_gH_g\tau_1^2)>0$; convexity is asserted only for the untruncated law.
+\item Under the untruncated calibration law, for each $V$ the sublevel set $\{s:\mathrm{ESS}_0(V;s)\le N_{\rm target}\}$ is a half-line $[s^\dagger(V),\infty)$, so the population rule $G(s)=P\{s^\dagger(V)\le s\}$ is a distribution function and $\{s:G(s)\ge q\}=[s_\star,\infty)$ has a unique attained infimum; $s_\star>0$ if and only if $P(N_{\rm target}<\sigma_1^2/V)>1-q$, and otherwise $s_\star=0$, the zero-scale limit of the informative reference.
+\item For a stationary, aperiodic Harris-ergodic full Stage-1 chain and a square-integrable standardized surface, fixed $B$ and increasing block length select the smallest grid value satisfying the whole-chain rule, on a grid separated from its root. For fixed block length and increasing $B$, the rule converges to the selection based on the limiting \emph{rescaled} block law, under the positivity, continuity and grid-separation conditions in Web Appendix~D. These statements concern \eqref{eq:prrule} with a nonempty admissible grid, not the ceiling override.
+\item For a single $f$ tree with fixed partition, RCT profile proportions $a_\ell$ and RWD proportions $\pi_\ell>0$ on every target leaf, the ceiling is at least $n_2\sigma_1^2/\sigma_2^2\big/\sum_\ell a_\ell^2/\pi_\ell$. Equality holds in the flat-prior limit; the denominator is at least one, with equality if and only if $a=\pi$ (zero-weight $0/0$ terms contribute zero).
+\end{enumerate}
+\end{theorem}
+
+Theorem~\ref{thm:ess}, proved in Web Appendix~D, concerns the defined calibration summary. Under the untruncated law, each positive target below the ceiling has a unique positive root; truncation adds a positive lower limit. The block rule, finite grid and ceiling override are distinct parts of the implementation. These results establish neither predictive consistency of marginal ELIR nor a guarantee on frequentist operating characteristics.
+
+\subsection{The single-arm variant}
+\label{sec:singlearm}
+
+When the trial has no control arm, $n_1=0$, every $g$ leaf holds no RCT controls, $M_g=1$, and the $f$ moves are exactly those of standard BART on the RWD. The control surface is then $f_1=f+g$ with $f$ the RWD surface and $g$ a prior draw, a zero-mean discrepancy process with pointwise variance $H_g\{w\tau_0^2+(1-w)\tau_1^2\}$ conditional on the scales and $w$, and $\tau_0^2$ and $w$ stay at their priors. The indicators receive no likelihood information, and the slab contributes $(1-w)H_g\tau_1^2$ to its conditional pointwise variance, so we report the $w=1$ model, the commensurate prior with the discrepancy carried by $g$ at the calibrated scale, and use $w<1$ as a sensitivity analysis. Calibration uses the RWD-only Stage-1 fit. We assume $\sigma_1^2=\sigma_2^2$ for calibration and counterfactual survival prediction; single-arm data cannot check this equality. Targets are absolute control counts or fractions of the ceiling. With $w=1$ the single-arm model is a hierarchically centered commensurate AFT-BART, $f_1(x)=f(x)+\sum_he_h$ with $e_h\sim\Normal(0,\tau_0^2)$, with the discrepancy defined on the partition of $g$ instead of that of $f$. The prior mean of the Gaussian control surface is preserved, but nonlinear survival-ratio means can change when discrepancy uncertainty is added. Because the compatibility map is constant across profiles in this setting, the covariate-resolved display for a single-arm analysis is the local ESS map $\mathrm{ESS}(x)$, which describes variation in RWD support across trial profiles.
