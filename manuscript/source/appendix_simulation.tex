@@ -57,7 +57,7 @@ For each dataset, true conditional means and control/treatment survival distribu
 Method & Specification and included settings\\\midrule
 LM / AFT & Parametric outcome regression. Two-arm versions fit trial controls only (-NP), pool controls (-CP), or add a source indicator (-PP). Single-arm -CP gives historical outcomes likelihood weight 1. Treated outcomes are fitted separately.\\
 BART & Corresponding -NP, -CP, or -PP control fits; separate treated surface. Single-arm BART-CP uses historical controls without a discrepancy sum of trees.\\
-Hierarchical LM / AFT & Source-specific intercepts and coefficients have common hypermeans and inverse-gamma hierarchical variances, with prior setting $a=0.25$ in two-arm studies and $a=0.05$ or $0.5$ in single-arm studies.\\
+Hierarchical LM / AFT & Source-specific intercepts and coefficients have common hypermeans and inverse-gamma hierarchical variances, with discrepancy-variance prior scale $s_\tau^2=0.25$ in two-arm studies and $s_\tau^2=0.05$ in single-arm studies.\\
 PSCL & Gaussian two-arm only. Propensity-score estimation on the ten observed covariates, distance-based borrowing allocation with total borrowing parameter 100, and composite-likelihood outcome analysis.\\
 MAP & Gaussian two-arm only. Normal study-level mean and standard-error summary of historical controls; MAP construction and normal-mixture approximation; requested ESS 100, 75 or 50. No covariate adjustment in this comparator.\\
 lrcBART, two-arm & $H_f=50$, $H_g=5$, estimated $w$; ESS targets 100 (primary), 75, 50, f90, f50, f25.\\
@@ -67,11 +67,11 @@ lrcBART, single-arm & $H_f=50$, $H_g=5$; fixed $w=1$ with targets 100 (primary),
 \caption*{f90, f50 and f25 denote fractions of the dataset-specific calibration ceiling. s0min sets $s_0^2=10^{-6}$ without target selection. The single-arm target 100 is an absolute count at both survival trial sizes, including $n_1=30$.}
 \end{table}
 
-The hierarchical comparator uses source-specific regression coefficients with a common estimated hypermean. Intercept and predictor-specific variance components have $\IG(3/2,3a/2)$ priors, where $a$ is the setting listed in Table S3; the label is not a probability or historical sample-size fraction. Hypermeans have diffuse normal priors. This comparator pools regression parameters through their prior rather than specifying a nonlinear discrepancy surface.
+The hierarchical comparator uses source-specific regression coefficients with a common estimated hypermean. Intercept and predictor-specific discrepancy-variance components have $\IG(3/2,3s_\tau^2/2)$ priors, where $s_\tau^2$ is the scale listed in Table S3; it is not a probability or historical sample-size fraction. Hypermeans have diffuse normal priors. This comparator pools regression parameters through their prior rather than specifying a nonlinear discrepancy surface.
 
 The MAP comparator uses the historical sample mean and its standard error in a study-level normal model, a normal location prior with standard deviation 10, and an inverse-gamma prior $\IG(3/2,3a/2)$ for its heterogeneity parameter, with $a$ selected by the MAP prior ESS procedure. Its predictive prior is approximated by a normal mixture and updated using the trial-control sample mean and standard error. This study-level comparator does not use a BART outcome model. Its prior ESS procedure is distinct from the lrcBART definition. PSCL follows the propensity-score-integrated construction described by \citet{Chen2020PSCL}.
 
-There are 17 method/configuration combinations per Gaussian two-arm setting and 13 per survival two-arm setting. Each single-arm setting has nine combinations. All configurations have 100 completed replicates.
+There are 17 method/configuration combinations per Gaussian two-arm setting and 13 per survival two-arm setting. Each reported single-arm setting has eight combinations. All reported configurations have 100 completed replicates.
 
 \subsection{Performance measures and Monte Carlo uncertainty}\label{sec:E.5}
 Let $\psi$ denote the estimand being evaluated: the Gaussian mean contrast, survival median ratio or RMST ratio. For point estimates $\widehat\psi_r$ and dataset-specific truths $\psi_r$, write $e_r\coloneqq \widehat\psi_r-\psi_r$ over $R=100$ replicates. We calculate

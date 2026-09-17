@@ -233,9 +233,6 @@ compute_pop_rmst <- function(mu_draws, sig_draw, tau, label) {
 
 cat(sprintf("\n=== Computing population RMST at tau = %g years ===\n", tau_rmst))
 rmst_ctrl <- compute_pop_rmst(res_ctrl$mu, res_ctrl$sigma, tau_rmst, "Control (UCMM->EloKRD)")
-# Standard BART has no discrepancy layer: its hypothetical control is the
-# UCMM model evaluated at EloKRd covariates, so these draws are identical.
-rmst_ucmm <- rmst_ctrl
 rmst_trt  <- compute_pop_rmst(res_trt$mu,  res_trt$sigma,  tau_rmst, "Treatment (EloKRD)")
 
 # ============================================================
@@ -269,13 +266,11 @@ arm_summ <- function(x) {
 }
 rmst_trt_est   <- arm_summ(rmst_trt)
 rmst_ctrl_est  <- arm_summ(rmst_ctrl)
-rmst_ucmm_est  <- arm_summ(rmst_ucmm)
 sigma_trt_est  <- arm_summ(res_trt$sigma)
 sigma_ctrl_est <- arm_summ(res_ctrl$sigma)
 cat("\n=== Arm-specific estimates (median [95% CI]) ===\n")
 cat(sprintf("  RMST  treatment: %.3f  [%.3f, %.3f]\n", rmst_trt_est["est"],  rmst_trt_est["lo"],  rmst_trt_est["hi"]))
 cat(sprintf("  RMST  hypothetical control (EloKRd): %.3f  [%.3f, %.3f]\n", rmst_ctrl_est["est"], rmst_ctrl_est["lo"], rmst_ctrl_est["hi"]))
-cat(sprintf("  RMST  UCMM control standardized to EloKRd: %.3f  [%.3f, %.3f]\n", rmst_ucmm_est["est"], rmst_ucmm_est["lo"], rmst_ucmm_est["hi"]))
 cat(sprintf("  sigma treatment: %.3f  [%.3f, %.3f]\n", sigma_trt_est["est"],  sigma_trt_est["lo"],  sigma_trt_est["hi"]))
 cat(sprintf("  sigma control  : %.3f  [%.3f, %.3f]\n", sigma_ctrl_est["est"], sigma_ctrl_est["lo"], sigma_ctrl_est["hi"]))
 
@@ -292,12 +287,9 @@ results <- list(
   ci_diff_95 = ci_diff_95,
   tau_rmst   = tau_rmst,
   rmst_ctrl  = rmst_ctrl,
-  rmst_ucmm  = rmst_ucmm,
   rmst_trt   = rmst_trt,
   rmst_trt_est   = rmst_trt_est,
   rmst_ctrl_est  = rmst_ctrl_est,
-  rmst_ucmm_est  = rmst_ucmm_est,
-  rmst_ucmm_population = "EloKRd",
   sigma_trt_est  = sigma_trt_est,
   sigma_ctrl_est = sigma_ctrl_est,
   res_ctrl   = res_ctrl,

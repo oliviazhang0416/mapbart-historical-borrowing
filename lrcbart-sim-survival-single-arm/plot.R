@@ -170,7 +170,7 @@ resultDir <- file.path(projectDir, "res", paste0("n", n_T))
 insertDir <- file.path(projectDir, "inserts")
 dir.create(insertDir, recursive = TRUE, showWarnings = FALSE)
 
-aftv4_prior_vals <- plot_method_setting("hierAFT.R", "prior_vals", c(0.05, 0.5))
+aftv4_prior_vals <- plot_method_setting("hierAFT.R", "prior_vals", 0.05)
 aftv2_rwd_w_vals <- plot_method_setting("AFTv2.R", "rwd_w_vals", 1)
 n_rwd_nominal <- 300
 lrcbart_configurations <- lrc_plot_configurations(TRUE)

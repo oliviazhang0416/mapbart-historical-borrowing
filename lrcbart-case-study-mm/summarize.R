@@ -66,14 +66,10 @@ add_result <- function(method, outcome, path, coding = "harmonized",
   calibration <- result$calibration
   diagnostics <- result$diagnostics
   sampler <- result$sampler
-  ucmm_est <- result$rmst_ucmm_est
-  # Older KM/AFT/BART files already contain this quantity as rmst_ctrl_est.
-  # Older hierarchical/LRC files need a new fit to save the external component.
-  if (is.null(ucmm_est) && method %in% c("KM", "AFT-CP", "Standard BART"))
-    ucmm_est <- result$rmst_ctrl_est
-  ucmm_population <- result$rmst_ucmm_population
-  if (is.null(ucmm_population))
-    ucmm_population <- if (method == "KM") "UCMM" else "EloKRd"
+  # Only KM reports RMST for the observed UCMM population. Adjusted methods
+  # report treatment and hypothetical control RMST standardized to EloKRd.
+  ucmm_est <- if (method == "KM") result$rmst_ctrl_est else NULL
+  ucmm_population <- if (method == "KM") "UCMM" else NA_character_
   rows[[length(rows) + 1L]] <<- data.frame(
     outcome = outcome, method = method, coding = coding,
     config = config, target = target, prior = prior,
@@ -192,11 +188,9 @@ arm_table <- results_table[, c(
 )]
 arm_table$treatment <- format_rmst("rmst_trt")
 arm_table$hypothetical_control <- format_rmst("rmst_hyp_ctrl")
-arm_table$ucmm_control <- format_rmst("rmst_ucmm")
+arm_table$observed_ucmm <- format_rmst("rmst_ucmm")
 cat("\nRMST in years: estimate [95% interval]\n",
-    "Model UCMM controls are standardized to EloKRd covariates.\n",
-    "KM reports unadjusted UCMM RMST and has no hypothetical control.\n",
-    "AFT-CP and Standard BART have identical UCMM and hypothetical controls.\n",
+    "Only KM reports observed, unadjusted UCMM RMST and has no hypothetical control.\n",
     sep = "")
 print(arm_table, row.names = FALSE)
 cat("Saved", file.path(resultDir, "results_table.csv"), "\n")

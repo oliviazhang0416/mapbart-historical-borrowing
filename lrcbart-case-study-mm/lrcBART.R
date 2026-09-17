@@ -282,7 +282,6 @@ for (configuration_index in seq_len(nrow(configuration_table))) {
     ))
 
     control_rmst <- vector("list", n_chains)
-    ucmm_rmst <- vector("list", n_chains)
     ratio_chains <- matrix(NA_real_, n_draw, n_chains)
     difference_chains <- matrix(NA_real_, n_draw, n_chains)
     sigma_control_chains <- matrix(NA_real_, n_draw, n_chains)
@@ -364,12 +363,6 @@ for (configuration_index in seq_len(nrow(configuration_table))) {
       control_rmst[[chain_id]] <- compute_pop_rmst(
         control_prediction, sigma_control, tau_rmst
       )
-      # Both controls use EloKRd covariates. The UCMM component excludes g
-      # and uses the external-control residual variance.
-      ucmm_rmst[[chain_id]] <- compute_pop_rmst(
-        fit_control$f_test + y_center,
-        sqrt(fit_control$sigma2_sq), tau_rmst
-      )
       ratio_chains[, chain_id] <-
         treatment_rmst[[chain_id]] / control_rmst[[chain_id]]
       difference_chains[, chain_id] <-
@@ -407,7 +400,6 @@ for (configuration_index in seq_len(nrow(configuration_table))) {
     post_difference <- as.vector(difference_chains)
     rmst_trt <- unlist(treatment_rmst, use.names = FALSE)
     rmst_ctrl <- unlist(control_rmst, use.names = FALSE)
-    rmst_ucmm <- unlist(ucmm_rmst, use.names = FALSE)
     sigma_trt <- unlist(lapply(treatment_chains, `[[`, "sigma"),
                         use.names = FALSE)
     sigma_ctrl <- as.vector(sigma_control_chains)
@@ -440,11 +432,8 @@ for (configuration_index in seq_len(nrow(configuration_table))) {
       ci_diff_95 = quantile(post_difference, c(0.025, 0.975), na.rm = TRUE),
       tau_rmst = tau_rmst,
       rmst_ctrl = rmst_ctrl, rmst_trt = rmst_trt,
-      rmst_ucmm = rmst_ucmm,
       rmst_trt_est = arm_summary(rmst_trt),
       rmst_ctrl_est = arm_summary(rmst_ctrl),
-      rmst_ucmm_est = arm_summary(rmst_ucmm),
-      rmst_ucmm_population = "EloKRd",
       sigma_trt_est = arm_summary(sigma_trt),
       sigma_ctrl_est = arm_summary(sigma_ctrl),
       ratio_chains = ratio_chains,
@@ -491,11 +480,6 @@ for (configuration_index in seq_len(nrow(configuration_table))) {
              config_suffix, "_N", target_name, ".RData")
     )
     saveRDS(results, result_file)
-    cat(sprintf(
-      "  UCMM control standardized to EloKRd: RMST %.3f [%.3f, %.3f] years\n",
-      results$rmst_ucmm_est["est"], results$rmst_ucmm_est["lo"],
-      results$rmst_ucmm_est["hi"]
-    ))
     cat(sprintf(
       "Saved %s: RMST ratio %.3f [%.3f, %.3f], realized ESS %.1f\n",
       basename(result_file), results$delta_hat, results$ci_95[1],

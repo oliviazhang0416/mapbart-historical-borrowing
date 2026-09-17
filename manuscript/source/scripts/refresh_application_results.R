@@ -11,12 +11,15 @@ out <- file.path(root, "manuscript/source")
 appdir<-file.path(root,"lrcbart-case-study-mm")
 app<-readRDS(file.path(appdir,"res/results_table.RData"))
 app$rmst_trt<-app$rmst_ctrl<-app$rmst_ucmm<-NA_real_
+if("rmst_ucmm_population" %in% names(app))
+ app$rmst_ucmm_population<-ifelse(app$method=="KM","UCMM",NA_character_)
 for(i in seq_len(nrow(app))){
  z<-readRDS(file.path(appdir,"res",app$file[i]))
- for(arm in c("trt","ctrl","ucmm")){
+ for(arm in c("trt","ctrl")){
    nm<-paste0("rmst_",arm,"_est");v<-z[[nm]]
    if(!is.null(v)) app[i,paste0("rmst_",arm)]<-as.numeric(v[1])
  }
+ if(app$method[i]=="KM") app$rmst_ucmm[i]<-as.numeric(z$rmst_ctrl_est[1])
 }
 write_json(app,file.path(out,"generated/application_results.json"),dataframe="rows",auto_unbox=TRUE,pretty=TRUE,na="null")
 e<-new.env();load(file.path(appdir,"data_cleaned/merged_elokrd_ucmm_n283.RData"),e);dat<-e$merged
@@ -44,8 +47,8 @@ for(ep in c("pfs","os")) for(h in c(10,50)) {
 }
 write_json(app_cal,file.path(out,"generated/application_calibration.json"),auto_unbox=TRUE,pretty=TRUE)
 
-stopifnot(nrow(app)==58L, all(is.finite(app$rmst_ucmm)),
-          all(app$rmst_ucmm_population[app$method!="KM"]=="EloKRd"))
+stopifnot(nrow(app)==58L, all(is.finite(app$rmst_ucmm[app$method=="KM"])),
+          all(is.na(app$rmst_ucmm[app$method!="KM"])))
 manifest <- lapply(app$file, function(f) {
  p <- file.path(appdir,"res",f)
  list(file=f,md5=unname(tools::md5sum(p)))

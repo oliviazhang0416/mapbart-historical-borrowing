@@ -55,8 +55,8 @@ if (!length(sample_files))
 p_obs <- sum(grepl("^X\\d+$", colnames(readRDS(sample_files[1])$X)))
 hypo <- "alternative"
 
-# Preserve the inherited single-arm hierarchical-prior sweep.
-prior_vals <- c(0.05, 0.5)
+# Retained discrepancy-variance prior scale for the hierarchical comparator.
+prior_vals <- 0.05
 threshold <- 0.95
 cor <- 1
 

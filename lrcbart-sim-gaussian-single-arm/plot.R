@@ -165,8 +165,8 @@ weight_labels <- function(method, weights) {
 
 
 # LRC-BART MODIFICATION START
-# Preserve the original single-arm hierarchical-model prior sweep.
-lmv4_prior_vals <- plot_method_setting("hierLM.R", "prior_vals", c(0.05, 0.5))
+# Retained single-arm hierarchical-model prior scale.
+lmv4_prior_vals <- plot_method_setting("hierLM.R", "prior_vals", 0.05)
 
 # MAP and lrcBART now key on N_target rather than the raw s^2 value: each
 # analysis file loops over multiple N_target multipliers from its

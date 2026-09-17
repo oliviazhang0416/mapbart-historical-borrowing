@@ -46,21 +46,28 @@ def method(x, sensitivity=False):
         if m.startswith(a+'v'): return a+'-'+{'1':'NP','2':'CP','3':'PP'}[m[-1]]
     return tex(m)
 
+def retained_single_arm_result(x):
+    """Exclude the discontinued s_tau^2=0.5 single-arm hierarchical runs."""
+    return not (x['study'] in ['lrcbart-sim-gaussian-single-arm',
+                               'lrcbart-sim-survival-single-arm']
+                and x['method'] in ['hierLM', 'hierAFT']
+                and x['config'] == '0.5')
+
 def table(name, caption, headers, rows, spec, note='', landscape=False, small=True):
     if name in ['table2','table3','tableS4','tableS5']:
-        note += r' The hierarchical comparator uses prior setting $a=0.25$.'
-    elif name == 'table4':
-        note += r' Within each outcome and scenario, the first and second hier. LM or hier. AFT rows use prior settings $a=0.05$ and $a=0.5$, respectively.'
-    elif name in ['tableS6','tableS7']:
-        note += r' Within each scenario and sample-size block, the first and second hier. LM or hier. AFT rows use prior settings $a=0.05$ and $a=0.5$, respectively.'
-    elif name in ['table6','tableS10']:
-        note += r' Within each endpoint, the first and second hier. AFT rows use prior settings $a=0.05$ and $a=0.5$, respectively.'
+        note += r' The hierarchical comparator uses discrepancy-variance prior scale $s_\tau^2=0.25$.'
+    elif name in ['table4','tableS6','tableS7']:
+        note += r' The single-arm hierarchical comparator uses discrepancy-variance prior scale $s_\tau^2=0.05$.'
+    elif name == 'table6':
+        note += r' The hier. AFT comparator uses hierarchical discrepancy-variance prior scale $s_\tau^2=0.05$, where $\tau_\alpha^2,\tau_\beta^2\sim\operatorname{IG}(3/2,3s_\tau^2/2)$.'
+    elif name == 'tableS10':
+        note += r' Within each endpoint, the first and second hier. AFT rows use hierarchical discrepancy-variance prior scales $s_\tau^2=0.05$ and $s_\tau^2=0.5$, respectively.'
     t=[]
     if landscape: t.append(r'\begin{landscape}')
     intros={
       'tableS4':('Gaussian two-arm results','All 12 settings and 17 configurations are reported. Main Table 2 selects Sc1, Sc2, Sc3 with $\\rho=0$, Sc4 with $\\delta=1$, and Sc5 outside $X_5>2$ with $\\delta=1$.'),
       'tableS5':('Survival two-arm results','The primary median-survival ratio is followed by the supplementary three-year RMST ratio, using the modified functional in Appendix D.5.'),
-      'tableS6':('Gaussian single-arm results','Sc1 and Sc2 at $n_1=200$ include all five lrcBART priors and all four comparator settings.'),
+      'tableS6':('Gaussian single-arm results','Sc1 and Sc2 at $n_1=200$ include all five lrcBART priors and all three comparator settings.'),
       'tableS7':('Survival single-arm results','Both trial sizes and both scenarios are reported, first for median-survival ratios and then for five-year RMST ratios with floored control denominators (Appendix D.5).'),
       'tableS10':('Complete application results','All 58 PFS and OS results are included. Similarity among lrcBART estimates does not resolve prior dependence for unobserved trial-control outcomes.')}
     if name in intros:
@@ -111,12 +118,12 @@ for study,ns in [('lrcbart-sim-gaussian-single-arm',['200']),('lrcbart-sim-survi
     for n in ns:
         for sc in ['sc1','sc2']:
             rows.append(('Gaussian' if 'gaussian' in study else 'Survival')+', '+scen(sc))
-            rr=sorted([x for x in sim if x['study']==study and x['nT']==n and x['scenario']==sc and x['primary'] and x['estimand']=='primary'],key=sortkey)
+            rr=sorted([x for x in sim if x['study']==study and x['nT']==n and x['scenario']==sc and x['primary'] and x['estimand']=='primary' and retained_single_arm_result(x)],key=sortkey)
             rows.extend([[method(x)]+[fmt(x[k]) for k in ['bias','rmse','coverage','power']] for x in rr])
 table('table4','Single-arm performance for Gaussian mean differences and median-survival ratios.',
       ['Method','Bias','RMSE','Coverage','Power'],rows,'lrrrr',
       r'Each row summarizes 100 alternative-hypothesis replicates. Coverage is for a 95\% interval; empirical power is the frequency of posterior probability of benefit exceeding 0.95, using a threshold of 0.5 for Gaussian mean differences and 1 for survival ratios. '
-      r'All single-arm lrcBART primary rows use fixed $w=1$, $H_f=50$, $H_g=5$ and requested ESS 100. The hierarchical variance prior is $\operatorname{IG}(3/2,3a/2)$. In single-arm studies, CP uses all historical controls with full likelihood weight and no source discrepancy; there are no observed trial controls to pool. Full configurations and Monte Carlo standard errors appear in the appendix.')
+      r'All single-arm lrcBART primary rows use fixed $w=1$, $H_f=50$, $H_g=5$ and requested ESS 100. The hierarchical discrepancy variance has prior $\operatorname{IG}(3/2,3s_\tau^2/2)$. In single-arm studies, CP uses all historical controls with full likelihood weight and no source discrepancy; there are no observed trial controls to pool. Full configurations and Monte Carlo standard errors appear in the appendix.')
 
 rows=[['Participants']+[str(x['n']) for x in cohort],['Age (years), median (IQR)']+[f"{x['age_median']:.1f} ({x['age_q1']:.1f}, {x['age_q3']:.1f})" for x in cohort]]
 for label,key in [('Male','male'),('White','race_White'),('Black','race_Black'),('Other race','race_Other'),('Hispanic or Latino','hispanic'),('High-risk cytogenetics','high_risk_cyto'),('ASCT','asct'),('Progression or death','pfs_status'),('All-cause death','os_status')]:
@@ -134,16 +141,18 @@ def ci(x,v,lo,hi): return f"{x[v]:.3f} ({x[lo]:.3f}, {x[hi]:.3f})"
 rows=[]
 for ep in ['PFS','OS']:
     rows.append(ep)
-    aa=[x for x in app if x['outcome']==ep and (x['method']!='LRC-BART' or x['config']=='default' and x['target']=='100')]
+    aa=[x for x in app if x['outcome']==ep
+        and (x['method']!='LRC-BART' or x['config']=='default' and x['target']=='100')
+        and (x['method']!='HierAFT' or abs(float(x['prior'])-0.05)<1e-12)]
     aa.sort(key=lambda x: {'KM': 0, 'lrcBART': 1, 'BART-CP': 2, 'AFT-CP': 3, 'hier. AFT': 4}.get(appmethod(x), 5))
     for x in aa:
         is_km = x['method'] == 'KM'
         rows.append([appmethod(x),ci(x,'estimate','lower','upper'),ci(x,'difference','difference_lower','difference_upper'),
                      fmt(x['rmst_trt']),r'---' if is_km else fmt(x['rmst_ctrl']),
-                     r'---' if is_km else fmt(x['rmst_ucmm']),fmt(x['rmst_ucmm']) if is_km else r'---'])
+                     fmt(x['rmst_ucmm']) if is_km else r'---'])
 table('table6','Five-year restricted mean survival time (RMST) in the application.',
-      ['Method',r'\shortstack{RMST ratio\\(95\% interval)}',r'\shortstack{RMST difference\\(95\% interval)}',r'\shortstack{EloKRd treatment\\RMST}',r'\shortstack{EloKRd control\\RMST}',r'\shortstack{Historical model\\RMST}',r'\shortstack{Observed UCMM\\RMST}'],rows,'lrrrrrr',
-      r'RMST and differences are in years. EloKRd control RMST is the estimated restricted mean survival under control for the EloKRd population. Adjusted methods standardize to EloKRd covariates and compare treatment with this estimated control outcome; KM compares the observed EloKRd and UCMM cohorts. Historical-model RMST evaluates the historical-control model at EloKRd covariates, whereas observed UCMM RMST is the unadjusted cohort summary used only by KM. For lrcBART, the EloKRd control uses $f+g$ and the historical-model column uses $f$, with the respective residual variances. BART-CP and AFT-CP have identical model-based control columns because they have no discrepancy component. A dash denotes an inapplicable estimate. '
+      ['Method',r'\shortstack{RMST ratio\\(95\% interval)}',r'\shortstack{RMST difference\\(95\% interval)}',r'\shortstack{EloKRd treatment\\RMST}',r'\shortstack{EloKRd hypothetical\\control RMST}',r'\shortstack{UCMM control\\RMST}'],rows,'lrrrrr',
+      r'RMST and differences are in years. For KM, EloKRd treatment RMST and UCMM control RMST are observed cohort estimates. For adjusted methods, EloKRd treatment and hypothetical control RMSTs are model-based estimates standardized to EloKRd covariates; UCMM control RMST is not reported. A dash denotes an inapplicable estimate. '
       r'KM is an unadjusted comparison with confidence intervals; model-based intervals are equal-tailed credible intervals. '
       r'Arm summaries are posterior medians, except KM estimates. The median of a ratio or difference need not equal the ratio or difference of marginal medians. '
       r'Primary lrcBART uses $H_f=10$, $H_g=5$, $w=1$, requested ESS 30.',landscape=True)
@@ -152,11 +161,11 @@ fullnote=(r'Entries with parentheses are estimates (Monte Carlo standard errors)
           r'or the estimated standard error for PSCL; width is the mean 95\% interval width. '
           r'Coverage and empirical power are proportions; Bayesian decisions require posterior probability of benefit above 0.95, whereas PSCL requires its lower 95\% confidence limit to exceed the benefit threshold. Each row has 100 replicates. Gaussian power uses a benefit threshold of 0.5; survival power uses a ratio threshold of 1. '
           r'Targets 100, 75 and 50 are absolute counts; f90, f50 and f25 are fractions of the calibration ceiling. '
-          r's0min fixes $s_0^2=10^{-6}$ without target selection. NP, CP and PP denote trial-only, completely pooled and source-adjusted control fits. In single-arm studies, CP uses all historical controls without a discrepancy term. The hierarchical variance prior is $\operatorname{IG}(3/2,3a/2)$.')
+          r's0min fixes $s_0^2=10^{-6}$ without target selection. NP, CP and PP denote trial-only, completely pooled and source-adjusted control fits. In single-arm studies, CP uses all historical controls without a discrepancy term. The hierarchical discrepancy variance has prior $\operatorname{IG}(3/2,3s_\tau^2/2)$.')
 for study,num in [('lrcbart-sim-gaussian',4),('lrcbart-sim-survival',5),('lrcbart-sim-gaussian-single-arm',6),('lrcbart-sim-survival-single-arm',7)]:
     rows=[]
     for estimand in (['primary','RMST'] if 'survival' in study else ['primary']):
-        rr=sorted([x for x in sim if x['study']==study and x['estimand']==estimand],key=sortkey)
+        rr=sorted([x for x in sim if x['study']==study and x['estimand']==estimand and retained_single_arm_result(x)],key=sortkey)
         prev=None
         for x in rr:
             group=(x['nT'],x['scenario'])
@@ -192,12 +201,12 @@ for ep in ['PFS','OS']:
         is_km = x['method']=='KM'
         rows.append([appmethod(x),tex(setting),ci(x,'estimate','lower','upper'),ci(x,'difference','difference_lower','difference_upper'),
                      fmt(x['rmst_trt']),r'---' if is_km else fmt(x['rmst_ctrl']),
-                     r'---' if is_km else fmt(x['rmst_ucmm']),fmt(x['rmst_ucmm']) if is_km else r'---'])
+                     fmt(x['rmst_ucmm']) if is_km else r'---'])
 table('tableS10','Complete application results, including all lrcBART sensitivity settings.',
-      ['Method','Setting',r'Ratio (95\% interval)',r'Difference (95\% interval)',r'\shortstack{EloKRd\\treatment RMST}',r'\shortstack{EloKRd\\control RMST}',r'\shortstack{Historical model\\RMST}',r'\shortstack{Observed UCMM\\RMST}'],rows,'llrrrrrr',
+      ['Method','Setting',r'Ratio (95\% interval)',r'Difference (95\% interval)',r'\shortstack{EloKRd\\treatment RMST}',r'\shortstack{EloKRd hypothetical\\control RMST}',r'\shortstack{UCMM control\\RMST}'],rows,'llrrrrr',
       r'All 58 method/endpoint results are included. Default: $H_f=10$, $H_g=5$, $w=1$. Hf50 changes $H_f$ to 50; w0.9 fixes $w=0.9$. '
       r'Application labels 100, 75 and 50 request ESS 30, 22.5 and 15, respectively; f90, f50 and f25 request the corresponding fraction of the calibration ceiling. '
-      r'Intervals, units and control-column definitions follow Table 6. Contrasts use the EloKRd control for adjusted methods and observed UCMM for KM.',landscape=True)
+      r'Intervals, units and arm-column definitions follow Table 6. Contrasts use the EloKRd hypothetical control for adjusted methods and the observed UCMM control for KM.',landscape=True)
 
 rows=[]
 for ep in ['PFS','OS']:
@@ -218,4 +227,6 @@ table('tableS11b','MCMC diagnostics for the application log RMST ratio.',
       ['Setting',r'$\widehat R$','Bulk MCMC ESS','Tail MCMC ESS'],rows,'lrrr',
       r'Four chains, each with 2,000 warm-up and 2,000 retained draws. These effective sample sizes measure MCMC efficiency and are unrelated to prior ESS. '
       r'These scalar diagnostics alone do not establish adequate exploration of all tree structures or parameters.')
-print('Generated 13 numerical table fragments from 414 simulation files and 58 application rows.')
+reported_sim = [x for x in sim if retained_single_arm_result(x)]
+reported_files = len({(x['study'], x['file']) for x in reported_sim})
+print(f'Generated 13 numerical table fragments from {reported_files} reported simulation files and {len(app)} application rows.')

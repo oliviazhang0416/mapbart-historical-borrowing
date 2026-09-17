@@ -51,3 +51,7 @@ lrcbart-case-study-mm/private_data/
 lrcbart-case-study-mm/data_cleaned/elokrd_cleaned_n30.RData
 lrcbart-case-study-mm/data_cleaned/ucmm_cleaned_n253.RData
 lrcbart-case-study-mm/data_cleaned/ucmm_cleaned_n48.RData
+
+# Python build artifacts
+__pycache__/
+*.pyc

@@ -49,10 +49,8 @@ if (!length(sample_files))
 p_obs <- sum(grepl("^X\\d+$", colnames(readRDS(sample_files[1])$X)))
 hypo <- "alternative"  # "null" or "alternative"
 
-# prior_vals <- c(0.1, 0.25, 0.5, 1.0, 5.0, 10.0)
-# 0.05 = default tight prior; 0.5 = looser prior matching MAP-BART borrowing range.
-# Add calibrated s² from ess_local/ess_calibration.R once available (e.g. c(0.05, <cal>, 0.5)).
-prior_vals <- c(0.05, 0.5)
+# Retained discrepancy-variance prior scale for the hierarchical comparator.
+prior_vals <- 0.05
 
 threshold <- 0.95
 

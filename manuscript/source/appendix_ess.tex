@@ -123,12 +123,12 @@ Even after rescaling the block variances to the whole variance, their reciprocal
 =\frac1J\sum_k\frac{\widehat\sigma_2^2}{\widehat V_{f,k}}
 \ \geq\ \frac{\widehat\sigma_2^2}{\widehat V_f}.
 \end{equation}
-Equality requires equal positive block variances. The full-variance ceiling is therefore not generally the zero-scale limit of the block-based central curve. Blocks of an autocorrelated MCMC chain also do not furnish a formal 95\% posterior or repeated-sampling guarantee. Figure S1 shows the curves actually used; Table S11 additionally evaluates the full-variance expression. Equation \eqref{eq:MCess} estimates the theoretical prior ESS curve; the reported fits use the block-based selection procedure.
+Equality requires equal positive block variances. The full-variance ceiling is therefore not generally the zero-scale limit of the block-based central curve. Blocks of an autocorrelated MCMC chain also do not furnish a formal 95\% posterior or repeated-sampling guarantee. Figure S1 illustrates the curves for one Gaussian two-arm dataset; Table S11 additionally evaluates the full-variance expression in the application. Equation \eqref{eq:MCess} estimates the theoretical prior ESS curve; the reported fits use the block-based selection procedure.
 
-\begin{figure}[p]
+\begin{figure}[!htbp]
 \centering
-\includegraphics[width=.94\linewidth,height=7.8in,keepaspectratio]{figureS1.pdf}
-\caption{Prior ESS curves used for scale selection. Simulation panels use Sc1, replicate 1; the application panel uses PFS. Solid curves are block-based central ESS summaries over the variance-scale grid, with a MAP overlay only where a matching prior ESS calculation is available. Dotted horizontal lines are the full-variance variance ceilings. The lrcBART central curve averages block-specific reciprocal variances, so its small-scale limit need not equal the dotted ceiling. The application curves differ in $H_f$. The MAP and lrcBART methods have different prior constructions and ESS implementations; the shared horizontal scale denotes each method's supplied variance-scale parameter, not identical prior distributions. Each curve uses one dataset; simulation curves are not averaged over replicates.}
+\includegraphics[width=.82\linewidth,keepaspectratio]{figureS1.pdf}
+\caption{Illustrative prior ESS curves for Gaussian two-arm Sc1, replicate 1. The lrcBART curve is the block-based central ESS summary over the variance-scale grid; the dotted horizontal line is its full-variance ceiling. The MAP overlay uses its corresponding prior ESS calculation. Because MAP and lrcBART use different prior constructions and ESS implementations, the common horizontal axis denotes each method's supplied variance-scale parameter rather than identical prior distributions. The curves use one dataset and are not averaged over replicates.}
 \end{figure}
 
 \subsection{Pointwise and subgroup targets}\label{sec:B.7}

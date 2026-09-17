@@ -68,12 +68,15 @@ write_json(reg,file.path(out,"generated/regional_results.json"),auto_unbox=TRUE,
 appdir<-file.path(root,"lrcbart-case-study-mm")
 app<-readRDS(file.path(appdir,"res/results_table.RData"))
 app$rmst_trt<-app$rmst_ctrl<-app$rmst_ucmm<-NA_real_
+if("rmst_ucmm_population" %in% names(app))
+ app$rmst_ucmm_population<-ifelse(app$method=="KM","UCMM",NA_character_)
 for(i in seq_len(nrow(app))){
  z<-readRDS(file.path(appdir,"res",app$file[i]))
- for(arm in c("trt","ctrl","ucmm")){
+ for(arm in c("trt","ctrl")){
    nm<-paste0("rmst_",arm,"_est");v<-z[[nm]]
    if(!is.null(v)) app[i,paste0("rmst_",arm)]<-as.numeric(v[1])
  }
+ if(app$method[i]=="KM") app$rmst_ucmm[i]<-as.numeric(z$rmst_ctrl_est[1])
 }
 write_json(app,file.path(out,"generated/application_results.json"),dataframe="rows",auto_unbox=TRUE,pretty=TRUE,na="null")
 e<-new.env();load(file.path(appdir,"data_cleaned/merged_elokrd_ucmm_n283.RData"),e);dat<-e$merged
@@ -132,44 +135,27 @@ stopifnot(status==0L)
 cat("Subgroup table ESS:",nrow(g),"joint groups; recovered-draw maximum error",recovery_error,
     "; ESS range",range(g$ess),"\n")
 
-# Calibration illustrations use fixed replicate 1 of Sc1, not a selected favourable dataset.
-curves<-list();curve_prov<-list()
-for(study in folders){
- fs<-list.files(file.path(root,study,"res","ess"),recursive=TRUE,pattern="\\.RData$",full.names=TRUE)
- fs<-fs[grepl("^ess_",basename(fs)) & grepl("sc1_",basename(fs)) & grepl("alternative_1_",basename(fs))]
- if(!length(fs)) next
- if(grepl("survival-single-arm",study)) fs<-fs[!duplicated(sub(".*(n30|n200).*","\\1",fs))] else fs<-fs[1]
- for(f in fs){
-   cal<-readRDS(f)
-   if(is.null(cal$ess_tau0_grid)) cal$ess_tau0_grid<-cal$ess0_grid
-   lab<-switch(study, "lrcbart-sim-gaussian"="Gaussian, two-arm",
-    "lrcbart-sim-survival"="Survival, two-arm","lrcbart-sim-gaussian-single-arm"="Gaussian, single-arm",
-    paste("Survival, single-arm,",extract("n30|n200",f)))
-   curves[[length(curves)+1]]<-data.frame(panel=lab,s=cal$grid,ess=cal$ess_tau0_grid,ceiling=cal$ceiling,method="lrcBART")
-   curve_prov[[length(curve_prov)+1]]<-list(panel=lab,path=f)
-   map_path<-file.path(dirname(f),paste0("map_ess_",tools::file_path_sans_ext(basename(cal$data_file)),"_checkpoint.RData"))
-   if(file.exists(map_path)) {
-     mp<-readRDS(map_path)
-     curves[[length(curves)+1]]<-data.frame(panel=lab,s=mp$S_grid,ess=mp$ESS,ceiling=NA_real_,method="MAP")
-     curve_prov[[length(curve_prov)+1]]<-list(panel=lab,path=map_path)
-   }
- }
-}
-for(h in c(10,50)){
- cal<-readRDS(file.path(appdir,paste0("res/ess/ess_pfs_n283_Hf",h,".RData")))
- curves[[length(curves)+1]]<-data.frame(panel="Application PFS",s=cal$grid,ess=cal$ess_tau0_grid,ceiling=cal$ceiling,method=paste0("lrcBART, Hf=",h))
-}
-cc<-do.call(rbind,curves)
-pp<-ggplot(cc,aes(s,ess,color=method))+geom_line(linewidth=.65)+
- geom_hline(data=unique(cc[is.finite(cc$ceiling),c("panel","ceiling")]),aes(yintercept=ceiling),linetype="dotted",color="grey45")+
- scale_x_log10()+facet_wrap(~panel,ncol=2,scales="free_y")+theme_bw(base_size=9)+
- scale_color_manual(values=c("lrcBART"="#176B87","MAP"="#CA6A36","lrcBART, Hf=10"="#176B87","lrcBART, Hf=50"="#735C91"),
- labels=c("lrcBART"=expression(lrcBART),"MAP"=expression(MAP),
- "lrcBART, Hf=10"=expression(lrcBART*", "*H[f]==10),
- "lrcBART, Hf=50"=expression(lrcBART*", "*H[f]==50)))+
- labs(x=expression(s[0]^2),y="Saved calibration ESS",color=NULL)+theme(legend.position="bottom")
-ggsave(file.path(out,"figures/figureS1.pdf"),pp,width=7,height=8)
-write_json(curve_prov,file.path(out,"generated/calibration_figure_provenance.json"),auto_unbox=TRUE,pretty=TRUE)
+# The calibration illustration uses fixed replicate 1 of Gaussian Sc1.
+cal_path<-file.path(root,"lrcbart-sim-gaussian/res/ess/ess_data_p10_sc1_alternative_1_Hg5.RData")
+cal<-readRDS(cal_path)
+if(is.null(cal$ess_tau0_grid)) cal$ess_tau0_grid<-cal$ess0_grid
+map_path<-file.path(dirname(cal_path),paste0("map_ess_",tools::file_path_sans_ext(basename(cal$data_file)),"_checkpoint.RData"))
+mp<-readRDS(map_path)
+cc<-rbind(
+ data.frame(s=cal$grid,ess=cal$ess_tau0_grid,ceiling=cal$ceiling,method="lrcBART"),
+ data.frame(s=mp$S_grid,ess=mp$ESS,ceiling=NA_real_,method="MAP")
+)
+pp<-ggplot(cc,aes(s,ess,color=method))+geom_line(linewidth=.8)+
+ geom_hline(yintercept=cal$ceiling,linetype="dotted",color="grey45")+
+ scale_x_log10()+theme_bw(base_size=11)+
+ scale_color_manual(values=c("lrcBART"="#176B87","MAP"="#CA6A36"),
+ labels=c("lrcBART"=expression(lrcBART),"MAP"=expression(MAP)))+
+ labs(x=expression(s[0]^2),y="Prior ESS",color=NULL)+theme(legend.position="bottom")
+ggsave(file.path(out,"figures/figureS1.pdf"),pp,width=6.5,height=4.2)
+write_json(list(list(panel="Gaussian, two-arm",path=cal_path),
+                list(panel="Gaussian, two-arm",path=map_path)),
+           file.path(out,"generated/calibration_figure_provenance.json"),
+           auto_unbox=TRUE,pretty=TRUE)
 
 app_cal <- list()
 for(ep in c("pfs","os")) for(h in c(10,50)) {

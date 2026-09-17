@@ -62,7 +62,7 @@ The theoretical presentation is more compact and narrower. Calibration is now Th
 
 ## 5. Simulation reporting: use the current study results
 
-The numerical results have been replaced by summaries from the four current simulation folders, rather than copied from the revision's tables. The revision's main two-arm study reported 500 replicates; the current completed results contain 100 replicates per setting. The current reporting set comprises 414 result files and 606 performance rows after including supplementary survival RMST estimands.
+The numerical results have been replaced by summaries from the four current simulation folders, rather than copied from the revision's tables. The revision's main two-arm study reported 500 replicates; the current completed results contain 100 replicates per setting. After excluding the discontinued single-arm hierarchical setting $s_\tau^2=0.5$, the current reporting set comprises 408 result files and 596 performance rows, including supplementary survival RMST estimands.
 
 The main differences collaborators should track are:
 
@@ -71,7 +71,7 @@ The main differences collaborators should track are:
 | Scenario numbering | Sc4 regional; Sc5 global | Sc4 global; Sc5 regional |
 | Two-arm reporting | Included additional nested-model and tuning comparisons | Primary target 100; targets 75, 50, f90, f50 and f25 in sensitivity results |
 | Extra experiments | CAHB transfer, development/oracle analyses, and `H_g=10`, `w=0`, `w=1` comparisons | Not carried into the current empirical comparison |
-| Single-arm reporting | Single-arm results and sensitivities in the revision study | Gaussian `n_1=200`; survival `n_1=30,200`; Sc1/Sc2; five lrcBART configurations plus four comparators |
+| Single-arm reporting | Single-arm results and sensitivities in the revision study | Gaussian `n_1=200`; survival `n_1=30,200`; Sc1/Sc2; five lrcBART configurations plus three comparators |
 | Minimum-scale label | Earlier full-borrowing terminology | `s0min`, explicitly a small-scale prior benchmark |
 | Decision frequency | Described through interval exclusion of the null | Reports the actual saved, uncalibrated decision rules; Gaussian benefit threshold 0.5, survival ratio threshold 1, with method-specific rules documented |
 
@@ -85,7 +85,7 @@ The application retains 30 EloKRd patients and 253 UCMM historical controls. Har
 
 Data-construction reporting is more explicit: the UCMM selection flow, harmonized category values, differing age reference dates, endpoint definitions, and the high-risk-cytogenetics fallback are described. The postinduction nature of ASCT and descriptive interpretation of the comparison are retained qualifications, not newly discovered features. The draft also avoids equating the available 30-person extract with the full published trial enrollment without clinical confirmation.
 
-The application results were refreshed from the rerun case-study outputs. Table 6 and Table S10 distinguish the hypothetical EloKRd control RMST, the historical-model RMST standardized to EloKRd covariates, and the observed unadjusted UCMM RMST. KM reports only the observed UCMM quantity; adjusted methods report the two model-based control quantities. Updated contrasts, sensitivity ranges and diagnostics replace the earlier numerical values. Simulation results and the preliminary subgroup ESS calculation were retained.
+The application results were refreshed from the rerun case-study outputs. Table 6 and Table S10 report hypothetical EloKRd control RMST for adjusted methods and observed UCMM RMST only for KM. The redundant historical-model RMST standardized to EloKRd covariates was removed from adjusted-method outputs and tables. Updated contrasts, sensitivity ranges and diagnostics replace the earlier numerical values. Simulation results and the preliminary subgroup ESS calculation were retained.
 
 ### Figure 2: preserve the revision's visual style, update its inputs
 
@@ -99,14 +99,14 @@ The revision's Figure 2 showed pointwise ESS at 30 trial profiles against separa
 
 Table 7 instead reports PFS ESS for the **mean control log-time within joint covariate subgroups**, using the settled expectation-of-conditional-ratios definition. Its final design is:
 
-- Columns: age band, sex, race, Hispanic/Latino status, cytogenetic risk, ASCT, EloKRd count, UCMM count, and historical prior ESS.
+- Columns: age band, sex, race, Hispanic/Latino status, cytogenetic risk, ASCT, EloKRd count, UCMM count, and prior ESS. The caption identifies it as UCMM-informed.
 - Age bands: under 50, 50–59, 60–69, and 70+. Exact ages remain in model predictions.
 - Rows: the 22 combinations observed in EloKRd, ordered hierarchically by the displayed covariates. Combinations not represented in EloKRd are omitted, including historical-only combinations.
 - Numerical ESS: the 22 combinations represented in EloKRd, reported to one decimal place. Every displayed row has an ESS. Displayed counts sum to 30 EloKRd and 98 UCMM patients; all 253 UCMM patients remain in the historical fit.
 
 Counts describe patients within the combination. Each ESS uses information from the **full historical cohort**, not just the UCMM patients counted in that row. ESS values range from 5.4 to 23.4 and do not generally sum to overall ESS. OS remains in the outcome tables but is omitted from this local-information table.
 
-Hierarchical comparator labels are `hier. LM` and `hier. AFT`; prior settings appear in table footnotes rather than method-name parentheses. Where both settings are reported, table footnotes identify the first row as 0.05 and the second as 0.5 within each reporting block.
+Hierarchical comparator labels are `hier. LM` and `hier. AFT`; discrepancy-variance prior scales appear in table footnotes rather than method-name parentheses. Single-arm simulations and main Table 6 report $s_\tau^2=0.05$. The application sensitivity Table S10 retains both $s_\tau^2=0.05$ and $s_\tau^2=0.5$.
 
 Comparator display labels use -NP for trial-only controls, -CP for complete pooling, and -PP for source-indicator-adjusted pooling. In single-arm settings, -CP denotes use of all historical controls without a discrepancy term. These are display changes; fitted methods and numerical results are unchanged.
 

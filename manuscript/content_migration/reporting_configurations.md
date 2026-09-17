@@ -73,7 +73,7 @@ Comparators:
 
 - LM with full RWD likelihood weight (`LMv2`, RWD weight 1).
 - Standard BART (`BARTv2`).
-- Hierarchical LM with both prior settings 0.05 and 0.5.
+- Hierarchical LM with prior setting 0.05.
 
 Report Sc1-Sc2 with 200 treated trial patients and 300 historical controls. There are nine method/configuration combinations per scenario. Targets 75, 50, f50, and f25 are not part of the saved single-arm reporting set.
 
@@ -99,7 +99,7 @@ Comparators:
 
 - AFT with full RWD likelihood weight (`AFTv2`, RWD weight 1).
 - Standard BART (`BARTv2`).
-- Hierarchical AFT with both prior settings 0.05 and 0.5.
+- Hierarchical AFT with prior setting 0.05.
 
 There are nine method/configuration combinations per scenario and trial sample size. Targets 75, 50, f50, and f25 are not part of the saved single-arm reporting set.
 

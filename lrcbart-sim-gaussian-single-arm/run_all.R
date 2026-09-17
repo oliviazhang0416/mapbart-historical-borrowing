@@ -95,7 +95,7 @@ common_overrides <- list(
 )
 method_overrides <- list(
   "LMv2.R" = list(rwd_w_vals = 1),
-  "hierLM.R" = list(prior_vals = c(0.05, 0.5))
+  "hierLM.R" = list(prior_vals = 0.05)
 )
 data_gen_overrides <- list(
   seed_rct = seed_rct,

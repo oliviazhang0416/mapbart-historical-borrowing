@@ -334,13 +334,9 @@ n_samples <- length(samples_ctrl$alpha1)
 n_test    <- nrow(x_test)
 
 mu_pred_ctrl <- matrix(NA, n_samples, n_test)
-mu_pred_ucmm <- matrix(NA, n_samples, n_test)
 for (i in 1:n_samples) {
   mu_pred_ctrl[i, ] <- samples_ctrl$alpha1[i] +
                        x_test %*% samples_ctrl$beta1[i, ]
-  # External (theta_2) layer, standardized to the same EloKRd patients.
-  mu_pred_ucmm[i, ] <- samples_ctrl$alpha2[i] +
-                       x_test %*% samples_ctrl$beta2[i, ]
 }
 sig_draw_ctrl <- sqrt(samples_ctrl$sigma_sq)   # shared sigma^2 across s=0 and s=1
 
@@ -446,8 +442,6 @@ compute_pop_rmst <- function(mu_draws, sig_draw, tau, label) {
 
 rmst_ctrl <- compute_pop_rmst(mu_pred_ctrl, sig_draw_ctrl, tau_rmst,
                               "Control (UCMM->EloKRD via theta_1)")
-rmst_ucmm <- compute_pop_rmst(mu_pred_ucmm, sig_draw_ctrl, tau_rmst,
-                              "UCMM control standardized to EloKRd (theta_2)")
 rmst_trt  <- compute_pop_rmst(mu_pred_trt,  sig_draw_trt,  tau_rmst,
                               "Treatment (EloKRD)")
 
@@ -483,13 +477,11 @@ arm_summ <- function(x) {
 }
 rmst_trt_est   <- arm_summ(rmst_trt)
 rmst_ctrl_est  <- arm_summ(rmst_ctrl)
-rmst_ucmm_est  <- arm_summ(rmst_ucmm)
 sigma_trt_est  <- arm_summ(sig_draw_trt)
 sigma_ctrl_est <- arm_summ(sig_draw_ctrl)
 cat("\n=== Arm-specific estimates (median [95% CI]) ===\n")
 cat(sprintf("  RMST  treatment: %.3f  [%.3f, %.3f]\n", rmst_trt_est["est"],  rmst_trt_est["lo"],  rmst_trt_est["hi"]))
 cat(sprintf("  RMST  hypothetical control (EloKRd): %.3f  [%.3f, %.3f]\n", rmst_ctrl_est["est"], rmst_ctrl_est["lo"], rmst_ctrl_est["hi"]))
-cat(sprintf("  RMST  UCMM control standardized to EloKRd: %.3f  [%.3f, %.3f]\n", rmst_ucmm_est["est"], rmst_ucmm_est["lo"], rmst_ucmm_est["hi"]))
 cat(sprintf("  sigma treatment: %.3f  [%.3f, %.3f]\n", sigma_trt_est["est"],  sigma_trt_est["lo"],  sigma_trt_est["hi"]))
 cat(sprintf("  sigma control  : %.3f  [%.3f, %.3f]\n", sigma_ctrl_est["est"], sigma_ctrl_est["lo"], sigma_ctrl_est["hi"]))
 
@@ -505,18 +497,14 @@ results <- list(
   delta_diff    = delta_diff,
   ci_diff_95    = ci_diff_95,
   rmst_ctrl     = rmst_ctrl,
-  rmst_ucmm     = rmst_ucmm,
   rmst_trt      = rmst_trt,
   tau_rmst      = tau_rmst,
   mu_pred_ctrl  = mu_pred_ctrl,
-  mu_pred_ucmm  = mu_pred_ucmm,
   mu_pred_trt   = mu_pred_trt,
   sig_draw_ctrl = sig_draw_ctrl,
   sig_draw_trt  = sig_draw_trt,
   rmst_trt_est   = rmst_trt_est,
   rmst_ctrl_est  = rmst_ctrl_est,
-  rmst_ucmm_est  = rmst_ucmm_est,
-  rmst_ucmm_population = "EloKRd",
   sigma_trt_est  = sigma_trt_est,
   sigma_ctrl_est = sigma_ctrl_est,
   samples_ctrl  = samples_ctrl,

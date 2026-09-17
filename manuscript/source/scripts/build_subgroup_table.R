@@ -42,15 +42,16 @@ write_json(list(rows=nrow(grid),EloKRd_n=sum(grid$EloKRd_n),UCMM_n=sum(grid$UCMM
   file.path(out,"generated/subgroup_table_validation.json"),auto_unbox=TRUE,pretty=TRUE)
 header <- paste(c("Age band","Sex","Race", "\\shortstack{Hispanic/\\\\Latino}",
   "\\shortstack{Cytogenetic\\\\risk}","ASCT","\\shortstack{EloKRd\\\\$n$}",
-  "\\shortstack{UCMM\\\\$n$}","\\shortstack{Historical prior\\\\ESS}"),collapse=" & ")
+  "\\shortstack{UCMM\\\\$n$}","Prior ESS"),collapse=" & ")
 note <- paste0("Only the 22 combinations observed in EloKRd are shown, ordered by the covariate columns. ",
   "Counts are observed patients within each combination. The displayed counts sum to 30 EloKRd and ",sum(grid$UCMM_n),
   " UCMM patients; other UCMM combinations are omitted from this table. ",
-  "Each ESS uses the full 253-patient UCMM fit, exact trial ages, and the same all-spike calibration law and globally selected PFS scale. ",
-  "Units are equivalent uncensored normal-reference controls for mean control log-PFS. Subgroup ESS values are not additive and do not measure outcome compatibility. ASCT is postinduction.")
+  "Prior ESS is informed by the full 253-patient UCMM cohort and is expressed in uncensored normal-reference control units for the subgroup mean log-PFS. ",
+  "It is not the number of UCMM patients in the displayed subgroup. Calculations retain exact trial ages and use the same all-spike calibration law and globally selected PFS scale. ",
+  "Subgroup ESS values are not additive and do not measure outcome compatibility. ASCT is postinduction.")
 t <- c("\\begingroup","\\setlength{\\tabcolsep}{3pt}","\\renewcommand{\\arraystretch}{1.0}",
   "\\fontsize{10}{11.5}\\selectfont","\\begin{longtable}{llllllrrr}",
-  "\\caption{Observed cohort counts and historical prior ESS for joint covariate combinations observed in EloKRd (PFS).}\\label{tab:table7}\\\\",
+  "\\caption{Observed cohort counts and UCMM-informed prior ESS for joint covariate combinations observed in EloKRd (PFS).}\\label{tab:table7}\\\\",
   "\\toprule",paste0(header," \\\\ \\midrule"),"\\endfirsthead",
   "\\multicolumn{9}{l}{Table \\thetable\\ (continued)}\\\\","\\toprule",paste0(header," \\\\ \\midrule"),"\\endhead",
   "\\midrule\\multicolumn{9}{r}{Continued on next page}\\\\\\endfoot","\\bottomrule\\endlastfoot")

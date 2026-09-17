@@ -1,6 +1,6 @@
 \begin{landscape}
 \subsection{Gaussian single-arm results}
-\noindent Sc1 and Sc2 at $n_1=200$ include all five lrcBART priors and all four comparator settings.
+\noindent Sc1 and Sc2 at $n_1=200$ include all five lrcBART priors and all three comparator settings.
 \begingroup
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.13}
@@ -26,7 +26,6 @@ lrcBART: $w=0.9$, f90 & -0.007 (0.016) & 0.159 (0.010) & 1.292 & 6.067 & 1.000 (
 BART-CP & -0.014 (0.015) & 0.153 (0.011) & 0.150 & 0.588 & 0.940 (0.024) & 0.940 (0.024) \\
 LM-CP & -0.029 (0.027) & 0.270 (0.017) & 0.252 & 0.983 & 0.960 (0.020) & 0.600 (0.049) \\
 hier. LM & -0.025 (0.027) & 0.272 (0.017) & 0.576 & 2.210 & 1.000 (0.000) & 0.090 (0.029) \\
-hier. LM & -0.026 (0.032) & 0.320 (0.025) & 1.621 & 6.617 & 1.000 (0.000) & 0.000 (0.000) \\
 \multicolumn{7}{l}{\strut\textit{Mean difference: $n_1=200$, Sc2}}\\*
 lrcBART: 100 & 0.062 (0.017) & 0.177 (0.010) & 0.179 & 0.697 & 0.980 (0.014) & 0.910 (0.029) \\
 lrcBART: f90 & 0.064 (0.017) & 0.183 (0.010) & 0.184 & 0.714 & 0.970 (0.017) & 0.910 (0.029) \\
@@ -36,8 +35,7 @@ lrcBART: $w=0.9$, f90 & 0.065 (0.018) & 0.189 (0.010) & 1.268 & 5.950 & 1.000 (0
 BART-CP & 0.056 (0.017) & 0.176 (0.010) & 0.168 & 0.657 & 0.930 (0.026) & 0.950 (0.022) \\
 LM-CP & 0.290 (0.027) & 0.395 (0.024) & 0.273 & 1.067 & 0.850 (0.036) & 0.910 (0.029) \\
 hier. LM & 0.357 (0.027) & 0.444 (0.024) & 0.588 & 2.243 & 1.000 (0.000) & 0.500 (0.050) \\
-hier. LM & 0.293 (0.032) & 0.433 (0.030) & 1.605 & 6.502 & 1.000 (0.000) & 0.000 (0.000) \\
 \end{longtable}
-\noindent\begin{minipage}{\linewidth}\footnotesize Entries with parentheses are estimates (Monte Carlo standard errors). Post. SD is the mean posterior standard deviation, or the estimated standard error for PSCL; width is the mean 95\% interval width. Coverage and empirical power are proportions; Bayesian decisions require posterior probability of benefit above 0.95, whereas PSCL requires its lower 95\% confidence limit to exceed the benefit threshold. Each row has 100 replicates. Gaussian power uses a benefit threshold of 0.5; survival power uses a ratio threshold of 1. Targets 100, 75 and 50 are absolute counts; f90, f50 and f25 are fractions of the calibration ceiling. s0min fixes $s_0^2=10^{-6}$ without target selection. NP, CP and PP denote trial-only, completely pooled and source-adjusted control fits. In single-arm studies, CP uses all historical controls without a discrepancy term. The hierarchical variance prior is $\operatorname{IG}(3/2,3a/2)$. Within each scenario and sample-size block, the first and second hier. LM or hier. AFT rows use prior settings $a=0.05$ and $a=0.5$, respectively.\end{minipage}
+\noindent\begin{minipage}{\linewidth}\footnotesize Entries with parentheses are estimates (Monte Carlo standard errors). Post. SD is the mean posterior standard deviation, or the estimated standard error for PSCL; width is the mean 95\% interval width. Coverage and empirical power are proportions; Bayesian decisions require posterior probability of benefit above 0.95, whereas PSCL requires its lower 95\% confidence limit to exceed the benefit threshold. Each row has 100 replicates. Gaussian power uses a benefit threshold of 0.5; survival power uses a ratio threshold of 1. Targets 100, 75 and 50 are absolute counts; f90, f50 and f25 are fractions of the calibration ceiling. s0min fixes $s_0^2=10^{-6}$ without target selection. NP, CP and PP denote trial-only, completely pooled and source-adjusted control fits. In single-arm studies, CP uses all historical controls without a discrepancy term. The hierarchical discrepancy variance has prior $\operatorname{IG}(3/2,3s_\tau^2/2)$. The single-arm hierarchical comparator uses discrepancy-variance prior scale $s_\tau^2=0.05$.\end{minipage}
 \endgroup
 \end{landscape}
