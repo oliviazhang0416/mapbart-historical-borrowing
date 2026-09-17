@@ -1,13 +1,26 @@
 rm(list=ls())
+
+# Resolve the repository root by walking up from the working directory.
+.lrcRoot <- local({
+  d <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
+  while (!file.exists(file.path(d, ".lrcbart-root")) && dirname(d) != d) d <- dirname(d)
+  if (!file.exists(file.path(d, ".lrcbart-root")))
+    stop("lrcbart repository root not found from ", getwd())
+  d
+})
 # devtools::install_github("olssol/psrwe")
 library(miceadds)
 library(dplyr)
 # LRC-BART MODIFICATION START
-mainDir <- "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing"
+mainDir <- .lrcRoot
 projectDir <- file.path(mainDir, "lrcbart-sim-gaussian")
 n_replicates <- 100L
 data_folder <- "data"
-psrweDir <- "/Users/oliviazhang/Desktop/psrwe"
+# Third-party package (psrwe, Wang et al.) -- not vendored here.
+# Point PSRWE_DIR at a local checkout, or place one beside this repository.
+psrweDir <- Sys.getenv("PSRWE_DIR", unset = file.path(dirname(.lrcRoot), "psrwe"))
+if (!dir.exists(psrweDir))
+  stop("psrwe not found at ", psrweDir, ". Set PSRWE_DIR to a local checkout.")
 # LRC-BART MODIFICATION END
 
 old_wd <- getwd()

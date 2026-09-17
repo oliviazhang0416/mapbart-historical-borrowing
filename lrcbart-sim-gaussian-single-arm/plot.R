@@ -1,4 +1,13 @@
 rm(list=ls())
+
+# Resolve the repository root by walking up from the working directory.
+.lrcRoot <- local({
+  d <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
+  while (!file.exists(file.path(d, ".lrcbart-root")) && dirname(d) != d) d <- dirname(d)
+  if (!file.exists(file.path(d, ".lrcbart-root")))
+    stop("lrcbart repository root not found from ", getwd())
+  d
+})
 library(ggplot2)
 library(gridExtra)
 library(dplyr)
@@ -7,7 +16,7 @@ library(patchwork)
 # LRC-BART MODIFICATION START
 # The inherited Gaussian result plot is retained for the two approved
 # single-arm scenarios and their available comparator and LRC-BART results.
-mainDir <- "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/"
+mainDir <- .lrcRoot
 # LRC-BART MODIFICATION END
 
 p_obs <- 10

@@ -4,6 +4,15 @@
 # treated-trial size. This optional utility mirrors run_all.R's source-text
 # overrides and is useful for a bounded ESS check.
 
+# Resolve the repository root by walking up from the working directory.
+.lrcRoot <- local({
+  d <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
+  while (!file.exists(file.path(d, ".lrcbart-root")) && dirname(d) != d) d <- dirname(d)
+  if (!file.exists(file.path(d, ".lrcbart-root")))
+    stop("lrcbart repository root not found from ", getwd())
+  d
+})
+
 args <- commandArgs(trailingOnly = TRUE)
 get_arg <- function(flag, default = NULL) {
   index <- match(flag, args)
@@ -17,7 +26,7 @@ seed_rwd <- as.integer(get_arg("--seed_rwd", "456"))
 stopifnot(sc_arg %in% c(1L, 2L), n_T_arg %in% c(30L, 200L))
 
 data_gen <- paste0(
-  "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/",
+  .lrcRoot,
   "lrcbart-sim-survival-single-arm/data_gen_p10.R"
 )
 source_text <- paste(readLines(data_gen, warn = FALSE), collapse = "\n")

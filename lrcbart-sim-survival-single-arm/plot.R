@@ -1,4 +1,13 @@
 rm(list=ls())
+
+# Resolve the repository root by walking up from the working directory.
+.lrcRoot <- local({
+  d <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
+  while (!file.exists(file.path(d, ".lrcbart-root")) && dirname(d) != d) d <- dirname(d)
+  if (!file.exists(file.path(d, ".lrcbart-root")))
+    stop("lrcbart repository root not found from ", getwd())
+  d
+})
 library(ggplot2)
 library(gridExtra)
 library(dplyr)
@@ -7,7 +16,7 @@ library(patchwork)
 # LRC-BART MODIFICATION START
 # Retain the inherited survival result layout while reading the migrated
 # single-arm files for the requested trial size.
-mainDir <- "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing"
+mainDir <- .lrcRoot
 projectDir <- file.path(mainDir, "lrcbart-sim-survival-single-arm")
 
 p_obs <- 10L

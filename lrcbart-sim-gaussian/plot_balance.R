@@ -1,4 +1,13 @@
 rm(list=ls())
+
+# Resolve the repository root by walking up from the working directory.
+.lrcRoot <- local({
+  d <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
+  while (!file.exists(file.path(d, ".lrcbart-root")) && dirname(d) != d) d <- dirname(d)
+  if (!file.exists(file.path(d, ".lrcbart-root")))
+    stop("lrcbart repository root not found from ", getwd())
+  d
+})
 library(ggplot2)
 library(gridExtra)
 library(dplyr)
@@ -10,7 +19,7 @@ library(tidyr)
 # LRC-BART MODIFICATION START
 # The inherited Sc1-Sc3 balance plot is extended with the revision's Sc4
 # global-shift and Sc5 regional-partial-compatibility configurations.
-mainDir <- "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/"
+mainDir <- .lrcRoot
 data_folder <- "data"
 # LRC-BART MODIFICATION END
 

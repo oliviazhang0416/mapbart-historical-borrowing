@@ -1,4 +1,13 @@
 rm(list=ls())
+
+# Resolve the repository root by walking up from the working directory.
+.lrcRoot <- local({
+  d <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
+  while (!file.exists(file.path(d, ".lrcbart-root")) && dirname(d) != d) d <- dirname(d)
+  if (!file.exists(file.path(d, ".lrcbart-root")))
+    stop("lrcbart repository root not found from ", getwd())
+  d
+})
 library(ggplot2)
 library(gridExtra)
 library(dplyr)
@@ -9,7 +18,7 @@ library(patchwork)
 # global-shift and Sc5 regional-partial-compatibility configurations. All
 # result paths point to this migrated project; the former MAP-BART series is
 # read from the default LRC-BART target files.
-mainDir <- "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/"
+mainDir <- .lrcRoot
 # LRC-BART MODIFICATION END
 
 p_obs <- 10

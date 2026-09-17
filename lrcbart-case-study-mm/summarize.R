@@ -1,7 +1,16 @@
 # LRC-BART ADDITION START
 # Collect available harmonized case-study results for PFS and OS.
 
-projectDir <- "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm"
+# Resolve the repository root by walking up from the working directory.
+.lrcRoot <- local({
+  d <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
+  while (!file.exists(file.path(d, ".lrcbart-root")) && dirname(d) != d) d <- dirname(d)
+  if (!file.exists(file.path(d, ".lrcbart-root")))
+    stop("lrcbart repository root not found from ", getwd())
+  d
+})
+
+projectDir <- file.path(.lrcRoot, "lrcbart-case-study-mm")
 resultDir <- file.path(projectDir, "res")
 merged_file <- Sys.getenv(
   "MERGED_FILE",

@@ -11,7 +11,7 @@ n_rep <- 40L
 scenarios <- c("sc5_X5_d0.5", "sc5_X5_d1", "sc5_X5_d2")
 delta <- c(.5, 1, 2)
 if (!("--plot-only" %in% commandArgs(TRUE))) {
-sourceCpp(file.path(root, "../lrcBART/clrcbart.cpp"), cacheDir=file.path(tempdir(), "figure1_cpp"))
+sourceCpp(file.path(root, "lrcBART","clrcbart.cpp"), cacheDir=file.path(tempdir(), "figure1_cpp"))
 # Evaluate the unchanged control-fitting block, using the saved scale and seed.
 code <- readLines(file.path(study, "lrcBART.R"))
 start <- tail(grep('    x_names <- paste0', code, fixed=TRUE),1L)
@@ -32,7 +32,7 @@ for (sc in scenarios) {
     row <- saved[saved$iteration==r,,drop=FALSE]
     signature <- list(data_md5=unname(tools::md5sum(data_file)),
       source_md5=unname(tools::md5sum(file.path(study,"lrcBART.R"))),
-      sampler_md5=unname(tools::md5sum(file.path(root,"../lrcBART/clrcbart.cpp"))),
+      sampler_md5=unname(tools::md5sum(file.path(root,"lrcBART","clrcbart.cpp"))),
       s0_sq=row$s0_sq, seed=this_seed+101L)
     cf <- file.path(cache,paste0(sc,"_",r,".rds"))
     recovered <- if(file.exists(cf)) readRDS(cf) else NULL

@@ -93,8 +93,8 @@ cat("Aggregated",length(provenance),"simulation files and",nrow(app),"applicatio
 # Recover the historical prediction draws using the exact saved calibration settings.
 # Canonical study checkpoints and result files are never overwritten.
 library(Rcpp)
-sourceCpp(file.path(root,"../lrcBART/clrcbart.cpp"),cacheDir=file.path(tempdir(),"manuscript_cpp"))
-sourceCpp(file.path(root,"../lrcBART/cess.cpp"),cacheDir=file.path(tempdir(),"manuscript_cpp"))
+sourceCpp(file.path(root,"lrcBART","clrcbart.cpp"),cacheDir=file.path(tempdir(),"manuscript_cpp"))
+sourceCpp(file.path(root,"lrcBART","cess.cpp"),cacheDir=file.path(tempdir(),"manuscript_cpp"))
 oldcal<-readRDS(file.path(appdir,"res/ess/ess_pfs_n283_Hf10.RData"))
 ess_data_file<-file.path(appdir,"data_cleaned/merged_elokrd_ucmm_n283.RData")
 ess_outcome<-"PFS";ess_data_tag<-"n283"

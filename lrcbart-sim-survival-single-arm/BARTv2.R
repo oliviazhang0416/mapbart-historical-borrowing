@@ -1,6 +1,15 @@
 rm(list = ls())
+
+# Resolve the repository root by walking up from the working directory.
+.lrcRoot <- local({
+  d <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
+  while (!file.exists(file.path(d, ".lrcbart-root")) && dirname(d) != d) d <- dirname(d)
+  if (!file.exists(file.path(d, ".lrcbart-root")))
+    stop("lrcbart repository root not found from ", getwd())
+  d
+})
 # LRC-BART MODIFICATION START
-mainDir <- "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing"
+mainDir <- .lrcRoot
 projectDir <- file.path(mainDir, "lrcbart-sim-survival-single-arm")
 n_replicates <- 100L
 # LRC-BART MODIFICATION END
@@ -64,7 +73,7 @@ alpha_beta <- data.frame(alpha = c(0.95),  # -> bigger trees
 ntree <- c(50)
 
 # LRC-BART MODIFICATION START
-sourceCpp("/Users/oliviazhang/Desktop/aBART/cabart.cpp",
+sourceCpp(file.path(.lrcRoot, "aBART", "cabart.cpp"),
           cacheDir = .scpp_cache)
 # LRC-BART MODIFICATION END
 
@@ -217,7 +226,7 @@ for (which in 1:nrow(alpha_beta)){
         
         if(!transposed) {
           # LRC-BART MODIFICATION START
-          source("/Users/oliviazhang/Desktop/bartModelMatrix.R")
+          source(file.path(.lrcRoot, "bartModelMatrix.R"))
           # LRC-BART MODIFICATION END
           temp = bartModelMatrix(x.train, numcut, usequants=usequants,
                                  xinfo=xinfo, rm.const=rm.const)
@@ -342,7 +351,7 @@ for (which in 1:nrow(alpha_beta)){
         
         if(!transposed) {
           # LRC-BART MODIFICATION START
-          source("/Users/oliviazhang/Desktop/bartModelMatrix.R")
+          source(file.path(.lrcRoot, "bartModelMatrix.R"))
           # LRC-BART MODIFICATION END
           temp = bartModelMatrix(x.train, numcut, usequants=usequants,
                                  xinfo=xinfo, rm.const=rm.const)

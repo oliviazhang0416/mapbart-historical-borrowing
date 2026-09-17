@@ -1,11 +1,20 @@
 rm(list=ls())
+
+# Resolve the repository root by walking up from the working directory.
+.lrcRoot <- local({
+  d <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
+  while (!file.exists(file.path(d, ".lrcbart-root")) && dirname(d) != d) d <- dirname(d)
+  if (!file.exists(file.path(d, ".lrcbart-root")))
+    stop("lrcbart repository root not found from ", getwd())
+  d
+})
 library(ggplot2)
 library(gridExtra)
 library(dplyr)
 library(tidyr)
 library(patchwork)
 # LRC-BART MODIFICATION START
-mainDir <- "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/"
+mainDir <- .lrcRoot
 projectDir <- file.path(mainDir, "lrcbart-sim-survival")
 # LRC-BART MODIFICATION END
 

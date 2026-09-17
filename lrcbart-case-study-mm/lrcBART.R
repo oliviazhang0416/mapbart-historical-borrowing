@@ -1,13 +1,22 @@
 rm(list = ls())
 
+
+# Resolve the repository root by walking up from the working directory.
+.lrcRoot <- local({
+  d <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
+  while (!file.exists(file.path(d, ".lrcbart-root")) && dirname(d) != d) d <- dirname(d)
+  if (!file.exists(file.path(d, ".lrcbart-root")))
+    stop("lrcbart repository root not found from ", getwd())
+  d
+})
 # LRC-BART MODIFICATION START
 # This file began as the case study's original MAP-BART method file. It retains the
 # censored-AFT treatment fit, five-year RMST estimand, result structure, and
 # user-facing script role while replacing the MAP-BART control fit with the
 # approved single-arm LRC-BART f(X)+g(X) fit.
-mainDir <- "/Users/oliviazhang/Desktop"
+mainDir <- .lrcRoot
 projDir <- file.path(
-  mainDir, "lrcbart-historical-borrowing", "lrcbart-case-study-mm"
+  mainDir, "lrcbart-case-study-mm"
 )
 
 suppressPackageStartupMessages({

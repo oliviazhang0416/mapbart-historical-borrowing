@@ -1,11 +1,20 @@
 rm(list = ls())
 
+
+# Resolve the repository root by walking up from the working directory.
+.lrcRoot <- local({
+  d <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
+  while (!file.exists(file.path(d, ".lrcbart-root")) && dirname(d) != d) d <- dirname(d)
+  if (!file.exists(file.path(d, ".lrcbart-root")))
+    stop("lrcbart repository root not found from ", getwd())
+  d
+})
 # LRC-BART MODIFICATION START
 # This file began as the Gaussian single-arm mBART.R. It retains that
 # script's treatment-BART, replicate, estimand, threshold, and result-file
 # roles while replacing the MAP-BART control fit with the approved single-arm
 # LRC-BART f+g fit and replicate-specific ESS calibration.
-mainDir <- "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing"
+mainDir <- .lrcRoot
 projectDir <- file.path(mainDir, "lrcbart-sim-gaussian-single-arm")
 n_replicates <- 100L
 data_folder <- "data"
@@ -61,16 +70,16 @@ if (length(replicate_files) < n_replicates)
 # inside this research subproject.
 lrc_cpp_cache <- file.path(tempdir(), "sourceCpp_lrcBART")
 dir.create(lrc_cpp_cache, showWarnings = FALSE, recursive = TRUE)
-Rcpp::sourceCpp("/Users/oliviazhang/Desktop/lrcBART/clrcbart.cpp",
+Rcpp::sourceCpp(file.path(.lrcRoot, "lrcBART", "clrcbart.cpp"),
                 cacheDir = lrc_cpp_cache)
-Rcpp::sourceCpp("/Users/oliviazhang/Desktop/lrcBART/cess.cpp",
+Rcpp::sourceCpp(file.path(.lrcRoot, "lrcBART", "cess.cpp"),
                 cacheDir = lrc_cpp_cache)
 
 treatment_cpp_cache <- file.path(tempdir(), "sourceCpp_lrcBART_treatment")
 dir.create(treatment_cpp_cache, showWarnings = FALSE, recursive = TRUE)
-Rcpp::sourceCpp("/Users/oliviazhang/Desktop/wBART/cwbart.cpp",
+Rcpp::sourceCpp(file.path(.lrcRoot, "wBART", "cwbart.cpp"),
                 cacheDir = treatment_cpp_cache)
-source("/Users/oliviazhang/Desktop/bartModelMatrix.R", local = TRUE)
+source(file.path(.lrcRoot, "bartModelMatrix.R"), local = TRUE)
 
 H_g <- 5L
 w_prior <- c(1, 1)

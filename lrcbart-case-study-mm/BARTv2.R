@@ -1,7 +1,16 @@
 rm(list = ls())
-mainDir <- "/Users/oliviazhang/Desktop"
+
+# Resolve the repository root by walking up from the working directory.
+.lrcRoot <- local({
+  d <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
+  while (!file.exists(file.path(d, ".lrcbart-root")) && dirname(d) != d) d <- dirname(d)
+  if (!file.exists(file.path(d, ".lrcbart-root")))
+    stop("lrcbart repository root not found from ", getwd())
+  d
+})
+mainDir <- .lrcRoot
 # LRC-BART MODIFICATION START
-projDir <- file.path(mainDir, "lrcbart-historical-borrowing", "lrcbart-case-study-mm")
+projDir <- file.path(mainDir, "lrcbart-case-study-mm")
 # LRC-BART MODIFICATION END
 
 library(Rcpp)

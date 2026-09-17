@@ -1,11 +1,20 @@
 rm(list = ls())
 
+
+# Resolve the repository root by walking up from the working directory.
+.lrcRoot <- local({
+  d <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
+  while (!file.exists(file.path(d, ".lrcbart-root")) && dirname(d) != d) d <- dirname(d)
+  if (!file.exists(file.path(d, ".lrcbart-root")))
+    stop("lrcbart repository root not found from ", getwd())
+  d
+})
 # LRC-BART MODIFICATION START
 # This file began as the survival two-arm mBART.R. It retains that script's
 # censored AFT treatment fit, replicate, median-ratio/RMST metric, threshold,
 # and result-file roles while replacing only the MAP-BART control fit with the
 # approved LRC-BART f+g fit and replicate-specific ESS calibration.
-mainDir <- "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing"
+mainDir <- .lrcRoot
 projectDir <- file.path(mainDir, "lrcbart-sim-survival")
 n_replicates <- 100L
 data_folder <- "data"
@@ -65,16 +74,16 @@ if (length(replicate_files) < n_replicates)
 # inside this research subproject.
 lrc_cpp_cache <- file.path(tempdir(), "sourceCpp_lrcBART")
 dir.create(lrc_cpp_cache, showWarnings = FALSE, recursive = TRUE)
-Rcpp::sourceCpp("/Users/oliviazhang/Desktop/lrcBART/clrcbart.cpp",
+Rcpp::sourceCpp(file.path(.lrcRoot, "lrcBART", "clrcbart.cpp"),
                 cacheDir = lrc_cpp_cache)
-Rcpp::sourceCpp("/Users/oliviazhang/Desktop/lrcBART/cess.cpp",
+Rcpp::sourceCpp(file.path(.lrcRoot, "lrcBART", "cess.cpp"),
                 cacheDir = lrc_cpp_cache)
 
 treatment_cpp_cache <- file.path(tempdir(), "sourceCpp_lrcBART_treatment")
 dir.create(treatment_cpp_cache, showWarnings = FALSE, recursive = TRUE)
-Rcpp::sourceCpp("/Users/oliviazhang/Desktop/aBART/cabart.cpp",
+Rcpp::sourceCpp(file.path(.lrcRoot, "aBART", "cabart.cpp"),
                 cacheDir = treatment_cpp_cache)
-source("/Users/oliviazhang/Desktop/bartModelMatrix.R", local = TRUE)
+source(file.path(.lrcRoot, "bartModelMatrix.R"), local = TRUE)
 
 H_g <- if (lrc_config == "Hg10") 10L else 5L
 w_fixed <- if (lrc_config == "w0") 0 else

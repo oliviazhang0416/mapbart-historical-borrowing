@@ -2,13 +2,22 @@
 # Overlay the completed H_f=10 and H_f=50 ESS curves for one endpoint.
 # No model fitting is performed here.
 
+# Resolve the repository root by walking up from the working directory.
+.lrcRoot <- local({
+  d <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
+  while (!file.exists(file.path(d, ".lrcbart-root")) && dirname(d) != d) d <- dirname(d)
+  if (!file.exists(file.path(d, ".lrcbart-root")))
+    stop("lrcbart repository root not found from ", getwd())
+  d
+})
+
 args <- commandArgs(trailingOnly = TRUE)
 get_arg <- function(flag, default) {
   index <- match(flag, args)
   if (is.na(index) || index == length(args)) default else args[index + 1L]
 }
 
-projectDir <- "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm"
+projectDir <- file.path(.lrcRoot, "lrcbart-case-study-mm")
 outcome <- toupper(get_arg("--outcome", "PFS"))
 data_tag <- get_arg("--data-tag", "n283")
 hf_values <- as.integer(strsplit(get_arg("--hf", "10,50"), ",", fixed = TRUE)[[1]])
