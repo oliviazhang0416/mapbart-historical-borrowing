@@ -15,7 +15,6 @@ branch supersedes the `mapbart-*` layout on `main`.
 | `lrcbart-sim-survival{,-single-arm}/` | Survival simulations |
 | `lrcbart-case-study-mm/` | Myeloma application (EloKRd vs UCMM) |
 | `manuscript/` | Paper, appendix, and build scripts |
-| `*_MIGRATION_PLAN.md` | Plans governing the migration |
 
 ## Running
 

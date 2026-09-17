@@ -55,3 +55,8 @@ lrcbart-case-study-mm/data_cleaned/ucmm_cleaned_n48.RData
 # Python build artifacts
 __pycache__/
 *.pyc
+
+# ---------------------------------------------------------------------------
+# Internal migration plans: kept locally, not published.
+# ---------------------------------------------------------------------------
+/*_MIGRATION_PLAN.md
