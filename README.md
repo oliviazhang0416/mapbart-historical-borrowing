@@ -25,9 +25,15 @@ cd lrcbart-sim-gaussian
 Rscript run_all.R
 ```
 
-Scripts locate the repository root by walking up from the working directory
-until they find the `.lrcbart-root` marker, so run them from anywhere inside
-the repository. No paths need editing.
+Scripts locate the repository root by walking up from the script's own
+location (and, failing that, the working directory) until they find the
+`.lrcbart-root` marker. You can therefore invoke them from any directory:
+
+```bash
+Rscript /path/to/lrcbart-historical-borrowing/lrcbart-sim-gaussian/run_all.R
+```
+
+No paths need editing.
 
 Requires R with `Rcpp` and `RcppEigen`; the C++ engines compile on first use
 via `Rcpp::sourceCpp`.
@@ -45,8 +51,15 @@ package that is not vendored here. Point `PSRWE_DIR` at a local checkout:
 PSRWE_DIR=/path/to/psrwe Rscript run_all.R
 ```
 
-Otherwise it is looked for beside this repository. Every other comparator is
-included.
+Otherwise it is looked for beside this repository. `PSCL.R` sources that
+checkout's `R/` directory directly, so it runs your local psrwe source rather
+than an installed build.
+
+`MAP.R` and `ess_local/ess_cal_map.R` use the **installed** `RBesT` package
+(`library(RBesT)`), not a local copy. Results depend on the installed version,
+so record it when reporting: `packageVersion("RBesT")`.
+
+Every other comparator is included in this repository.
 
 Patient-level inputs are excluded; `lrcbart-case-study-mm/data_cleaned/`
 carries only the de-identified merged analysis sets.

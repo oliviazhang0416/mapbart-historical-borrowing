@@ -2,13 +2,30 @@
 # Overlay the completed H_f=10 and H_f=50 ESS curves for one endpoint.
 # No model fitting is performed here.
 
-# Resolve the repository root by walking up from the working directory.
+# Resolve the repository root: walk up from this script's own location first,
+# then from the working directory. Works under Rscript, source(), and R CMD.
 .lrcRoot <- local({
-  d <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
-  while (!file.exists(file.path(d, ".lrcbart-root")) && dirname(d) != d) d <- dirname(d)
-  if (!file.exists(file.path(d, ".lrcbart-root")))
-    stop("lrcbart repository root not found from ", getwd())
-  d
+  .up <- function(d) {
+    d <- tryCatch(normalizePath(d, winslash = "/", mustWork = TRUE),
+                  error = function(e) NA_character_)
+    if (is.na(d)) return(NA_character_)
+    while (!file.exists(file.path(d, ".lrcbart-root")) && dirname(d) != d) d <- dirname(d)
+    if (file.exists(file.path(d, ".lrcbart-root"))) d else NA_character_
+  }
+  cand <- character(0)
+  for (i in seq_len(sys.nframe())) {
+    of <- tryCatch(sys.frame(i)$ofile, error = function(e) NULL)
+    if (!is.null(of) && nzchar(of)) cand <- c(cand, dirname(of))
+  }
+  m <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+  if (length(m)) cand <- c(cand, dirname(sub("^--file=", "", m[1])))
+  cand <- c(cand, getwd())
+  hit <- NA_character_
+  for (p in cand) if (is.na(hit)) hit <- .up(p)
+  if (is.na(hit))
+    stop("lrcbart repository root (.lrcbart-root marker) not found from: ",
+         paste(unique(cand), collapse = ", "))
+  hit
 })
 
 args <- commandArgs(trailingOnly = TRUE)
