@@ -33,11 +33,12 @@ mainDir <- .lrcRoot
 projectDir <- file.path(mainDir, "lrcbart-sim-gaussian")
 n_replicates <- 100L
 data_folder <- "data"
-# Third-party package (psrwe, Wang et al.) -- not vendored here.
-# Point PSRWE_DIR at a local checkout, or place one beside this repository.
-psrweDir <- Sys.getenv("PSRWE_DIR", unset = file.path(dirname(.lrcRoot), "psrwe"))
+# psrwe (Wang et al., GPL >= 3) is vendored at the repository root so this
+# comparator runs from a clean clone. PSRWE_DIR overrides it if needed.
+psrweDir <- Sys.getenv("PSRWE_DIR", unset = file.path(.lrcRoot, "psrwe"))
 if (!dir.exists(psrweDir))
-  stop("psrwe not found at ", psrweDir, ". Set PSRWE_DIR to a local checkout.")
+  stop("psrwe not found at ", psrweDir,
+       ". Expected the vendored copy at <repo>/psrwe, or set PSRWE_DIR.")
 # LRC-BART MODIFICATION END
 
 old_wd <- getwd()

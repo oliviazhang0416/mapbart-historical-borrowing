@@ -9,6 +9,7 @@ branch supersedes the `mapbart-*` layout on `main`.
 |---|---|
 | `lrcBART/` | LRC-BART C++ engine (`clrcbart.cpp`, `cess.cpp`, `include.lrc/`) |
 | `wBART/`, `aBART/` | Gaussian and AFT comparator engines |
+| `psrwe/` | Vendored psrwe (Wang et al., GPL >= 3) for the PSCL comparator |
 | `bartModelMatrix.R` | Shared design-matrix helper |
 | `lrcbart-sim-gaussian{,-single-arm}/` | Gaussian simulations |
 | `lrcbart-sim-survival{,-single-arm}/` | Survival simulations |
@@ -36,24 +37,20 @@ Rscript /path/to/lrcbart-historical-borrowing/lrcbart-sim-gaussian/run_all.R
 No paths need editing.
 
 Requires R with `Rcpp` and `RcppEigen`; the C++ engines compile on first use
-via `Rcpp::sourceCpp`.
+via `Rcpp::sourceCpp`. `PSCL.R` additionally needs `miceadds` and `dplyr`, and
+`MAP.R` needs `RBesT`.
+
+### Comparator provenance
+
+`PSCL.R` sources `psrwe/R/` directly from the vendored copy in this
+repository, so it runs pinned local source rather than an installed build.
+`PSRWE_DIR` overrides the location if you need a different checkout.
 
 ## Not in this repository
 
 `res/`, `inserts/`, and the simulation `data/` directories hold regenerable
 output and ship as empty placeholders. Rebuild simulated data with each
 project's `data_gen_p10.R`, then run `run_all.R`.
-
-`lrcbart-sim-gaussian/PSCL.R` needs **psrwe** (Wang et al.), a third-party
-package that is not vendored here. Point `PSRWE_DIR` at a local checkout:
-
-```bash
-PSRWE_DIR=/path/to/psrwe Rscript run_all.R
-```
-
-Otherwise it is looked for beside this repository. `PSCL.R` sources that
-checkout's `R/` directory directly, so it runs your local psrwe source rather
-than an installed build.
 
 `MAP.R` and `ess_local/ess_cal_map.R` use the **installed** `RBesT` package
 (`library(RBesT)`), not a local copy. Results depend on the installed version,

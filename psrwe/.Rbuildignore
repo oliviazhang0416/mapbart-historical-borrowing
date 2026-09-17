@@ -1,0 +1,10 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^.gitignore$
+^.*\.*history$
+^.*\.DS_Store$
+^README\.Rmd$
+
+^\.travis\.yml$
+^appveyor.yml$
+^\.gitlab-ci\.yml$

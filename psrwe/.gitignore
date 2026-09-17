@@ -1,0 +1,17 @@
+.Rproj.user
+.Rhistory
+.RData
+inst/doc
+*.so
+*.o
+*.DS_Store
+.gitconfig
+
+
+*.mod
+*.log
+*.status
+*~
+*.swp
+*.orig
+
