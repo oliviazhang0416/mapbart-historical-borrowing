@@ -1,0 +1,2072 @@
+[
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv1_p10_sc1_alternative.RData",
+    "md5": "f989533f395e98ef406f60f7617fde27",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv1_p10_sc2_alternative.RData",
+    "md5": "af3896b40bf467b693579347c5a99751",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv1_p10_sc3_cor-0.5_alternative.RData",
+    "md5": "d90ec363955bdbd14ae8bebbf975247b",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv1_p10_sc3_cor0_alternative.RData",
+    "md5": "b23a424dd1a29e4fcc5be84edac8b461",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv1_p10_sc3_cor0.5_alternative.RData",
+    "md5": "ed7852e48dfce2069d5f82940c1abc22",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv1_p10_sc4_d1_alternative.RData",
+    "md5": "f989533f395e98ef406f60f7617fde27",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv1_p10_sc4_d2_alternative.RData",
+    "md5": "f989533f395e98ef406f60f7617fde27",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv1_p10_sc5_X5_d0.5_alternative.RData",
+    "md5": "f989533f395e98ef406f60f7617fde27",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv1_p10_sc5_X5_d1_alternative.RData",
+    "md5": "f989533f395e98ef406f60f7617fde27",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv1_p10_sc5_X5_d2_alternative.RData",
+    "md5": "f989533f395e98ef406f60f7617fde27",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv1_p10_sc5_X7_d1_alternative.RData",
+    "md5": "f989533f395e98ef406f60f7617fde27",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv1_p10_sc5_X7_d2_alternative.RData",
+    "md5": "f989533f395e98ef406f60f7617fde27",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv2_p10_sc1_alternative.RData",
+    "md5": "4e892474c1f7b2365d3cde0cd52975c1",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv2_p10_sc2_alternative.RData",
+    "md5": "541d32b96338220b19109c0dc71584bf",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv2_p10_sc3_cor-0.5_alternative.RData",
+    "md5": "193ae106c723240119d5566b7b83adae",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv2_p10_sc3_cor0_alternative.RData",
+    "md5": "4f3e082af1b1f2792e4f3272d595b2fd",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv2_p10_sc3_cor0.5_alternative.RData",
+    "md5": "9dab14f0de24b4433f3d6eab2d1d6fbe",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv2_p10_sc4_d1_alternative.RData",
+    "md5": "fa502b09a969594f178e90e0aea970fb",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv2_p10_sc4_d2_alternative.RData",
+    "md5": "2376ac71d962012ff9d21594b8da7427",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv2_p10_sc5_X5_d0.5_alternative.RData",
+    "md5": "9aba26a050664c5968eee34d9b78c1a5",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv2_p10_sc5_X5_d1_alternative.RData",
+    "md5": "4e543f86f7f38e68a4fda5ceb4079729",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv2_p10_sc5_X5_d2_alternative.RData",
+    "md5": "d0de8d51c1ef38defde3201b17e102b9",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv2_p10_sc5_X7_d1_alternative.RData",
+    "md5": "033b00949f750b9ea036d75077567b7d",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv2_p10_sc5_X7_d2_alternative.RData",
+    "md5": "55255e84dfb54b21921acb5b1c4c60ad",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv3_p10_sc1_alternative.RData",
+    "md5": "6fd944a38508c07528e30273d9cc9519",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv3_p10_sc2_alternative.RData",
+    "md5": "914a33e6531ccad6a950a4df0fb948a3",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv3_p10_sc3_cor-0.5_alternative.RData",
+    "md5": "e4fa2e0c45cd966e28c671d2520bd0e7",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv3_p10_sc3_cor0_alternative.RData",
+    "md5": "6e236b57e28fcd5f28b1c7f132e5d4fb",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv3_p10_sc3_cor0.5_alternative.RData",
+    "md5": "b9f0abbc8cf164f0e411d96e1f187ccf",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv3_p10_sc4_d1_alternative.RData",
+    "md5": "79f7e82b62d047051ee483134ca618f5",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv3_p10_sc4_d2_alternative.RData",
+    "md5": "0a3b55f79a445789a27428938b1b672b",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv3_p10_sc5_X5_d0.5_alternative.RData",
+    "md5": "2b4131c7002e0982baf63e569fb0a7f8",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv3_p10_sc5_X5_d1_alternative.RData",
+    "md5": "81e8892b8b063deb36629924382514fb",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv3_p10_sc5_X5_d2_alternative.RData",
+    "md5": "845323f6b0ad511cccce7c9345b6d897",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv3_p10_sc5_X7_d1_alternative.RData",
+    "md5": "1312beebf53f828a8620cc3f09614fff",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/BARTv3_p10_sc5_X7_d2_alternative.RData",
+    "md5": "00a480cac38b2e88a9a96bbfc4777415",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/hierLM_p10_sc1_prior0.25_alternative.RData",
+    "md5": "a7aaed8e4353f014e8b805d19656873d",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/hierLM_p10_sc2_prior0.25_alternative.RData",
+    "md5": "efe6da39f72dad59e4078d924504ad59",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/hierLM_p10_sc3_cor-0.5_prior0.25_alternative.RData",
+    "md5": "3b80798fab17411e0119f437b2bc76e2",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/hierLM_p10_sc3_cor0_prior0.25_alternative.RData",
+    "md5": "586eec283859fbc7e4a79cdf4e32d3b3",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/hierLM_p10_sc3_cor0.5_prior0.25_alternative.RData",
+    "md5": "29699e573f57a50a6c1408aa0de1d343",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/hierLM_p10_sc4_d1_prior0.25_alternative.RData",
+    "md5": "246ae9fbf8ce560d16da54640f4f5e9d",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/hierLM_p10_sc4_d2_prior0.25_alternative.RData",
+    "md5": "c6fbcb80cb898b1fbe6632367314d559",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/hierLM_p10_sc5_X5_d0.5_prior0.25_alternative.RData",
+    "md5": "4bd0845585384aee016e9892a0cbc300",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/hierLM_p10_sc5_X5_d1_prior0.25_alternative.RData",
+    "md5": "22ca1785ae01cf3cb4850d82dbfe772b",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/hierLM_p10_sc5_X5_d2_prior0.25_alternative.RData",
+    "md5": "6c98f25c244f61878652f0777d65553e",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/hierLM_p10_sc5_X7_d1_prior0.25_alternative.RData",
+    "md5": "8031fda90049225e45ebcb77de5817ff",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/hierLM_p10_sc5_X7_d2_prior0.25_alternative.RData",
+    "md5": "6e4ae234bb0910773900985b22110a6d",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv1_p10_sc1_alternative.RData",
+    "md5": "ccb9220993e4a342c6590eb828878cca",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv1_p10_sc2_alternative.RData",
+    "md5": "e9074f9e6d4c84b96a8061761f41881b",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv1_p10_sc3_cor-0.5_alternative.RData",
+    "md5": "805078e90f47d34067e9c5dd2b524037",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv1_p10_sc3_cor0_alternative.RData",
+    "md5": "4d7ae767965f3be2c7ff822a68f13346",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv1_p10_sc3_cor0.5_alternative.RData",
+    "md5": "d8a9acad41db51e9e2a760a0aabf264c",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv1_p10_sc4_d1_alternative.RData",
+    "md5": "ccb9220993e4a342c6590eb828878cca",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv1_p10_sc4_d2_alternative.RData",
+    "md5": "ccb9220993e4a342c6590eb828878cca",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv1_p10_sc5_X5_d0.5_alternative.RData",
+    "md5": "ccb9220993e4a342c6590eb828878cca",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv1_p10_sc5_X5_d1_alternative.RData",
+    "md5": "ccb9220993e4a342c6590eb828878cca",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv1_p10_sc5_X5_d2_alternative.RData",
+    "md5": "ccb9220993e4a342c6590eb828878cca",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv1_p10_sc5_X7_d1_alternative.RData",
+    "md5": "ccb9220993e4a342c6590eb828878cca",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv1_p10_sc5_X7_d2_alternative.RData",
+    "md5": "ccb9220993e4a342c6590eb828878cca",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv2_p10_sc1_alternative.RData",
+    "md5": "d808da11f14cf9f4f9809c2333f1aec2",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv2_p10_sc2_alternative.RData",
+    "md5": "91cb8f74d3d674fe91f9f0e05209379e",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv2_p10_sc3_cor-0.5_alternative.RData",
+    "md5": "96b65ae8bc907bfabf866e4d0d729e46",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv2_p10_sc3_cor0_alternative.RData",
+    "md5": "7dab2c37e8dd827c3067e2f8bd4e1368",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv2_p10_sc3_cor0.5_alternative.RData",
+    "md5": "52fe60faa6f5da1fde653678f66d6846",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv2_p10_sc4_d1_alternative.RData",
+    "md5": "3052567ea352f91a6425078d5be39d28",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv2_p10_sc4_d2_alternative.RData",
+    "md5": "9a3a6ac1f9182bf9611f49de85ae85e3",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv2_p10_sc5_X5_d0.5_alternative.RData",
+    "md5": "9c5664447dae480b0a33d082b2857872",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv2_p10_sc5_X5_d1_alternative.RData",
+    "md5": "f43bf2c750a28f6e5c142fa7cf39afbc",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv2_p10_sc5_X5_d2_alternative.RData",
+    "md5": "91c1110d87c77fbdd99936115cfa1eb5",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv2_p10_sc5_X7_d1_alternative.RData",
+    "md5": "9855a47dba765f5695b749347b15f93a",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv2_p10_sc5_X7_d2_alternative.RData",
+    "md5": "f1c4bb313b355ab5390a6e1a1868a742",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv3_p10_sc1_alternative.RData",
+    "md5": "e76b03de05bea52b2c8a84556e5b7cb2",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv3_p10_sc2_alternative.RData",
+    "md5": "6c32c1662551ff754df1954d70abb5a3",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv3_p10_sc3_cor-0.5_alternative.RData",
+    "md5": "5812204caaae98952a3bb08c88dab3a7",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv3_p10_sc3_cor0_alternative.RData",
+    "md5": "248a84ffd58a3b6f20d329875d0ceede",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv3_p10_sc3_cor0.5_alternative.RData",
+    "md5": "65f0d01612506a02a529602176ead950",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv3_p10_sc4_d1_alternative.RData",
+    "md5": "a9920ac8d78e6819a657d84120bbcfcc",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv3_p10_sc4_d2_alternative.RData",
+    "md5": "f6e58cc2551c91b54301e926cb7c7bd0",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv3_p10_sc5_X5_d0.5_alternative.RData",
+    "md5": "fcacf4cf7400bb9eba7d5e43ac5048a4",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv3_p10_sc5_X5_d1_alternative.RData",
+    "md5": "bdaa0195d40832f5a6e75bbc1a372228",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv3_p10_sc5_X5_d2_alternative.RData",
+    "md5": "01dc83cce685184f0a0d5ee5ec7acfb7",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv3_p10_sc5_X7_d1_alternative.RData",
+    "md5": "e38bf6cbc6f119cda1c1561b2c475a47",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LMv3_p10_sc5_X7_d2_alternative.RData",
+    "md5": "b6438158b0ad6401892e01c28022a939",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc1_N100_alternative.RData",
+    "md5": "049408c021d81d3a6455f5c8d2b2ead3",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc1_N50_alternative.RData",
+    "md5": "123fe4fa0461aba03cd1002a5f392571",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc1_N75_alternative.RData",
+    "md5": "43a246bbdcbe7569f7cd25d08450f4dc",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc1_Nf25_alternative.RData",
+    "md5": "f5fe6bd30e6235a7c0c9e29909cee471",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc1_Nf50_alternative.RData",
+    "md5": "793107f0f08adfa91eec95f08483654d",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc1_Nf90_alternative.RData",
+    "md5": "8345d5773ee513d0f135ecee6d27dfa4",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc2_N100_alternative.RData",
+    "md5": "38eb204ca65ce1e7d1cec03e5d830d69",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc2_N50_alternative.RData",
+    "md5": "de2dc87eb652601b62193819ef923c17",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc2_N75_alternative.RData",
+    "md5": "3b1569ac6685496092e574b4f5f643f9",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc2_Nf25_alternative.RData",
+    "md5": "762ad5136bd37edc7424cf1b0c938ec5",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc2_Nf50_alternative.RData",
+    "md5": "65536062be1edbe300b54bbf86c0330c",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc2_Nf90_alternative.RData",
+    "md5": "1d5c9f19316be783555cdd9a8e1db74a",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc3_cor-0.5_N100_alternative.RData",
+    "md5": "057b4e57f3dbe8ade7f298d30c6dd5c4",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc3_cor-0.5_N50_alternative.RData",
+    "md5": "f284c6714ba78e2a164cd1f3231b03b5",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc3_cor-0.5_N75_alternative.RData",
+    "md5": "30e2317dae599e1f2e97a495e0778c17",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc3_cor-0.5_Nf25_alternative.RData",
+    "md5": "c4cd10b14f7f4887aeaf5dfec8e34023",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc3_cor-0.5_Nf50_alternative.RData",
+    "md5": "9c16555c8f13912ed05ab98f9598381e",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc3_cor-0.5_Nf90_alternative.RData",
+    "md5": "3f81d20e0582318572a41f2e8193be1f",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc3_cor0_N100_alternative.RData",
+    "md5": "0151359638f76a5fda68064233d6fc60",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc3_cor0_N50_alternative.RData",
+    "md5": "4df6ef500ca5ea8467b98d29686a19c1",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc3_cor0_N75_alternative.RData",
+    "md5": "fe970d7e4234a63ff5a5159f37bfcef1",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc3_cor0_Nf25_alternative.RData",
+    "md5": "7382a06d71e713ff1498bb939914a256",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc3_cor0_Nf50_alternative.RData",
+    "md5": "aceead77333b7a7e0b88b0906762e708",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc3_cor0_Nf90_alternative.RData",
+    "md5": "ba92bae16a754bca494ce2eee7a60352",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc3_cor0.5_N100_alternative.RData",
+    "md5": "464c6c6cf09e96f634bd73bffe78b03f",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc3_cor0.5_N50_alternative.RData",
+    "md5": "2aa48231445aaa2291e89c057d7f74bf",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc3_cor0.5_N75_alternative.RData",
+    "md5": "e3fda3069c39571c662516df81854876",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc3_cor0.5_Nf25_alternative.RData",
+    "md5": "77eae0297906fa0b68530dfe1254e438",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc3_cor0.5_Nf50_alternative.RData",
+    "md5": "35d73d943ef81dc9ce928feb6ee369f8",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc3_cor0.5_Nf90_alternative.RData",
+    "md5": "b405a5c3b3506eac7de6688c601abd5c",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc4_d1_N100_alternative.RData",
+    "md5": "38a43fd10a57d49e5f04fc61a05479ed",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc4_d1_N50_alternative.RData",
+    "md5": "85c7aa41fdc42eeb9165dfa784b18c8c",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc4_d1_N75_alternative.RData",
+    "md5": "10dc03ecf9b86fc5e27a50ead3a262e3",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc4_d1_Nf25_alternative.RData",
+    "md5": "357187134ad4033fcf17cbf49f8cf9b9",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc4_d1_Nf50_alternative.RData",
+    "md5": "92e652e976e3f4bbc8263375e7c622bb",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc4_d1_Nf90_alternative.RData",
+    "md5": "4c34c87faed02b43d6d53389efa4b0da",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc4_d2_N100_alternative.RData",
+    "md5": "000276f2f7ec82294f3c06e1ba3203b1",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc4_d2_N50_alternative.RData",
+    "md5": "8f76a13d5aa0b5849486a484ae0df47b",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc4_d2_N75_alternative.RData",
+    "md5": "4c184ca581ed2bc4274c2b7823fc630d",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc4_d2_Nf25_alternative.RData",
+    "md5": "7be849b2f3ad3076ed81ff9831a5da85",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc4_d2_Nf50_alternative.RData",
+    "md5": "d71443c6c3fbf90d5e694f917114cb7a",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc4_d2_Nf90_alternative.RData",
+    "md5": "06181d4114de303002336a6a43c7fc7f",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X5_d0.5_N100_alternative.RData",
+    "md5": "8bf3ff6b710cd4e71327b9407957da49",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X5_d0.5_N50_alternative.RData",
+    "md5": "0acf2fc239d0b900dba79998e620d778",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X5_d0.5_N75_alternative.RData",
+    "md5": "595c4141cab863ee2d11b5f57cb4a62b",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X5_d0.5_Nf25_alternative.RData",
+    "md5": "499fd8e60925be3f36d4c1d279a9b99a",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X5_d0.5_Nf50_alternative.RData",
+    "md5": "ddf1a62cde2604dba60259fcef03533d",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X5_d0.5_Nf90_alternative.RData",
+    "md5": "4a2dccb1a9377eca11fe4c6a0d55c0d7",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X5_d1_N100_alternative.RData",
+    "md5": "741af4956a6c4dcf56b5a64fd7c88347",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X5_d1_N50_alternative.RData",
+    "md5": "12f06e006fe351a42dc9f50e71251a64",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X5_d1_N75_alternative.RData",
+    "md5": "6a50ec07cc3d7f8ab6687d7190d1af6c",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X5_d1_Nf25_alternative.RData",
+    "md5": "0c057a417bb640060b6b38b648cae5a4",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X5_d1_Nf50_alternative.RData",
+    "md5": "89df39a8a3e654a61bd78815a07cdcef",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X5_d1_Nf90_alternative.RData",
+    "md5": "c20fc294d6f517d454a5fc71f3a608f9",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X5_d2_N100_alternative.RData",
+    "md5": "b89058dc9f318e8e187359b589c8230b",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X5_d2_N50_alternative.RData",
+    "md5": "53b24b98f19d61116132c34138726794",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X5_d2_N75_alternative.RData",
+    "md5": "ea4f1c926bb312e0775ac92d47a7aa03",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X5_d2_Nf25_alternative.RData",
+    "md5": "378da338512a4715f23ddc232a7ec0dd",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X5_d2_Nf50_alternative.RData",
+    "md5": "e307295856d7c095ae5f2a905418c1ee",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X5_d2_Nf90_alternative.RData",
+    "md5": "833e802bfbdb28ab037e54d8a6c669db",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X7_d1_N100_alternative.RData",
+    "md5": "7ff5a7e9d7821b5a7ec55ce955ed3089",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X7_d1_N50_alternative.RData",
+    "md5": "0986eba589b552adfa0151bcde8f6181",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X7_d1_N75_alternative.RData",
+    "md5": "0ab221aa0d58b394b2b1ecc0402319d0",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X7_d1_Nf25_alternative.RData",
+    "md5": "ca0227d4b8120e96127d838ee06b9b89",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X7_d1_Nf50_alternative.RData",
+    "md5": "0276b574dd1609e5677f52e00d727087",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X7_d1_Nf90_alternative.RData",
+    "md5": "91c5e636d9909207bf47e260d395082a",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X7_d2_N100_alternative.RData",
+    "md5": "20eef9ee44d65205550b4b9c3a383720",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X7_d2_N50_alternative.RData",
+    "md5": "c570f5c7cdf76859d369984f05be4316",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X7_d2_N75_alternative.RData",
+    "md5": "6e4d5c299934a1e58b936038ff0df346",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X7_d2_Nf25_alternative.RData",
+    "md5": "1f0c10f00abe4f6ca69ca39f05ab8324",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X7_d2_Nf50_alternative.RData",
+    "md5": "90322a41449dcfa24878c073ad7bf396",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/LRC-BART_p10_sc5_X7_d2_Nf90_alternative.RData",
+    "md5": "7587d328da91a68aca4ecaf4d8dd8c0b",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc1_N100_alternative.RData",
+    "md5": "ac9a44303e8631667ed2bedcad3fc542",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc1_N50_alternative.RData",
+    "md5": "beb725cccb67fda694998c6c6b18a5f3",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc1_N75_alternative.RData",
+    "md5": "a035798de6fe79c05606ef57c91050a7",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc2_N100_alternative.RData",
+    "md5": "f3b80b95f66a4e0f278849bc661a4c87",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc2_N50_alternative.RData",
+    "md5": "ea7e9e96e92fc47c5c38d86b2c5a4749",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc2_N75_alternative.RData",
+    "md5": "22a81c25314099da8a06232077abc5e1",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc3_cor-0.5_N100_alternative.RData",
+    "md5": "2e58c2231716c168be235e26faf38874",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc3_cor-0.5_N50_alternative.RData",
+    "md5": "e3a62b1f667e71c688fade78f9fd4fae",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc3_cor-0.5_N75_alternative.RData",
+    "md5": "a607651a9e215690909497cef2860c29",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc3_cor0_N100_alternative.RData",
+    "md5": "8eb2f89d959773a1adfc767094dfa81c",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc3_cor0_N50_alternative.RData",
+    "md5": "98a3a797ccbd73a5728de099d8f91392",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc3_cor0_N75_alternative.RData",
+    "md5": "ee3639ebe28855875a625c915cda57cf",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc3_cor0.5_N100_alternative.RData",
+    "md5": "673f1bbc5ac8f72b7f439944be69ede6",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc3_cor0.5_N50_alternative.RData",
+    "md5": "f248bb6d049780a72f137457db73e108",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc3_cor0.5_N75_alternative.RData",
+    "md5": "7c955572004b61141216508243dcc8e1",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc4_d1_N100_alternative.RData",
+    "md5": "381eadc22601e3910ad670dc40d1d8e7",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc4_d1_N50_alternative.RData",
+    "md5": "ba70bc38f38c966365f324e6b05bfd76",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc4_d1_N75_alternative.RData",
+    "md5": "1e89596fee1a395c2409f6db7fc6a202",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc4_d2_N100_alternative.RData",
+    "md5": "f8f204c528f61052cd3a84bfa7736b70",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc4_d2_N50_alternative.RData",
+    "md5": "51bb6cac006ae8dd388de5e1dc722d41",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc4_d2_N75_alternative.RData",
+    "md5": "5060ac01370a894cd538d2bbda4783cb",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc5_X5_d0.5_N100_alternative.RData",
+    "md5": "70f65d8526ce8467a8a76b7c4a40bfed",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc5_X5_d0.5_N50_alternative.RData",
+    "md5": "ad10716acc47718fbd77f5c74d25a356",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc5_X5_d0.5_N75_alternative.RData",
+    "md5": "3a447a889b60c9f95cea9b2f7d45ad9e",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc5_X5_d1_N100_alternative.RData",
+    "md5": "842d346baa498ab4f3ced95afdf9b3bf",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc5_X5_d1_N50_alternative.RData",
+    "md5": "d7012a9d2a8fa44030d33ced830d06c5",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc5_X5_d1_N75_alternative.RData",
+    "md5": "09e587fe37134ffab9ec7fa778689d94",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc5_X5_d2_N100_alternative.RData",
+    "md5": "51cd4552f88e4ab50cfc4a3f608a291b",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc5_X5_d2_N50_alternative.RData",
+    "md5": "478a992c72341941de9fcaecd24a1b4f",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc5_X5_d2_N75_alternative.RData",
+    "md5": "e1a8c7fc999a06b0e5394841083cc43b",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc5_X7_d1_N100_alternative.RData",
+    "md5": "c8539503f553163361942f2a7c92d857",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc5_X7_d1_N50_alternative.RData",
+    "md5": "3d44b3c879ff441e2cdd6ab40c04d9ee",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc5_X7_d1_N75_alternative.RData",
+    "md5": "3a2f9e1cec64599256746354e75bbc91",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc5_X7_d2_N100_alternative.RData",
+    "md5": "333056d5c0d3df2e566cc5a6a0c12925",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc5_X7_d2_N50_alternative.RData",
+    "md5": "d420fbee76dc5dceb1ae32ddab07aec8",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/MAP_p10_sc5_X7_d2_N75_alternative.RData",
+    "md5": "c020d3f63e8ef97fd485e84ebecaa2c1",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/PSCL_p10_sc1_alternative.RData",
+    "md5": "921df258cf578aaeb4f0c43ceb1d70f0",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/PSCL_p10_sc2_alternative.RData",
+    "md5": "5915859be06a7ff27dd3c05acee270cb",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/PSCL_p10_sc3_cor-0.5_alternative.RData",
+    "md5": "a906818b73110f14b82253e8ca80c596",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/PSCL_p10_sc3_cor0_alternative.RData",
+    "md5": "022f28fcdc779ca3c1d39df68732a604",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/PSCL_p10_sc3_cor0.5_alternative.RData",
+    "md5": "8bbf188352e597d99f2f587fba7bd6eb",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/PSCL_p10_sc4_d1_alternative.RData",
+    "md5": "806ec2186b8e8c85e9f1110034d5a7c7",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/PSCL_p10_sc4_d2_alternative.RData",
+    "md5": "0be7ca3e107fbc96fa7fd3ce64bf7513",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/PSCL_p10_sc5_X5_d0.5_alternative.RData",
+    "md5": "fd7511dffd5c4f6b6607e956d3c531bd",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/PSCL_p10_sc5_X5_d1_alternative.RData",
+    "md5": "9ecacb9b58efeaf2b7fc0e8457522391",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/PSCL_p10_sc5_X5_d2_alternative.RData",
+    "md5": "7500859328eea60f9493cecba30c5224",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/PSCL_p10_sc5_X7_d1_alternative.RData",
+    "md5": "a6a43719c0cf74a528ed5e12f2cad324",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/PSCL_p10_sc5_X7_d2_alternative.RData",
+    "md5": "8fe512c14dc08140ac4fef128ab696f2",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv1_p10_sc1_alternative.RData",
+    "md5": "6269fb9b0c66a265c312bc3475950d06",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv1_p10_sc2_alternative.RData",
+    "md5": "e7575777c0ff13dc5cfff90fcac05291",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv1_p10_sc3_cor-0.5_alternative.RData",
+    "md5": "4f51e5c9244caf0904a8dc96f978f183",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv1_p10_sc3_cor0_alternative.RData",
+    "md5": "06e857051fc4ba0506bdba343576d025",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv1_p10_sc3_cor0.5_alternative.RData",
+    "md5": "6740cb3d5d556444abc710854194a3be",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv1_p10_sc4_d1_alternative.RData",
+    "md5": "45b37e7fff5a45b68d288ab503ccbb4b",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv1_p10_sc4_d2_alternative.RData",
+    "md5": "ef6f412fb76fb87a105bf0e21950d20e",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv1_p10_sc5_X5_d0.5_alternative.RData",
+    "md5": "a296aa2a8e22d0df9db8d067cb17c541",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv1_p10_sc5_X5_d1_alternative.RData",
+    "md5": "1988513df5bf6a40cc13f118b90091d8",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv1_p10_sc5_X5_d2_alternative.RData",
+    "md5": "43f442d7b0bf086ef6e9d03fe8bbcfa5",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv1_p10_sc5_X7_d1_alternative.RData",
+    "md5": "61b012b02def8b305ed7e0965e225b05",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv1_p10_sc5_X7_d2_alternative.RData",
+    "md5": "d18b387af488d6dc576641498b1fe6f0",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv2_p10_sc1_alternative.RData",
+    "md5": "1b8e01664a91bfa0c9b6fbb81151a33a",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv2_p10_sc2_alternative.RData",
+    "md5": "ca33c7721ac0af9655eb48d4e08ac517",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv2_p10_sc3_cor-0.5_alternative.RData",
+    "md5": "bd9319dc28bbc0f3aa20599c16817eb2",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv2_p10_sc3_cor0_alternative.RData",
+    "md5": "cb5ff155179248a70c0e5bf9760e36b5",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv2_p10_sc3_cor0.5_alternative.RData",
+    "md5": "54f771abb956ba4bd03a98971d2a2554",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv2_p10_sc4_d1_alternative.RData",
+    "md5": "66d78b4f39490feaeb0f248c82153cd9",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv2_p10_sc4_d2_alternative.RData",
+    "md5": "bebc5f22ea654072f5aa584bfdada7f9",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv2_p10_sc5_X5_d0.5_alternative.RData",
+    "md5": "d7cb4ac8fc3e0001863e5f966f0dc8d4",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv2_p10_sc5_X5_d1_alternative.RData",
+    "md5": "2cd3dea18a449eebd9da16b44874c94b",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv2_p10_sc5_X5_d2_alternative.RData",
+    "md5": "0c0074a8bebefb44bcdaa2b104af7131",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv2_p10_sc5_X7_d1_alternative.RData",
+    "md5": "0ef0fa8e63166509199a1ee1389e03c9",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv2_p10_sc5_X7_d2_alternative.RData",
+    "md5": "876ec041b5418099e4d3498ff34b492c",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv3_p10_sc1_alternative.RData",
+    "md5": "b55635b2da8af09b8a4284d1abab9eea",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv3_p10_sc2_alternative.RData",
+    "md5": "f721cae13fd790d66ca314e1fc1e892b",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv3_p10_sc3_cor-0.5_alternative.RData",
+    "md5": "712a1a3c47d6eb70ba9c1b4bdff2c2ce",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv3_p10_sc3_cor0_alternative.RData",
+    "md5": "10bc430c5a2faac22cf11f8d006072b5",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv3_p10_sc3_cor0.5_alternative.RData",
+    "md5": "20e910aec9d2bfcfade174a1c2434529",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv3_p10_sc4_d1_alternative.RData",
+    "md5": "6fb2d1d8d938ab64144908bbbccbeda4",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv3_p10_sc4_d2_alternative.RData",
+    "md5": "636e27eaa1a2adc06a0b9799f82b7115",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv3_p10_sc5_X5_d0.5_alternative.RData",
+    "md5": "a2384fe77590eb1af64c71b0481bdf34",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv3_p10_sc5_X5_d1_alternative.RData",
+    "md5": "0c9caa479acbbc80b63d5db931ffb0af",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv3_p10_sc5_X5_d2_alternative.RData",
+    "md5": "3ccc7ee8a9fe33352b452c6b92a43a72",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv3_p10_sc5_X7_d1_alternative.RData",
+    "md5": "1dca12b65b524e7ef278796456ef694e",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/AFTv3_p10_sc5_X7_d2_alternative.RData",
+    "md5": "7824e4081a095adcc049db1ad2e1712a",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv1_p10_sc1_alternative.RData",
+    "md5": "36ea30597f1e95ae024b9977a09cae07",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv1_p10_sc2_alternative.RData",
+    "md5": "b60d007489248874af3fcbb43645dba8",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv1_p10_sc3_cor-0.5_alternative.RData",
+    "md5": "42510852f797205f68c1d8967d14472b",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv1_p10_sc3_cor0_alternative.RData",
+    "md5": "affdde211e2b875725acb5de22f552a3",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv1_p10_sc3_cor0.5_alternative.RData",
+    "md5": "79b27f610527d622b36345a2b293d210",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv1_p10_sc4_d1_alternative.RData",
+    "md5": "d6208dd321f48b7a6983a8a7d6af6061",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv1_p10_sc4_d2_alternative.RData",
+    "md5": "a80bddf7309f3a57ef4381d75516d5a6",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv1_p10_sc5_X5_d0.5_alternative.RData",
+    "md5": "fb731d8721fe5c81c2ac32e6db8397bc",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv1_p10_sc5_X5_d1_alternative.RData",
+    "md5": "9250d4892bb52377bbae53d0015854e3",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv1_p10_sc5_X5_d2_alternative.RData",
+    "md5": "9853ffefa6054a224ed59c2042920ac6",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv1_p10_sc5_X7_d1_alternative.RData",
+    "md5": "85fb409572f2e35ad08e75a4e573032a",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv1_p10_sc5_X7_d2_alternative.RData",
+    "md5": "dc7099df42385aa0eee2baa94b470cf9",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv2_p10_sc1_alternative.RData",
+    "md5": "82695cc55c2abd72b10b2f40ef745ee7",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv2_p10_sc2_alternative.RData",
+    "md5": "2f38406528788294e6c2cba1cb5153e2",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv2_p10_sc3_cor-0.5_alternative.RData",
+    "md5": "223f7faabecf26460398ed2f849efa61",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv2_p10_sc3_cor0_alternative.RData",
+    "md5": "939259910db91b7f8778159f43fc5461",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv2_p10_sc3_cor0.5_alternative.RData",
+    "md5": "526144c8b294dbdf14770e4924b4154b",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv2_p10_sc4_d1_alternative.RData",
+    "md5": "08da50f9a6140c98107e4833606c3831",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv2_p10_sc4_d2_alternative.RData",
+    "md5": "f70355d41e1332a97876ee99f7bed54c",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv2_p10_sc5_X5_d0.5_alternative.RData",
+    "md5": "d9a733f0ca7892ec1cff0e568e3b5787",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv2_p10_sc5_X5_d1_alternative.RData",
+    "md5": "f458cccbb552b9fd4eee29d554705183",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv2_p10_sc5_X5_d2_alternative.RData",
+    "md5": "36b4877bfa072d379400c6c021ccc3cc",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv2_p10_sc5_X7_d1_alternative.RData",
+    "md5": "0909a5de09054cf70b0941be30ff0bf8",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv2_p10_sc5_X7_d2_alternative.RData",
+    "md5": "f78d480405606d25116d840d4bcd8613",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv3_p10_sc1_alternative.RData",
+    "md5": "16c8f127b1c3fbbf1b571507464e7b6d",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv3_p10_sc2_alternative.RData",
+    "md5": "b47719cd3f12492fda57663263d2b130",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv3_p10_sc3_cor-0.5_alternative.RData",
+    "md5": "f902cc47716a7a98859f95662d49d00f",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv3_p10_sc3_cor0_alternative.RData",
+    "md5": "09405ec8fef833b400190f21b6459b72",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv3_p10_sc3_cor0.5_alternative.RData",
+    "md5": "bade432c8a5d0ab24c8c2b11fc7a167a",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv3_p10_sc4_d1_alternative.RData",
+    "md5": "344a1327ef97e3c2b286374e0c7af6a5",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv3_p10_sc4_d2_alternative.RData",
+    "md5": "7d88acc9ed4f979360db7f40d9fe630d",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv3_p10_sc5_X5_d0.5_alternative.RData",
+    "md5": "24fa092ed4286442c8fb82c08979f0d1",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv3_p10_sc5_X5_d1_alternative.RData",
+    "md5": "454c15d7f85d5a4e14b4f469fe109379",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv3_p10_sc5_X5_d2_alternative.RData",
+    "md5": "3ab548105c27b8029b9114d443113666",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv3_p10_sc5_X7_d1_alternative.RData",
+    "md5": "4054176c493d946806a14770459b930a",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/BARTv3_p10_sc5_X7_d2_alternative.RData",
+    "md5": "d29a694fe09f0355f72adfcecd849317",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/hierAFT_p10_sc1_prior0.25_alternative.RData",
+    "md5": "ca1db37903edd875a50d9e8335e55ad5",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/hierAFT_p10_sc2_prior0.25_alternative.RData",
+    "md5": "b92e7d1280e757e0fdc06b0ccaa08f19",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/hierAFT_p10_sc3_cor-0.5_prior0.25_alternative.RData",
+    "md5": "606fdb36f889c54962ce4729550cb9f1",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/hierAFT_p10_sc3_cor0_prior0.25_alternative.RData",
+    "md5": "0f20487616cfac0be323f80f1d547665",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/hierAFT_p10_sc3_cor0.5_prior0.25_alternative.RData",
+    "md5": "22d8c40e414625ff7837ad07d96a45b6",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/hierAFT_p10_sc4_d1_prior0.25_alternative.RData",
+    "md5": "3d697ed3e92a6104ed89e8098325d9c0",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/hierAFT_p10_sc4_d2_prior0.25_alternative.RData",
+    "md5": "cba2293ec28c7f5cc30a91e2e35c675f",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/hierAFT_p10_sc5_X5_d0.5_prior0.25_alternative.RData",
+    "md5": "2c5a9d123b8248502ff1fbfbd16e5d2c",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/hierAFT_p10_sc5_X5_d1_prior0.25_alternative.RData",
+    "md5": "40d08ddad10ac9f31a8922d00cc7c2e9",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/hierAFT_p10_sc5_X5_d2_prior0.25_alternative.RData",
+    "md5": "ae9a4ffa7e7f7915e00aac9545959eb5",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/hierAFT_p10_sc5_X7_d1_prior0.25_alternative.RData",
+    "md5": "8d7378d2d75cd84a4c1f94eb86b83d8c",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/hierAFT_p10_sc5_X7_d2_prior0.25_alternative.RData",
+    "md5": "bec840faf74ebd2e29b7bd40da62c293",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc1_N100_alternative.RData",
+    "md5": "fe5f08d8ffe08c639147d1abfee9e14c",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc1_N50_alternative.RData",
+    "md5": "fcccdb0e55ddf8437912f6e6d5da3a56",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc1_N75_alternative.RData",
+    "md5": "28f88fade93c035410f76278b9fab667",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc1_Nf25_alternative.RData",
+    "md5": "1ae51a32a12817b100163fe46e818ea4",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc1_Nf50_alternative.RData",
+    "md5": "97f6aab90a6cd33c9c26d35503a769ab",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc1_Nf90_alternative.RData",
+    "md5": "555eb24ed3ee50ed5c8046bf518a3cdb",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc2_N100_alternative.RData",
+    "md5": "f9cbd58a7b3126285285592b94627c99",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc2_N50_alternative.RData",
+    "md5": "d69971cd6daf75265808cbe405433fc5",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc2_N75_alternative.RData",
+    "md5": "5bfc0407a69700d2c2d29400cfbcd491",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc2_Nf25_alternative.RData",
+    "md5": "1a8d04c26ec56ebe48aeebd11c757f70",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc2_Nf50_alternative.RData",
+    "md5": "7cb98d69e97440ec727b894a1dcc9851",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc2_Nf90_alternative.RData",
+    "md5": "954951d97ba3174a17b047f34a47c358",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc3_cor-0.5_N100_alternative.RData",
+    "md5": "9b710f1270d59ba6f2a2ee43a6c72a9a",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc3_cor-0.5_N50_alternative.RData",
+    "md5": "108682cff2b38d4ebd98effd32fa439e",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc3_cor-0.5_N75_alternative.RData",
+    "md5": "c1c5871dc984b3311136d60c13c0cc88",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc3_cor-0.5_Nf25_alternative.RData",
+    "md5": "83f7561de516bdc4640c34d5f3fbd0ae",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc3_cor-0.5_Nf50_alternative.RData",
+    "md5": "664644b18db599a6c8a6a11479189200",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc3_cor-0.5_Nf90_alternative.RData",
+    "md5": "3e885ff8eba3c9572af9c3bf38d46a79",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc3_cor0_N100_alternative.RData",
+    "md5": "0de9304e1dc3760f1c58bc5e0950b8cd",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc3_cor0_N50_alternative.RData",
+    "md5": "d77db1c3a91851ea254c697d9eb2188c",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc3_cor0_N75_alternative.RData",
+    "md5": "30aa123401d01a300ba579caada05297",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc3_cor0_Nf25_alternative.RData",
+    "md5": "876af2175adaf8963b767155636a79fa",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc3_cor0_Nf50_alternative.RData",
+    "md5": "8d1f607aff1095e95c0b9a86b2c58164",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc3_cor0_Nf90_alternative.RData",
+    "md5": "83b8fd3cc69359e7c95246e874e08077",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc3_cor0.5_N100_alternative.RData",
+    "md5": "16211bd82ecd35e472233212d11414fb",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc3_cor0.5_N50_alternative.RData",
+    "md5": "6ea488f760ab5c378fdd3c0aa21f97f6",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc3_cor0.5_N75_alternative.RData",
+    "md5": "3ea8bfa9a917dce0d45eb39739b7f344",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc3_cor0.5_Nf25_alternative.RData",
+    "md5": "ddf35e91673740043f1c543ea00fbd37",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc3_cor0.5_Nf50_alternative.RData",
+    "md5": "657902227e83810d20ac7db524d1f013",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc3_cor0.5_Nf90_alternative.RData",
+    "md5": "5c1897323683704242f7f0fdc651b247",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc4_d1_N100_alternative.RData",
+    "md5": "848fab4825fc68a2a0f4e995c60d03da",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc4_d1_N50_alternative.RData",
+    "md5": "cf39f425c609e016e10c5a09bc37e02b",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc4_d1_N75_alternative.RData",
+    "md5": "3ad559d912f9cf6863bb5a6a730e30fc",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc4_d1_Nf25_alternative.RData",
+    "md5": "9e2202c0b65c683aa57b570cf66fff9d",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc4_d1_Nf50_alternative.RData",
+    "md5": "538a49e76884ef5a85cab012ec69c288",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc4_d1_Nf90_alternative.RData",
+    "md5": "ef0fd83b621935383800601ab512e619",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc4_d2_N100_alternative.RData",
+    "md5": "d20180c83027a0163e00e781290033cb",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc4_d2_N50_alternative.RData",
+    "md5": "aaed06bb790acb3a54269fea2078bfa0",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc4_d2_N75_alternative.RData",
+    "md5": "cd6c4b7f2239a9f8517bb271818a1d53",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc4_d2_Nf25_alternative.RData",
+    "md5": "01b0561d4ce84339ec4e2cdf26c5d440",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc4_d2_Nf50_alternative.RData",
+    "md5": "90df23ec62515c45d7593b4138704cf3",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc4_d2_Nf90_alternative.RData",
+    "md5": "07abc1e1bdff1aedf7ee1187e73e7dbe",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X5_d0.5_N100_alternative.RData",
+    "md5": "d6c0d23424736a1fc3d8b67d0c952d24",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X5_d0.5_N50_alternative.RData",
+    "md5": "fad3a0a39b3255d0c2b5b731341900e9",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X5_d0.5_N75_alternative.RData",
+    "md5": "1fa9cab097751bb76aaac937b327c42d",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X5_d0.5_Nf25_alternative.RData",
+    "md5": "112a6e553cf983e6b2496f75c9914d16",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X5_d0.5_Nf50_alternative.RData",
+    "md5": "3309a3ac3f92c87ceecb5b5b186c5753",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X5_d0.5_Nf90_alternative.RData",
+    "md5": "e8dbfeb388b3b432c96aea998a71ec6e",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X5_d1_N100_alternative.RData",
+    "md5": "fc0096d784388cf24384fa8aa5463b0f",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X5_d1_N50_alternative.RData",
+    "md5": "13bb320317e42c07426bbcc106cfc579",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X5_d1_N75_alternative.RData",
+    "md5": "3d8967ceaa18777d6fcfdb0ba76f1857",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X5_d1_Nf25_alternative.RData",
+    "md5": "05bd66d2c8ea4aad20f921ac91c64a31",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X5_d1_Nf50_alternative.RData",
+    "md5": "c2fbc3d2667532be96164468f53c2efa",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X5_d1_Nf90_alternative.RData",
+    "md5": "7d30ba09517ec5016c0c4a090d5acad8",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X5_d2_N100_alternative.RData",
+    "md5": "2c7604e1a124f03f841fe815282f42dd",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X5_d2_N50_alternative.RData",
+    "md5": "31403751b1f3d0c42226045d1d780b6f",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X5_d2_N75_alternative.RData",
+    "md5": "d2d2f7dcf46594b5c769a937cfcf435d",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X5_d2_Nf25_alternative.RData",
+    "md5": "362feb8f3310d2291609d59359ad2403",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X5_d2_Nf50_alternative.RData",
+    "md5": "4968a5121822fb7d169242cdb69cb2e1",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X5_d2_Nf90_alternative.RData",
+    "md5": "157e9089b81c614a68c3f6581595fda1",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X7_d1_N100_alternative.RData",
+    "md5": "dd1fb42c8af91da496d0bbdde81b9fe3",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X7_d1_N50_alternative.RData",
+    "md5": "6da228bd46e4094cf8f0a0579421790d",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X7_d1_N75_alternative.RData",
+    "md5": "fa78f27564c2526d8c49e661e82715ea",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X7_d1_Nf25_alternative.RData",
+    "md5": "77c1c6ae669abb57fb1a677d5c0da08f",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X7_d1_Nf50_alternative.RData",
+    "md5": "084603a4a6e6578262deb722feb1f734",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X7_d1_Nf90_alternative.RData",
+    "md5": "57b70de90ddd29333e4ac24ef9cccf42",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X7_d2_N100_alternative.RData",
+    "md5": "056a87da27b6c82a5cc7d3d599a70fc3",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X7_d2_N50_alternative.RData",
+    "md5": "faf63263a35d65f7e484c4279da95f9e",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X7_d2_N75_alternative.RData",
+    "md5": "a0a11bb2bdb1d2466e9e5fc1de202610",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X7_d2_Nf25_alternative.RData",
+    "md5": "05229d33e88688c55fd6aa2fa86dc0ab",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X7_d2_Nf50_alternative.RData",
+    "md5": "f797a0ff5cfce3f415eff28aa9195d7d",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/LRC-BART_p10_sc5_X7_d2_Nf90_alternative.RData",
+    "md5": "decada6735bb724e82f7bb451c5b0053",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/res/BARTv2_p10_sc1_alternative.RData",
+    "md5": "30f89728856c9d87a77087aa8ffb9ede",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/res/BARTv2_p10_sc2_alternative.RData",
+    "md5": "c97e59a94e6f42579507be218aeb5434",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/res/hierLM_p10_sc1_prior0.05_alternative.RData",
+    "md5": "4df710c48dfa4ec00b4ae085fd1aaa40",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/res/hierLM_p10_sc1_prior0.5_alternative.RData",
+    "md5": "06e27c375070b17968be0a56554cf02b",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/res/hierLM_p10_sc2_prior0.05_alternative.RData",
+    "md5": "077cea4d915116ebaf35c0ccd8ed6265",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/res/hierLM_p10_sc2_prior0.5_alternative.RData",
+    "md5": "90c6d5fff5981240115fbea00231982d",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/res/LMv2_p10_sc1_alternative_w1.RData",
+    "md5": "8d589c15da024673aadfe6131eaeb186",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/res/LMv2_p10_sc2_alternative_w1.RData",
+    "md5": "4dab9fefff284700a8725ab016c8a6b5",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/res/LRC-BART_p10_sc1_N100_alternative.RData",
+    "md5": "93e1abfd6ed6172a1b52f97dce0226a1",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/res/LRC-BART_p10_sc1_Nf90_alternative.RData",
+    "md5": "f600f82dbd0d8b94c82720575f74a4d5",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/res/LRC-BART_p10_sc1_Ns0min_alternative.RData",
+    "md5": "779e809c32c25010e5142f57cb792f79",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/res/LRC-BART_p10_sc1_w0.9_N100_alternative.RData",
+    "md5": "66bfa883e67e0c8c2e78954a91b6da20",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/res/LRC-BART_p10_sc1_w0.9_Nf90_alternative.RData",
+    "md5": "6986af023a82c15ccb2506b01f032458",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/res/LRC-BART_p10_sc2_N100_alternative.RData",
+    "md5": "3c5354ec860451e409bbd3e5971e3ae5",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/res/LRC-BART_p10_sc2_Nf90_alternative.RData",
+    "md5": "ca26839056e2c05119360a5243ee383e",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/res/LRC-BART_p10_sc2_Ns0min_alternative.RData",
+    "md5": "e77d3192980c54d19d4ee69bf7634719",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/res/LRC-BART_p10_sc2_w0.9_N100_alternative.RData",
+    "md5": "23a1661747a0ff44d9fb9201e4a3e8f7",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/res/LRC-BART_p10_sc2_w0.9_Nf90_alternative.RData",
+    "md5": "7d3dc5d3a8e20f03a7fb5b4c174c4613",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n30/AFTv2_p10_n30_sc1_alternative_w1.RData",
+    "md5": "097dedca92d552539822b5db190257a6",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n30/AFTv2_p10_n30_sc2_alternative_w1.RData",
+    "md5": "a6dbad02b32eec1f5b2d49ab19c38e6f",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n30/BARTv2_p10_n30_sc1_alternative.RData",
+    "md5": "329ab66dc08b6f3aefca0e89fc58c62c",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n30/BARTv2_p10_n30_sc2_alternative.RData",
+    "md5": "8cb99aee07ba5385639d8d336a875dc3",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n30/hierAFT_p10_n30_sc1_prior0.05_alternative.RData",
+    "md5": "9911537ad10c7558e498dad42bd91828",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n30/hierAFT_p10_n30_sc1_prior0.5_alternative.RData",
+    "md5": "91836f83167a4371b1f6b1fb8edee5ff",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n30/hierAFT_p10_n30_sc2_prior0.05_alternative.RData",
+    "md5": "1452a1f49777d8c338d2a9a63dd4f357",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n30/hierAFT_p10_n30_sc2_prior0.5_alternative.RData",
+    "md5": "b71a84bfa88efbf3666cad8144608ae4",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n30/LRC-BART_p10_n30_sc1_N100_alternative.RData",
+    "md5": "e8242774673c988df6f01d87dd4f2f69",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n30/LRC-BART_p10_n30_sc1_Nf90_alternative.RData",
+    "md5": "7390ae39630b85829b7ead7462b7c396",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n30/LRC-BART_p10_n30_sc1_Ns0min_alternative.RData",
+    "md5": "eace121cb6ad95d723af17c727b470e5",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n30/LRC-BART_p10_n30_sc1_w0.9_N100_alternative.RData",
+    "md5": "6609bde197245341427b2932a3518073",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n30/LRC-BART_p10_n30_sc1_w0.9_Nf90_alternative.RData",
+    "md5": "ce8f2b1502b9a67d78645d6e0b0a0e62",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n30/LRC-BART_p10_n30_sc2_N100_alternative.RData",
+    "md5": "81f81072e8295cc21eac65379d2265ff",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n30/LRC-BART_p10_n30_sc2_Nf90_alternative.RData",
+    "md5": "ea75c0ff978df57486eb9ddfcfc2c5ac",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n30/LRC-BART_p10_n30_sc2_Ns0min_alternative.RData",
+    "md5": "7e3083b751cded797e73c592392319c1",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n30/LRC-BART_p10_n30_sc2_w0.9_N100_alternative.RData",
+    "md5": "449f6c232d0d2f17c1522eaeaada8f8a",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n30/LRC-BART_p10_n30_sc2_w0.9_Nf90_alternative.RData",
+    "md5": "7abc0235dad3ffc207dc8daee35575e5",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n200/AFTv2_p10_n200_sc1_alternative_w1.RData",
+    "md5": "39fe0fdec59b9a401a5a70a05c45d787",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n200/AFTv2_p10_n200_sc2_alternative_w1.RData",
+    "md5": "0281237bb7fbb67e083ea49725823596",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n200/BARTv2_p10_n200_sc1_alternative.RData",
+    "md5": "2aaad0424daee15678e74001c6732fb1",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n200/BARTv2_p10_n200_sc2_alternative.RData",
+    "md5": "f28de83ac50444ec16102867dc22cd0a",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n200/hierAFT_p10_n200_sc1_prior0.05_alternative.RData",
+    "md5": "e47269fb92442771763f20e0fa424d51",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n200/hierAFT_p10_n200_sc1_prior0.5_alternative.RData",
+    "md5": "bcb0ce3ad68a9181a5fd4ff255283b57",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n200/hierAFT_p10_n200_sc2_prior0.05_alternative.RData",
+    "md5": "0586ba8595d096295e83defbbc5c7cd2",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n200/hierAFT_p10_n200_sc2_prior0.5_alternative.RData",
+    "md5": "fd39991261c06b4b1e13fe076d5bb34f",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n200/LRC-BART_p10_n200_sc1_N100_alternative.RData",
+    "md5": "7e4f47de60b2b92a7f65d4350210e5a5",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n200/LRC-BART_p10_n200_sc1_Nf90_alternative.RData",
+    "md5": "f3d1747967c18a70534187984035f215",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n200/LRC-BART_p10_n200_sc1_Ns0min_alternative.RData",
+    "md5": "42c28737470b027952ca046163ba9080",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n200/LRC-BART_p10_n200_sc1_w0.9_N100_alternative.RData",
+    "md5": "6bc2151f512feb1120a633a7a5a29317",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n200/LRC-BART_p10_n200_sc1_w0.9_Nf90_alternative.RData",
+    "md5": "f8be19a91522ee8aea2e876b1a1ea903",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n200/LRC-BART_p10_n200_sc2_N100_alternative.RData",
+    "md5": "b77750844e784f4df2b845b4dda1a1a5",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n200/LRC-BART_p10_n200_sc2_Nf90_alternative.RData",
+    "md5": "58d26892698c12e58ca28fd4dba7cc87",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n200/LRC-BART_p10_n200_sc2_Ns0min_alternative.RData",
+    "md5": "3d74ded21ba2a3cd3caff7767cfd5a7e",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n200/LRC-BART_p10_n200_sc2_w0.9_N100_alternative.RData",
+    "md5": "52df69f11ce1cdf2eefe6bfdc2f10fcf",
+    "rows": 100
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/n200/LRC-BART_p10_n200_sc2_w0.9_Nf90_alternative.RData",
+    "md5": "7eade6b2de10fea1b06d5f0fb1ac5e7d",
+    "rows": 100
+  }
+]

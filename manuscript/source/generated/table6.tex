@@ -1,0 +1,35 @@
+\begin{landscape}
+\begingroup
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.13}
+\renewcommand{\arraystretch}{1.04}
+\fontsize{10}{11.5}\selectfont
+\begin{longtable}{lrrrrrr}
+\caption{Five-year restricted mean survival time (RMST) in the application.}\label{tab:table6}\\
+\toprule
+Method & \shortstack{RMST ratio\\(95\% interval)} & \shortstack{RMST difference\\(95\% interval)} & \shortstack{EloKRd treatment\\RMST} & \shortstack{EloKRd control\\RMST} & \shortstack{Historical model\\RMST} & \shortstack{Observed UCMM\\RMST} \\ \midrule
+\endfirsthead
+\multicolumn{7}{l}{\tablename\ \thetable\ (continued)}\\
+\toprule
+Method & \shortstack{RMST ratio\\(95\% interval)} & \shortstack{RMST difference\\(95\% interval)} & \shortstack{EloKRd treatment\\RMST} & \shortstack{EloKRd control\\RMST} & \shortstack{Historical model\\RMST} & \shortstack{Observed UCMM\\RMST} \\ \midrule
+\endhead
+\midrule\multicolumn{7}{r}{Continued on next page}\\\endfoot
+\bottomrule\endlastfoot
+\multicolumn{7}{l}{\strut\textit{PFS}}\\*
+KM & 1.015 (0.845, 1.220) & 0.055 (-0.625, 0.735) & 3.705 & --- & --- & 3.649 \\
+lrcBART & 0.965 (0.783, 1.186) & -0.129 (-0.853, 0.614) & 3.524 & 3.656 & 3.656 & --- \\
+BART-CP & 0.975 (0.794, 1.154) & -0.090 (-0.772, 0.522) & 3.527 & 3.617 & 3.617 & --- \\
+AFT-CP & 0.869 (0.695, 1.061) & -0.460 (-1.109, 0.199) & 3.069 & 3.527 & 3.527 & --- \\
+hier. AFT & 1.034 (0.759, 1.379) & 0.109 (-0.965, 0.984) & 3.355 & 3.225 & 3.591 & --- \\
+hier. AFT & 1.204 (0.733, 1.936) & 0.569 (-1.192, 1.640) & 3.355 & 2.744 & 3.599 & --- \\
+\multicolumn{7}{l}{\strut\textit{OS}}\\*
+KM & 0.902 (0.786, 1.034) & -0.450 (-1.019, 0.118) & 4.122 & --- & --- & 4.572 \\
+lrcBART & 0.903 (0.774, 1.033) & -0.427 (-1.019, 0.135) & 3.990 & 4.419 & 4.421 & --- \\
+BART-CP & 0.907 (0.769, 1.018) & -0.411 (-1.045, 0.075) & 3.990 & 4.406 & 4.406 & --- \\
+AFT-CP & 0.803 (0.649, 0.937) & -0.850 (-1.519, -0.262) & 3.449 & 4.306 & 4.306 & --- \\
+hier. AFT & 0.963 (0.756, 1.391) & -0.148 (-1.081, 1.122) & 3.807 & 3.949 & 4.412 & --- \\
+hier. AFT & 1.188 (0.766, 1.688) & 0.594 (-1.096, 1.648) & 3.807 & 3.171 & 4.417 & --- \\
+\end{longtable}
+\noindent\begin{minipage}{\linewidth}\footnotesize RMST and differences are in years. EloKRd control RMST is the estimated restricted mean survival under control for the EloKRd population. Adjusted methods standardize to EloKRd covariates and compare treatment with this estimated control outcome; KM compares the observed EloKRd and UCMM cohorts. Historical-model RMST evaluates the historical-control model at EloKRd covariates, whereas observed UCMM RMST is the unadjusted cohort summary used only by KM. For lrcBART, the EloKRd control uses $f+g$ and the historical-model column uses $f$, with the respective residual variances. BART-CP and AFT-CP have identical model-based control columns because they have no discrepancy component. A dash denotes an inapplicable estimate. KM is an unadjusted comparison with confidence intervals; model-based intervals are equal-tailed credible intervals. Arm summaries are posterior medians, except KM estimates. The median of a ratio or difference need not equal the ratio or difference of marginal medians. Primary lrcBART uses $H_f=10$, $H_g=5$, $w=1$, requested ESS 30. Within each endpoint, the first and second hier. AFT rows use prior settings $a=0.05$ and $a=0.5$, respectively.\end{minipage}
+\endgroup
+\end{landscape}

@@ -1,0 +1,69 @@
+\begingroup
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.13}
+\renewcommand{\arraystretch}{1.0}
+\fontsize{8.5}{9.2}\selectfont
+\begin{longtable}{lrrr}
+\caption{MCMC diagnostics for the application log RMST ratio.}\label{tab:tableS11b}\\
+\toprule
+Setting & $\widehat R$ & Bulk MCMC ESS & Tail MCMC ESS \\ \midrule
+\endfirsthead
+\multicolumn{4}{l}{\tablename\ \thetable\ (continued)}\\
+\toprule
+Setting & $\widehat R$ & Bulk MCMC ESS & Tail MCMC ESS \\ \midrule
+\endhead
+\midrule\multicolumn{4}{r}{Continued on next page}\\\endfoot
+\bottomrule\endlastfoot
+\multicolumn{4}{l}{\strut\textit{PFS}}\\*
+default, 100 & 1.0003 & 7629 & 7527 \\
+default, 75 & 1.0004 & 7660 & 7564 \\
+default, 50 & 1.0005 & 7703 & 7564 \\
+default, f90 & 1.0001 & 7560 & 7543 \\
+default, f50 & 1.0003 & 7622 & 7546 \\
+default, f25 & 1.0005 & 7703 & 7564 \\
+Hf50, 100 & 1.0001 & 7874 & 7915 \\
+Hf50, 75 & 1.0001 & 7894 & 7817 \\
+Hf50, 50 & 1.0001 & 7933 & 7878 \\
+Hf50, f90 & 1.0003 & 7863 & 8005 \\
+Hf50, f50 & 1.0001 & 7879 & 7877 \\
+Hf50, f25 & 1.0001 & 7941 & 7877 \\
+w0.9, 100 & 0.9999 & 7751 & 7556 \\
+w0.9, 75 & 0.9999 & 7794 & 7672 \\
+w0.9, 50 & 0.9999 & 7852 & 7750 \\
+w0.9, f90 & 1.0000 & 7661 & 7936 \\
+w0.9, f50 & 0.9999 & 7741 & 7659 \\
+w0.9, f25 & 0.9999 & 7852 & 7750 \\
+Hf50\_w0.9, 100 & 1.0003 & 7747 & 7847 \\
+Hf50\_w0.9, 75 & 1.0004 & 7754 & 7847 \\
+Hf50\_w0.9, 50 & 1.0004 & 7778 & 7791 \\
+Hf50\_w0.9, f90 & 1.0002 & 7750 & 7971 \\
+Hf50\_w0.9, f50 & 1.0003 & 7750 & 7847 \\
+Hf50\_w0.9, f25 & 1.0004 & 7784 & 7768 \\
+\multicolumn{4}{l}{\strut\textit{OS}}\\*
+default, 100 & 1.0004 & 6759 & 7613 \\
+default, 75 & 1.0004 & 6850 & 7652 \\
+default, 50 & 1.0004 & 6984 & 7649 \\
+default, f90 & 1.0004 & 6734 & 7690 \\
+default, f50 & 1.0004 & 6909 & 7649 \\
+default, f25 & 1.0004 & 7178 & 7768 \\
+Hf50, 100 & 1.0003 & 7036 & 7463 \\
+Hf50, 75 & 1.0003 & 7115 & 7538 \\
+Hf50, 50 & 1.0003 & 7261 & 7427 \\
+Hf50, f90 & 1.0003 & 7001 & 7464 \\
+Hf50, f50 & 1.0003 & 7169 & 7501 \\
+Hf50, f25 & 1.0003 & 7447 & 7575 \\
+w0.9, 100 & 1.0008 & 6854 & 7716 \\
+w0.9, 75 & 1.0008 & 6889 & 7651 \\
+w0.9, 50 & 1.0007 & 6957 & 7729 \\
+w0.9, f90 & 1.0008 & 6846 & 7666 \\
+w0.9, f50 & 1.0008 & 6919 & 7690 \\
+w0.9, f25 & 1.0006 & 7072 & 7728 \\
+Hf50\_w0.9, 100 & 1.0006 & 7140 & 7729 \\
+Hf50\_w0.9, 75 & 1.0005 & 7177 & 7766 \\
+Hf50\_w0.9, 50 & 1.0004 & 7253 & 7540 \\
+Hf50\_w0.9, f90 & 1.0007 & 7128 & 7690 \\
+Hf50\_w0.9, f50 & 1.0006 & 7204 & 7653 \\
+Hf50\_w0.9, f25 & 1.0003 & 7369 & 7770 \\
+\end{longtable}
+\noindent\begin{minipage}{\linewidth}\footnotesize Four chains, each with 2,000 warm-up and 2,000 retained draws. These effective sample sizes measure MCMC efficiency and are unrelated to prior ESS. These scalar diagnostics alone do not establish adequate exploration of all tree structures or parameters.\end{minipage}
+\endgroup

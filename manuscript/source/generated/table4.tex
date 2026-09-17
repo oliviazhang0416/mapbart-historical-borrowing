@@ -1,0 +1,43 @@
+\begingroup
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.13}
+\renewcommand{\arraystretch}{1.04}
+\fontsize{10}{11.5}\selectfont
+\begin{longtable}{lrrrr}
+\caption{Single-arm performance for Gaussian mean differences and median-survival ratios.}\label{tab:table4}\\
+\toprule
+Method & Bias & RMSE & Coverage & Power \\ \midrule
+\endfirsthead
+\multicolumn{5}{l}{\tablename\ \thetable\ (continued)}\\
+\toprule
+Method & Bias & RMSE & Coverage & Power \\ \midrule
+\endhead
+\midrule\multicolumn{5}{r}{Continued on next page}\\\endfoot
+\bottomrule\endlastfoot
+\multicolumn{5}{l}{\strut\textit{Gaussian, Sc1}}\\*
+lrcBART & -0.015 & 0.156 & 0.950 & 0.890 \\
+BART-CP & -0.014 & 0.153 & 0.940 & 0.940 \\
+LM-CP & -0.029 & 0.270 & 0.960 & 0.600 \\
+hier. LM & -0.025 & 0.272 & 1.000 & 0.090 \\
+hier. LM & -0.026 & 0.320 & 1.000 & 0.000 \\
+\multicolumn{5}{l}{\strut\textit{Gaussian, Sc2}}\\*
+lrcBART & 0.062 & 0.177 & 0.980 & 0.910 \\
+BART-CP & 0.056 & 0.176 & 0.930 & 0.950 \\
+LM-CP & 0.290 & 0.395 & 0.850 & 0.910 \\
+hier. LM & 0.357 & 0.444 & 1.000 & 0.500 \\
+hier. LM & 0.293 & 0.433 & 1.000 & 0.000 \\
+\multicolumn{5}{l}{\strut\textit{Survival, Sc1}}\\*
+lrcBART & -0.020 & 0.178 & 0.990 & 0.590 \\
+BART-CP & -0.011 & 0.180 & 0.970 & 0.730 \\
+AFT-CP & 0.055 & 0.373 & 0.970 & 0.370 \\
+hier. AFT & 0.097 & 0.388 & 1.000 & 0.020 \\
+hier. AFT & 0.065 & 0.377 & 1.000 & 0.000 \\
+\multicolumn{5}{l}{\strut\textit{Survival, Sc2}}\\*
+lrcBART & 0.070 & 0.216 & 0.980 & 0.730 \\
+BART-CP & 0.069 & 0.216 & 0.990 & 0.770 \\
+AFT-CP & 0.676 & 0.859 & 0.820 & 0.810 \\
+hier. AFT & 0.872 & 1.042 & 1.000 & 0.370 \\
+hier. AFT & 0.722 & 0.908 & 1.000 & 0.000 \\
+\end{longtable}
+\noindent\begin{minipage}{\linewidth}\footnotesize Each row summarizes 100 alternative-hypothesis replicates. Coverage is for a 95\% interval; empirical power is the frequency of posterior probability of benefit exceeding 0.95, using a threshold of 0.5 for Gaussian mean differences and 1 for survival ratios. All single-arm lrcBART primary rows use fixed $w=1$, $H_f=50$, $H_g=5$ and requested ESS 100. The hierarchical variance prior is $\operatorname{IG}(3/2,3a/2)$. In single-arm studies, CP uses all historical controls with full likelihood weight and no source discrepancy; there are no observed trial controls to pool. Full configurations and Monte Carlo standard errors appear in the appendix. Within each outcome and scenario, the first and second hier. LM or hier. AFT rows use prior settings $a=0.05$ and $a=0.5$, respectively.\end{minipage}
+\endgroup

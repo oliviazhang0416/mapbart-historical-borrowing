@@ -1,0 +1,15 @@
+# Implementation qualifications for the manuscript draft
+
+Approved content was migrated from settled/ on 2026-09-16. These qualifications are retained separately from the scientific exposition. The approved layout is implemented in the three manuscript source documents.
+
+- Use standard BART terminology: sum-of-trees model, ensemble of regression trees, terminal-node parameters, and Bayesian backfitting. The source walkthroughs preserve earlier explanatory wording.
+- The methodological reference uses historical outcomes with trial covariates for standardization. A common candidate-cutpoint and tree-support specification across preliminary fitting, discrepancy-tree simulation, and final fitting remains an intended alignment; existing analyses do not implement it uniformly.
+- Calibration uses an untruncated scaled inverse-chi-square law. Two-arm fitting truncates the spike variance below the slab variance. Single-arm and application fitting instead hold the spike variance at min(s0_sq, tau1_sq/2). This drafting task does not change those fits.
+- The central saved ESS curve averages ratios evaluated using rescaled block variances, whereas the saved ceiling uses the variance across all draws. These generally have different zero-scale limits. The numerical block rule and ceiling override must be described separately from the exact-integral theorem.
+- Single-arm analyses assume sigma_2^2 = sigma_3^2. Treated outcomes do not identify the trial-control discrepancy. Prior ESS is not evidence of compatibility.
+- Additional two-arm survival RMST results use an adaptive residual-variance substitution; RMST calculations also use a numerical lower bound in some ratio denominators. Describe these conventions explicitly rather than asserting exact equivalence to the stated control model.
+- All 414 existing simulation result files contain 100 alternative-hypothesis replicates. Current results do not support a Type I error table or claims of null-calibrated power without separate verification.
+- The application uses 30 EloKRd patients and 253 UCMM controls with harmonized covariates. The six predictor dimensions are age, sex, race, Hispanic/Latino status, cytogenetic risk, and ASCT. ASCT is a postinduction characteristic.
+- Figure 2 is replaced by Table 7, PFS only: the 22 joint combinations observed in EloKRd of age band, sex, race, Hispanic/Latino status, cytogenetic risk and ASCT; separate observed EloKRd and UCMM counts; numerical ESS for every row; displayed counts sum to 30 EloKRd and 98 UCMM patients, with the full 253-patient historical fit retained. Rows follow hierarchical covariate order. Exact ages remain in predictions; the whole historical fit supplies information for each defined subgroup.
+- Main results retain PFS and OS. All approved configurations remain in supplementary results. The old inverse-after-averaging pointwise ESS must not be substituted for the agreed expectation-of-ratios subgroup definition.
+- The current main draft, display document, and appendix are separate PDFs with editable LaTeX sources. Original revision sources and fitted study outputs are retained unchanged.

@@ -1,0 +1,26 @@
+[
+  {
+    "panel": "Gaussian, two-arm",
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/ess/ess_data_p10_sc1_alternative_1_Hg5.RData"
+  },
+  {
+    "panel": "Gaussian, two-arm",
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/res/ess/map_ess_data_p10_sc1_alternative_1_checkpoint.RData"
+  },
+  {
+    "panel": "Survival, two-arm",
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/res/ess/ess_data_p10_sc1_alternative_1_Hg5.RData"
+  },
+  {
+    "panel": "Gaussian, single-arm",
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/res/ess/ess_data_p10_sc1_alternative_1_Hg5.RData"
+  },
+  {
+    "panel": "Survival, single-arm, n200",
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/ess/ess_data_p10_n200_sc1_alternative_1_Hg5.RData"
+  },
+  {
+    "panel": "Survival, single-arm, n30",
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/res/ess/ess_data_p10_n30_sc1_alternative_1_Hg5.RData"
+  }
+]

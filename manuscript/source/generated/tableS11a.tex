@@ -1,0 +1,49 @@
+\begin{landscape}
+\begingroup
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.13}
+\renewcommand{\arraystretch}{1.13}
+\fontsize{8.5}{10.3}\selectfont
+\begin{longtable}{lrrrrrr}
+\caption{Application prior ESS calibration.}\label{tab:tableS11a}\\
+\toprule
+Target label & Requested & Capped target & $s_0^2$ & Block-based ESS & Full-variance ESS & Ceiling \\ \midrule
+\endfirsthead
+\multicolumn{7}{l}{\tablename\ \thetable\ (continued)}\\
+\toprule
+Target label & Requested & Capped target & $s_0^2$ & Block-based ESS & Full-variance ESS & Ceiling \\ \midrule
+\endhead
+\midrule\multicolumn{7}{r}{Continued on next page}\\\endfoot
+\bottomrule\endlastfoot
+\multicolumn{7}{l}{\strut\textit{PFS, $H_f=10$}}\\*
+100 & 30.00 & 30.00 & 0.006310 & 26.26 & 26.23 & 63.41 \\
+75 & 22.50 & 22.50 & 0.010000 & 20.34 & 20.38 & 63.41 \\
+50 & 15.00 & 15.00 & 0.017783 & 13.96 & 14.03 & 63.41 \\
+f90 & 57.07 & 57.07 & 0.001259 & 47.01 & 46.44 & 63.41 \\
+f50 & 31.70 & 31.70 & 0.005623 & 27.81 & 27.75 & 63.41 \\
+f25 & 15.85 & 15.85 & 0.017783 & 13.96 & 14.03 & 63.41 \\
+\multicolumn{7}{l}{\strut\textit{PFS, $H_f=50$}}\\*
+100 & 30.00 & 30.00 & 0.005012 & 26.95 & 26.89 & 54.35 \\
+75 & 22.50 & 22.50 & 0.008913 & 20.33 & 20.36 & 54.35 \\
+50 & 15.00 & 15.00 & 0.017783 & 13.31 & 13.38 & 54.35 \\
+f90 & 48.91 & 48.91 & 0.001122 & 42.55 & 42.09 & 54.35 \\
+f50 & 27.17 & 27.17 & 0.006310 & 24.26 & 24.24 & 54.35 \\
+f25 & 13.59 & 13.59 & 0.019953 & 12.29 & 12.37 & 54.35 \\
+\multicolumn{7}{l}{\strut\textit{OS, $H_f=10$}}\\*
+100 & 30.00 & 30.00 & 0.004467 & 24.69 & 24.31 & 36.64 \\
+75 & 22.50 & 22.50 & 0.010000 & 18.49 & 18.34 & 36.64 \\
+50 & 15.00 & 15.00 & 0.019953 & 13.10 & 13.08 & 36.64 \\
+f90 & 32.97 & 32.97 & 0.003162 & 27.05 & 26.55 & 36.64 \\
+f50 & 18.32 & 18.32 & 0.014125 & 15.75 & 15.67 & 36.64 \\
+f25 & 9.16 & 9.16 & 0.039811 & 8.47 & 8.50 & 36.64 \\
+\multicolumn{7}{l}{\strut\textit{OS, $H_f=50$}}\\*
+100 & 30.00 & 30.00 & 0.004467 & 25.09 & 24.85 & 37.85 \\
+75 & 22.50 & 22.50 & 0.008913 & 19.67 & 19.58 & 37.85 \\
+50 & 15.00 & 15.00 & 0.019953 & 13.23 & 13.25 & 37.85 \\
+f90 & 34.06 & 34.06 & 0.002818 & 28.27 & 27.92 & 37.85 \\
+f50 & 18.92 & 18.92 & 0.012589 & 16.86 & 16.82 & 37.85 \\
+f25 & 9.46 & 9.46 & 0.039811 & 8.52 & 8.57 & 37.85 \\
+\end{longtable}
+\noindent\begin{minipage}{\linewidth}\footnotesize Full-variance ESS evaluates the expectation-of-ratios definition with the variance across all historical posterior draws and tree-weight estimate, using 100,000 chi-square quantiles. Block-based ESS is the block average used in the existing scale selector, with 4,000 random scale draws. Differences also reflect numerical integration error; the reciprocal-variance ordering applies when the same integration draws are used. The same calibration is used at $w=1$ and $w=0.9$; it remains an all-spike reference.\end{minipage}
+\endgroup
+\end{landscape}

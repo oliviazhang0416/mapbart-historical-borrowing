@@ -1,0 +1,25 @@
+\documentclass[11pt]{article}
+\input{source/preamble}
+\fancyhead[R]{\small Supplementary appendix}
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\begin{document}
+\begin{center}
+{\Large\bfseries Supplementary appendix}\par\medskip
+{Locally robust commensurate Bayesian additive regression trees for historical information borrowing}\par
+{}
+\end{center}
+\noindent This appendix provides the posterior calculations, ESS derivation, conditional theoretical results, survival formulation, full simulation results and application sensitivities. Main-text equation and theorem references are identified explicitly. The prior ESS reference and the implemented prior-scale selection procedure are described separately.
+\tableofcontents
+\clearpage
+\appendix
+\numberwithin{equation}{section}
+\input{source/appendix_computation}
+\input{source/appendix_ess}
+\input{source/appendix_theory}
+\input{source/appendix_survival}
+\input{source/appendix_simulation}
+\input{source/appendix_application}
+\bibliographystyle{abbrvnat}
+\bibliography{source/references}
+\end{document}

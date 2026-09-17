@@ -1,0 +1,52 @@
+\documentclass[11pt]{article}
+\input{source/preamble}
+\fancyhead[R]{\small Main tables and figures}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\begin{document}
+\begin{center}
+{\Large\bfseries Main tables and figures}\par\medskip
+{Locally robust commensurate Bayesian additive regression trees for historical information borrowing}\par
+{}
+\end{center}
+\noindent Tables 1--7 and Figures 1--2 accompany the main manuscript. Full configurations, Monte Carlo standard errors and implementation details appear in the separate appendix.
+
+\begin{table}[h!]
+\centering\small
+\caption{Simulation study designs.}\label{tab:design}
+\begin{tabular}{p{1.35in}rrrrp{1.05in}}
+\toprule
+Design & Trial $N$ & Historical $n_3$ & $P(Z=1)$ & Replicates & Settings\\
+\midrule
+Gaussian, two-arm & 300 & 300 & $2/3$ & 100 & Sc1--Sc5; 12 settings\\
+Survival, two-arm & 300 & 300 & $3/4$ & 100 & Sc1--Sc5; 12 settings\\
+Gaussian, single-arm & 200 & 300 & 1 & 100 & Sc1--Sc2\\
+Survival, single-arm & 30 & 300 & 1 & 100 & Sc1--Sc2\\
+Survival, single-arm & 200 & 300 & 1 & 100 & Sc1--Sc2\\
+\bottomrule
+\end{tabular}
+\caption*{Ten predictors are generated in each design. $Z=1$ denotes trial treatment; two-arm allocation is Bernoulli, so realized arm sizes vary. Historical controls are regenerated for each replicate. Sc1: common covariate distributions; Sc2: selection on observed prognostic variables; Sc3: latent-variable selection with proxy correlations $-0.5,0,0.5$; Sc4: global historical shift of 1 or 2; Sc5: regional shifts outside $X_5>2$ (0.5, 1, 2) or $X_7\leq2$ (1, 2). Gaussian treatment effects are 1; survival effects are $\log(1.4)$ on the log-time scale. The two single-arm survival sample sizes belong to one study.}
+\end{table}
+\clearpage
+\input{source/generated/table2}
+\clearpage
+\input{source/generated/table3}
+\clearpage
+\input{source/generated/table4}
+\clearpage
+\input{source/generated/table5}
+\clearpage
+\input{source/generated/table6}
+\clearpage
+\input{source/generated/table7}
+\clearpage
+\input{source/figure_dag}
+\clearpage
+\begin{figure}[p]
+\centering
+\includegraphics[width=\linewidth]{figure1.pdf}
+\caption{Regional historical shifts for Gaussian outcomes (Sc5). Historical outcomes are shifted upward by $\delta=0.5,1,2$ where $X_5\leq2$, and are unshifted otherwise. (a) Posterior probability of a small discrepancy, $P\{|g(x)|<0.5\mid\text{data}\}$. (b) Posterior mean discrepancy; dashed lines show the true trial-minus-historical discrepancy, $-\delta$ in the shifted region and zero elsewhere. Solid curves summarize pooled trial-control profiles within $X_5$ bins of width 0.5 across 40 replicates; they are not uncertainty intervals. The dotted line marks the shift boundary. Primary lrcBART uses $H_f=50$, $H_g=5$, $w\sim\operatorname{Beta}(1,1)$ and requested prior ESS 100.}
+\label{fig:regional}
+\end{figure}
+\clearpage
+\end{document}

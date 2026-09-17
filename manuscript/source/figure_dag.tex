@@ -1,0 +1,55 @@
+% Migrated from MAPBART manuscript Figure 3 (tables_figures.tex).
+\begin{figure}[p]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[>=Stealth, yscale=1.5,
+  v/.style={draw, circle, minimum size=9mm, inner sep=0pt, font=\normalsize},
+  uv/.style={v, dashed},
+  lbl/.style={font=\small},
+  ed/.style={->, >=Stealth, shorten >=2pt, shorten <=2pt},
+  ttl/.style={font=\small\bfseries}]
+
+% ---------- Panel (1): No confounding ----------
+\begin{scope}
+  \node[v, label={[lbl]below:treatment}]   (Z1) at (0,0)      {$Z$};
+  \node[v, label={[lbl]below:outcome}]      (Y1) at (2.7,0)    {$Y$};
+  \node[v, label={[lbl]left:data source}]   (D1) at (0,1.3)    {$D$};
+  \node[v, label={[lbl]above:covariates}]   (X1) at (1.35,2.6) {$X$};
+  \draw[ed] (D1) -- (Z1);
+  \draw[ed] (Z1) -- (Y1);
+  \draw[ed] (X1) -- (Y1);
+  \node[ttl] at (1.35,3.5) {(1) No confounding};
+\end{scope}
+
+% ---------- Panel (2): Measured confounding ----------
+\begin{scope}[xshift=5.4cm]
+  \node[v, label={[lbl]below:treatment}]   (Z2) at (0,0)      {$Z$};
+  \node[v, label={[lbl]below:outcome}]      (Y2) at (2.7,0)    {$Y$};
+  \node[v, label={[lbl]left:data source}]   (D2) at (0,1.3)    {$D$};
+  \node[v, label={[lbl]above:covariates}]   (X2) at (1.35,2.6) {$X$};
+  \draw[ed] (D2) -- (Z2);
+  \draw[ed] (Z2) -- (Y2);
+  \draw[ed] (X2) -- (Y2);
+  \draw[ed] (X2) -- (D2);
+  \node[ttl] at (1.35,3.5) {(2) Measured confounding};
+\end{scope}
+
+% ---------- Panel (3): Unmeasured confounding ----------
+\begin{scope}[xshift=10.8cm]
+  \node[v, label={[lbl]below:treatment}]    (Z3) at (0,0)      {$Z$};
+  \node[v, label={[lbl]below:outcome}]       (Y3) at (2.7,0)    {$Y$};
+  \node[v, label={[lbl]left:data source}]    (D3) at (0,1.3)    {$D$};
+  \node[uv, label={[lbl]right:unmeasured}]   (U3) at (1.6,1.3)  {$U$};
+  \node[v, label={[lbl]above:proxy}]         (X3) at (1.6,2.6)  {$X$};
+  \draw[ed] (D3) -- (Z3);
+  \draw[ed] (Z3) -- (Y3);
+  \draw[ed] (U3) -- (D3);
+  \draw[ed] (U3) -- (Y3);
+  \draw[ed] (U3) -- (X3) node[midway, right, font=\small] {$\rho$};
+  \node[ttl] at (1.35,3.5) {(3) Unmeasured confounding};
+\end{scope}
+
+\end{tikzpicture}}
+\caption{Directed acyclic graphs (DAGs) for the source-selection mechanisms in Sc1--Sc3. In this schematic, $D$ denotes data source (trial or historical), $Z$ treatment assignment, $Y$ an individual outcome, $X$ the measured predictors relevant to the depicted paths and $U$ unmeasured prognostic variables; participant and group indices are suppressed. Sc1: measured covariates predict the outcome but do not influence source selection. Sc2: measured covariates influence both source selection and outcome. Sc3: unmeasured variables influence source selection and outcome, and generate observed proxies through $U\to X$, with proxy association indexed by $\rho$. Other measured predictors are omitted from the schematic. The $D\to Z$ edge reflects that historical observations are controls, whereas treatment is assigned within the trial. These diagrams illustrate the simulation mechanisms, not an established causal structure for the clinical application.}
+\label{fig:dag_scenarios}
+\end{figure}

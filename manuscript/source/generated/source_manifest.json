@@ -1,0 +1,546 @@
+[
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_OS_n283_Hf50_w0.9_N100.RData",
+    "md5": "591c4d455bd0d9f1e1b5f84c042cd42d"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_OS_n283_N50.RData",
+    "md5": "55cfe1f3affeb15f5a5f2e14eb4eb1f5"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_PFS_n283_N50.RData",
+    "md5": "f62111d0af8e27ad297de7bb878fc7f4"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/HierAFT_results_OS_n283_prior0.5.RData",
+    "md5": "992217f5c98d97a385cb572fe57018c8"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_PFS_n283_Hf50_N50.RData",
+    "md5": "289341d2c6f448b8b3bd87e2965b6a8e"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/AFTv2_results_PFS_n283_w1.RData",
+    "md5": "9e2a857c0a6805a80302829acf755e1d"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_PFS_n283_w0.9_N75.RData",
+    "md5": "58f7ed5475f3ac52e2cefa6891c7ce35"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_PFS_n283_N100.RData",
+    "md5": "c7df05c4bb03f55c1bfaf251d3b8be58"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_PFS_n283_Hf50_w0.9_N75.RData",
+    "md5": "efab82fc3e6433c1b382a60ade1bf88e"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_PFS_n283_Hf50_w0.9_N100.RData",
+    "md5": "c205fcc4fc81b76978c0f4a618840a08"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_OS_n283_w0.9_Nf25.RData",
+    "md5": "2df11830abf5bb310797965591207bdc"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_PFS_n283_Hf50_N75.RData",
+    "md5": "bfdf1d9776560288a1dfae3e666a9639"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_PFS_n283_Nf90.RData",
+    "md5": "64324d491bc27a6f8f0fbf12e5834950"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_PFS_n283_Hf50_Nf25.RData",
+    "md5": "0326a7d144e8aae971ea87bc2bde1f34"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_PFS_n283_N75.RData",
+    "md5": "3d656740b2c89fbce9b0f4837eade78c"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_PFS_n283_Nf50.RData",
+    "md5": "6a10b038f4dfa79dbf4d7701726dcda8"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_PFS_n283_Hf50_w0.9_Nf50.RData",
+    "md5": "b39b31d6e80d294f11d5163c15beb3a8"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_OS_n283_N75.RData",
+    "md5": "325a7086f283d43e9443127202b6fdc5"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_PFS_n283_Hf50_w0.9_Nf90.RData",
+    "md5": "af82ffe00e64b560c28c3c18b4888ad8"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_PFS_n283_Hf50_w0.9_N50.RData",
+    "md5": "ec85a368369ae1317cf9591426104987"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_PFS_n283_w0.9_Nf25.RData",
+    "md5": "7130ff2aa7a015b48182466fdbeb55d3"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_OS_n283_Hf50_w0.9_Nf90.RData",
+    "md5": "14a520858015420818e79e3b5fdd1191"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_OS_n283_Hf50_w0.9_Nf50.RData",
+    "md5": "6f67b476790fc206c9eb38336a310a4c"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_PFS_n283_w0.9_N50.RData",
+    "md5": "6d381af05f6304bf7f573fee7d4e050c"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/KM_results_OS_n283.RData",
+    "md5": "4efd7144a0e087bd4bcd640da008a09f"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_OS_n283_Hf50_Nf25.RData",
+    "md5": "e282eb2c0f6b01f793cd810ef92d78b1"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_OS_n283_Nf25.RData",
+    "md5": "a5b90096caeb3b6ddabcb097b2afe779"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/KM_results_PFS_n283.RData",
+    "md5": "075e1b7c89995957ddf57bb8f8a97251"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_OS_n283_w0.9_N100.RData",
+    "md5": "3405bba29b02712350b346ca1a67acbf"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_OS_n283_Hf50_N75.RData",
+    "md5": "96835b7f79d6ff3a6e81ef5b14405502"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/BARTv2_results_PFS_n283.RData",
+    "md5": "2c09b3db25a143813054bfca785c225b"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_PFS_n283_Hf50_N100.RData",
+    "md5": "f3bce3a8294b383654dd2e494038000d"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_OS_n283_Hf50_w0.9_N75.RData",
+    "md5": "342b36247ae93d58664e2b7614454394"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/BARTv2_results_OS_n283.RData",
+    "md5": "7447204f8ef15efe26cd174b2faa8e78"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_PFS_n283_w0.9_N100.RData",
+    "md5": "6e6f79d444ade3ba457992d7ce8807a6"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/HierAFT_results_OS_n283_prior0.05.RData",
+    "md5": "9ba05040036d1e8bc2b827750ed3121b"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_OS_n283_N100.RData",
+    "md5": "1d2abb9983f95d7722295f0b352b7dd3"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_OS_n283_Hf50_N100.RData",
+    "md5": "7443e178d1dfb02f91dfcef4fa2806d7"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_OS_n283_w0.9_N50.RData",
+    "md5": "15770575509cbcacafd20e5c69b3dc8e"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/HierAFT_results_PFS_n283_prior0.05.RData",
+    "md5": "7751fa206246bfa7063b8854c954a5ca"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_OS_n283_Hf50_w0.9_N50.RData",
+    "md5": "2d4f1784cb0b9ba3f14e7a70d91371b9"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_OS_n283_Hf50_w0.9_Nf25.RData",
+    "md5": "af0eb115874ccb7f97e1d5e284f10c03"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_PFS_n283_w0.9_Nf90.RData",
+    "md5": "1287813357ff274b424ce9beab82c28e"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_OS_n283_Hf50_N50.RData",
+    "md5": "77a661c7ff4b56bfca46b918c07efae3"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_PFS_n283_w0.9_Nf50.RData",
+    "md5": "aecf8bbfed05a109fc113d505259e571"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_OS_n283_Nf90.RData",
+    "md5": "4b41a97025b26b291280ce9e90d72b1c"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_OS_n283_Nf50.RData",
+    "md5": "e110bb5effbdc7d3d5c830b795a16924"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_OS_n283_Hf50_Nf90.RData",
+    "md5": "d0e15a1f3659b1f2af193ea01b694449"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_OS_n283_Hf50_Nf50.RData",
+    "md5": "e752cd984f3fcda8a6995327deafae97"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/HierAFT_results_PFS_n283_prior0.5.RData",
+    "md5": "24485425d927cb06565de122a91f3429"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_OS_n283_w0.9_N75.RData",
+    "md5": "0cace83ae7960fbb16d45be9a4adfaa6"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_OS_n283_w0.9_Nf90.RData",
+    "md5": "0faf113bb8c744e9850aeec1d12eaa5c"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_OS_n283_w0.9_Nf50.RData",
+    "md5": "bfcc25a50658c1973e98c5e92f90c5ed"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/AFTv2_results_OS_n283_w1.RData",
+    "md5": "7c00c6427ad66109ba03df507ccb6d37"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_PFS_n283_Hf50_w0.9_Nf25.RData",
+    "md5": "a157e75a6ea1a852138de996c72b55af"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_PFS_n283_Hf50_Nf90.RData",
+    "md5": "a740cb4d45ff525135eabc827c680c82"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_PFS_n283_Nf25.RData",
+    "md5": "a81a5ba25257d45c66777190b50e9fe8"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/results_table.RData",
+    "md5": "f2ccb1664920abbb4916c304eb8b71b6"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/LRC-BART_results_PFS_n283_Hf50_Nf50.RData",
+    "md5": "892642f64a84daa934da447d657470b1"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/plot.R",
+    "md5": "51660cddf7b1b2fd2a1e8fc182e40312"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/BARTv3.R",
+    "md5": "0983546102b3bd71d5d5ded30f92dde7"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/plot_balance.R",
+    "md5": "915b96d7a29c6869779b3a864b688c14"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/MAP.R",
+    "md5": "af2ef73461a52167c7af08b47631d251"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/lrcBART.R",
+    "md5": "2a168d5c949e4c78f928f1c79ec243d6"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/plot_balance_simple.R",
+    "md5": "6cf3c1b106bb5932492484f5ebdba5d4"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/LMv3.R",
+    "md5": "cb128607be7bfcf13fee42365ca3c169"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/PSCL.R",
+    "md5": "5ca61453131aed3b07db98b88ddf4fd7"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/hierLM.R",
+    "md5": "bfe3c315c450bfd9180528f9c9e1fff4"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/LMv2.R",
+    "md5": "c5616f7deb3c4ed1f92b61a4d336983c"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/BARTv1.R",
+    "md5": "971678d94800dff11a859bf9a8eb0a03"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/run_all.R",
+    "md5": "cf918614257bdcdb1f48481ce35846cd"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/BARTv2.R",
+    "md5": "0371191a75aeaa7395a7e872dfc3da46"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/LMv1.R",
+    "md5": "cc8ddac0a5469370699f410b8c6d31cd"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/data_gen_p10.R",
+    "md5": "b0b1f43d5d0f6f4b6daf06851f7f8b71"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/ess_local/ess_cal.R",
+    "md5": "193c8083486a8aad5b89cf69382cac1e"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/ess_local/ess_plot_simple.R",
+    "md5": "3c15a44ad09cc06d997992e4866c8570"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/ess_local/ess_cal_map.R",
+    "md5": "3b8fdb5407ccc00d443208a35ae8270a"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian/ess_local/ess_plot.R",
+    "md5": "5f022561ffb5abd04a3b592a5b5f0aa2"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/plot.R",
+    "md5": "2825384cb03f90131e0a136aac22612d"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/BARTv3.R",
+    "md5": "d4c2ad7e9952fc3e82818a8110aa52f8"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/plot_balance.R",
+    "md5": "aa8044da144bf308269c8dbbadee50f8"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/lrcBART.R",
+    "md5": "3333db9d77a164472322aac7abc6d6fe"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/plot_balance_simple.R",
+    "md5": "8ecfea365ee515cb5202ce091dd65d9a"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/hierAFT.R",
+    "md5": "be0b9daae1e730b5c2dd1ae002d0c3c8"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/AFTv3.R",
+    "md5": "22f2f5f345ec37c6774e74c26d2e6e3d"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/BARTv1.R",
+    "md5": "1268b7a20747754d81683319cbe7a113"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/AFTv2.R",
+    "md5": "6beb834d73c742cdc8851593c142df16"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/run_all.R",
+    "md5": "0ffcc6c859e6f7174d7aa2e3c3f65461"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/BARTv2.R",
+    "md5": "2b4945a21c36606a035bfc287a8861e4"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/AFTv1.R",
+    "md5": "a5fe69b7e2dd370adf6b529d277e47ba"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/data_gen_p10.R",
+    "md5": "d472904d77e675510986f1e95dbe4983"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/rmst_helpers.R",
+    "md5": "1c45424d111bed91e1cd21fc680cdfaa"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/ess_local/ess_cal.R",
+    "md5": "8ea2dd35c3dc4a5c9f6b437d48d358c2"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/ess_local/ess_plot_simple.R",
+    "md5": "3c15a44ad09cc06d997992e4866c8570"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival/ess_local/ess_plot.R",
+    "md5": "db5d9852ca7249448ce1c927e1f5d6c4"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/plot.R",
+    "md5": "86f23019dc8456dcb5f1aa77c81b9539"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/plot_balance.R",
+    "md5": "c021aa727bff656591294e92c86dc14d"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/lrcBART.R",
+    "md5": "24e55714f61e419d14371e81d66cc4ac"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/plot_balance_simple.R",
+    "md5": "60f2ad249ddf5268dea066cd7b73ffb2"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/hierLM.R",
+    "md5": "e859fa9c6a99336b881e1b45ccc6764b"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/LMv2.R",
+    "md5": "76ff0c49a6516f981da19c3c14a0909a"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/run_all.R",
+    "md5": "f6a1153fa98814795c0d79659f22a9bd"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/BARTv2.R",
+    "md5": "c5a3ebdfb136b4d5fa2eff29f63b617e"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/data_gen_p10.R",
+    "md5": "1859d1fcc915a570e3fbfaf3adfcecf4"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/ess_local/ess_cal.R",
+    "md5": "c20ed6a361b9a9175c8ac0aade32c688"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/ess_local/ess_plot_simple.R",
+    "md5": "8d48c8007ef82318e5a156a847e2fb51"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-gaussian-single-arm/ess_local/ess_plot.R",
+    "md5": "6a641d00586124f2b8f71de3cdcaad84"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/plot.R",
+    "md5": "8e5c71418c2f8cf83bff03331dee3626"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/plot_balance.R",
+    "md5": "7df73d50c4e934786084bd9e3e954b0c"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/lrcBART.R",
+    "md5": "592e9ad3744f93df9c95876a541b311c"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/plot_balance_simple.R",
+    "md5": "88d8bf4dbcc4b1f152b96e0195890b16"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/hierAFT.R",
+    "md5": "5102de30d52e96019ffe9d643c5193f7"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/AFTv2.R",
+    "md5": "b06f1da3ee71ffe106d0c481ec972400"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/run_all.R",
+    "md5": "c99bdcef1c2e565bf232f698d94a906f"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/BARTv2.R",
+    "md5": "7fee152f112c3cda013dde4765f2e097"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/data_gen_p10.R",
+    "md5": "5600859a52399d5dfd91c9405d0f0df4"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/rmst_helpers.R",
+    "md5": "4d78df38479718f1ec48718ea13f5bae"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/ess_local/ess_cal.R",
+    "md5": "475c3465025444c3b392068a3a729dcb"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/ess_local/ess_plot_simple.R",
+    "md5": "8d48c8007ef82318e5a156a847e2fb51"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/ess_local/ess_plot.R",
+    "md5": "6e7598d2b81fa702d973570afa74055e"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-sim-survival-single-arm/ess_local/gen_one.R",
+    "md5": "15bab5df7686eee46f879dc013bd91aa"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/lrcBART.R",
+    "md5": "10f8d9b4ec3377d0ba2829a95cacdaf9"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/hierAFT.R",
+    "md5": "ada4a69af763cda36edebc9999b54674"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/summarize.R",
+    "md5": "82e323449004d6aa5661be366680abdd"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/AFTv2.R",
+    "md5": "d227fbc6c44b1faa88015c71b809677f"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/run_all.R",
+    "md5": "659448744106080cda5522db91d54ad8"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/BARTv2.R",
+    "md5": "728889aa0431e9240fba96e26aa06d30"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/km.R",
+    "md5": "a22c71d895788b56933c24ce59863ce3"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/private_data/data_cleaning_elokrd.R",
+    "md5": "32aed279ddbbb4c66712b81f5a882ef7"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/private_data/data_cleaning_ucmm.R",
+    "md5": "33e11b898000b6e4666e1da9cdd1dad1"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/private_data/data_merge.R",
+    "md5": "e870cdb4ce6857884b880dc044db2cfc"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/ess_local/ess_cal.R",
+    "md5": "d15e7d4653179f656df4d13d81e1dae5"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/ess_local/ess_plot.R",
+    "md5": "10efd7b16643c9c65bfa194bf5a56cf2"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/data_cleaned/merged_elokrd_ucmm_n283.RData",
+    "md5": "3c68410beefb901c9bea80309caa7978"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcBART/clrcbart.cpp",
+    "md5": "64985c273982521b49541a07c69961f6"
+  },
+  {
+    "path": "/Users/oliviazhang/Desktop/lrcBART/cess.cpp",
+    "md5": "19e8d467e00414dbc8e8d03d0d66f66a"
+  }
+]

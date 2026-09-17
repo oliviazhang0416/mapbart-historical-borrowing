@@ -1,0 +1,14 @@
+{
+  "main": {
+    "pages": 12,
+    "unresolved_references": false
+  },
+  "main_tables_figures": {
+    "pages": 11,
+    "unresolved_references": false
+  },
+  "appendix": {
+    "pages": 54,
+    "unresolved_references": false
+  }
+}

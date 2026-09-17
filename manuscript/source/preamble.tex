@@ -1,0 +1,38 @@
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{mathptmx,amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype,graphicx,booktabs,longtable,array,pdflscape}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage[round,authoryear]{natbib}
+\usepackage{xcolor,enumitem,setspace}
+\usepackage{xr-hyper}
+\usepackage[colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue]{hyperref}
+\usepackage{fancyhdr}
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\small lrcBART: historical information borrowing}
+\fancyhead[R]{\small Manuscript draft}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\setstretch{1.12}
+\setlength{\parindent}{1.2em}
+\setlength{\parskip}{2pt}
+\setlength{\emergencystretch}{2em}
+\setlist[enumerate]{itemsep=3pt,topsep=4pt}
+\newcommand{\E}{\operatorname{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\ESS}{\operatorname{ESS}}
+\newcommand{\N}{\mathrm{N}}
+\newcommand{\IG}{\operatorname{IG}}
+\newcommand{\ind}{\mathbf{1}}
+\newcommand{\lrc}{lrcBART}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}[section]
+\theoremstyle{remark}\newtheorem{remark}{Remark}[section]
+\graphicspath{{source/figures/}}
+\makeatletter
+\def\input@path{{source/}}
+\makeatother
+\hypersetup{pdfauthor={},pdfsubject={Statistical methods manuscript draft}}

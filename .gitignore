@@ -1,3 +1,53 @@
+# macOS / R session cruft
 .DS_Store
 .Rhistory
 .Rapp.history
+.Rproj.user/
+.Rproj.user
+*.Rproj.user
+
+# ---------------------------------------------------------------------------
+# Regenerable model output. Directory structure is kept via .gitkeep so that
+# run_all.R has somewhere to write on a fresh clone.
+# ---------------------------------------------------------------------------
+**/res/*
+!**/res/.gitkeep
+
+**/inserts/*
+!**/inserts/.gitkeep
+
+# ---------------------------------------------------------------------------
+# Simulated datasets. Rebuild with data_gen_p10.R in each sim project.
+# ---------------------------------------------------------------------------
+lrcbart-sim-gaussian/data/*
+!lrcbart-sim-gaussian/data/.gitkeep
+lrcbart-sim-gaussian-single-arm/data/*
+!lrcbart-sim-gaussian-single-arm/data/.gitkeep
+lrcbart-sim-survival/data/*
+!lrcbart-sim-survival/data/.gitkeep
+lrcbart-sim-survival-single-arm/data/*
+!lrcbart-sim-survival-single-arm/data/.gitkeep
+
+# ---------------------------------------------------------------------------
+# Patient-level inputs. NEVER publish: this repository is public.
+# ---------------------------------------------------------------------------
+lrcbart-case-study-mm/private_data/
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# ---------------------------------------------------------------------------
+# HELD PENDING REVIEW: 25-column cleaned cohorts (adds iss/riss/ecog, full
+# cytogenetics, heavy/light chain, best_response) beyond the 13 analysis
+# columns published on main. Not used by the analysis scripts. Delete these
+# four lines to publish them.
+# ---------------------------------------------------------------------------
+lrcbart-case-study-mm/data_cleaned/elokrd_cleaned_n30.RData
+lrcbart-case-study-mm/data_cleaned/ucmm_cleaned_n253.RData
+lrcbart-case-study-mm/data_cleaned/ucmm_cleaned_n48.RData

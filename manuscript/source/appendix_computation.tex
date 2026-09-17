@@ -1,0 +1,146 @@
+\section{Posterior computation}\label{sec:A}
+\subsection{Priors, conditioning and numerical settings}\label{sec:A.1}
+Historical and trial-control observations retain their source labels from the main model. Their means are $f(x_{3,i})$ and $f(x_{2,i})+g(x_{2,i})$, with residual variances $\sigma_3^2$ and $\sigma_2^2$, respectively. Fixed centering constants are suppressed below and restored for predictions. The tree priors are independent across trees; conditional on trees and shared hyperparameters, terminal-node parameters follow the component-specific priors in the main model. Posterior dependence is retained by Bayesian backfitting.
+
+For control group $s\in\{2,3\}$, the residual prior is
+\begin{equation}
+\sigma_{s}^2\sim\IG\left(\frac{\nu_\sigma}{2},\frac{\nu_\sigma\lambda_{\sigma,s}}{2}\right),\qquad\nu_\sigma=3,
+\end{equation}
+where the second argument is a scale and $p(u)\propto u^{-a-1}\exp(-b/u)$. If $R_y$ is the range of the relevant centered fitting outcomes, the standard terminal-node rules are $\lambda_f^2=R_y^2/(16H_f)$ and $\tau_1^2=R_y^2/(16H_g)$. A positive fallback is used when an empirical range or preliminary residual estimate is degenerate. Each $\lambda_{\sigma,s}$ is a preliminary residual-variance estimate times $\chi^2_{3,0.10}/3$. Gaussian preliminary estimates use linear regression; survival estimates use lognormal AFT regression, with the script's dispersion fallback. These are data-dependent prior scale choices and are held fixed within sampling.
+
+\begin{table}[htbp]
+\centering\small
+\caption{lrcBART prior and computation settings.}\label{tab:S1}
+\begin{tabular}{p{2.1in}p{3.8in}}
+\toprule
+Quantity & Setting\\\midrule
+Historical and discrepancy trees & Simulations: $H_f=50$, $H_g=5$; application: $H_f=10$ or 50, $H_g=5$\\
+Treatment trees & $H_h=50$ in all studies, including application settings with $H_f=10$\\
+Depth prior & $(\alpha_f,\beta_f)=(\alpha_h,\beta_h)=(0.95,2)$; $(\alpha_g,\beta_g)=(0.5,3)$\\
+Terminal-node scale & $\lambda_f^2=R_y^2/(16H_f)$; $\tau_1^2=R_y^2/(16H_g)$\\
+Residual variance & Inverse-gamma, $\nu_\sigma=3$; scale from preliminary residual estimate\\
+Spike variance, two-arm fit & Scaled inverse-chi-square with $\nu_0=3$, restricted below $\tau_1^2$; updated\\
+Spike variance, single-arm fit & Fixed at $\min(s_0^2,\tau_1^2/2)$\\
+Mixture probability & Two-arm: Beta$(1,1)$, updated; single-arm: fixed 1 or 0.9\\
+Tree proposals & Grow, prune, change with probabilities 0.3, 0.3, 0.4\\
+Minimum fitting leaf size & $f$: 5 controls in total; $g$: 5 trial controls in two-arm fits, 0 in single-arm fits\\
+Simulation lrcBART sampling & 1,000 warm-up; 1,000 retained draws; thinning 1\\
+Application lrcBART sampling & Four chains; 2,000 warm-up and 2,000 retained per chain\\
+Preliminary historical fit & Simulations: 1,000 warm-up and 1,000 retained; application: 2,000 warm-up and 4,000 retained\\
+Prior ESS Monte Carlo & 2,000 prior trees, 4,000 scale draws, 20 variance blocks\\
+Scale grid and selector & 141 log-spaced values from $10^{-6}$ to 10; block acceptance fraction 0.95\\
+\bottomrule
+\end{tabular}
+\caption*{The sampler overrides the discrepancy minimum leaf size to zero when no trial controls are present. The calibration prior-tree simulation has its own admissibility and maximum-depth rule, discussed in Appendix B.9. Historical and treatment priors use their respective outcome ranges.}
+\end{table}
+
+\subsection{Partial residuals}\label{sec:A.2}
+For the current tree $j$, remove its contribution from the respective sum. Conditional on every other tree and current variance values, form
+\begin{equation}\label{eq:partial}
+\begin{aligned}
+r_{3,i}^f&\coloneqq Y_{3,i}-f^{(-j)}(x_{3,i}),\\
+r_{2,i}^f&\coloneqq Y_{2,i}-f^{(-j)}(x_{2,i})-g(x_{2,i}),\\
+r_{2,i}^g&\coloneqq Y_{2,i}-f(x_{2,i})-g^{(-j)}(x_{2,i}).
+\end{aligned}
+\end{equation}
+The residuals with subscript $2$ use trial controls only. $f^{(-j)}$ and $g^{(-j)}$ denote the respective sums with tree $j$ omitted; the tree index is suppressed on the residuals. These residuals remain fixed when comparing the current and proposed structures for tree $j$. For survival data, $Y_{3,i}$ and $Y_{2,i}$ in these calculations are the current observed or augmented log event time.
+
+\subsection{Marginal leaf likelihoods}\label{sec:A.3}
+Within a specified leaf, write $r_i$ for the relevant partial residuals, suppressing their source labels only in the generic normal integral. For an $f$ leaf these include both $r_{3,i}^f$ and $r_{2,i}^f$, with their respective residual variances; for a $g$ leaf they include only $r_{2,i}^g$.
+\begin{lemma}[Normal leaf integral]\label{lem:leaf}
+Suppose $r_i\mid\theta\sim\N(\theta,\sigma_i^2)$ independently in a leaf and $\theta\sim\N(0,q^2)$, with $q^2>0$. Let $A\coloneqq \sum_i\sigma_i^{-2}$ and $B\coloneqq \sum_i r_i\sigma_i^{-2}$. The marginal leaf density is
+\begin{equation}\label{eq:leafdensity}
+p(\mathbf r_\ell\mid \mathcal T_j,\text{rest})=
+\left[\prod_{i\in\ell}\phi(r_i;0,\sigma_i^2)\right]
+(1+q^2A)^{-1/2}\exp\!\left\{\frac{q^2B^2}{2(1+q^2A)}\right\}.
+\end{equation}
+Here $\mathcal T_j$ denotes the current tree, with the component superscript suppressed, and $\theta$ denotes its leaf parameter. The last argument of $\phi$ is variance; the result also holds for an empty leaf, using $A=B=0$ and an empty product of one.
+\end{lemma}
+\begin{proof}
+Factor the observation-level product from the normal likelihood and integrate the remaining prior-weighted kernel:
+\begin{equation}
+\frac{1}{\sqrt{2\pi q^2}}\int\exp\left\{-\frac12(A+q^{-2})\theta^2+B\theta\right\}d\theta.
+\end{equation}
+Completing the square gives mean $B/(A+q^{-2})$ and precision $A+q^{-2}$. Its normalizing integral is $\{q^2(A+q^{-2})\}^{-1/2}\exp\{B^2/[2(A+q^{-2})]\}$, which is the stated factor.
+\end{proof}
+
+For an $f$ leaf, let $n_{s,\ell},S_{s,\ell}$ be the count and sum of its partial residuals from source $s$. Write $A$ and $B$ for the leaf precision and precision-weighted residual sum. The marginal likelihood factor is
+\begin{equation}\label{eq:Mf}
+\begin{gathered}
+A\coloneqq \frac{n_{2,\ell}}{\sigma_2^2}+\frac{n_{3,\ell}}{\sigma_3^2},\qquad
+B\coloneqq \frac{S_{2,\ell}}{\sigma_2^2}+\frac{S_{3,\ell}}{\sigma_3^2},\\
+M_f=(1+\lambda_f^2A)^{-1/2}
+\exp\!\left\{\frac{\lambda_f^2B^2}{2(1+\lambda_f^2A)}\right\}.
+\end{gathered}
+\end{equation}
+For a $g$ leaf, redefine $A$ and $B$ using only its trial-control count and partial-residual sum. Integrate its parameter under each component, then sum over its indicator:
+\begin{equation}\label{eq:Mg}
+\begin{aligned}
+A&\coloneqq \frac{n_{2,\ell}}{\sigma_2^2},\qquad B\coloneqq \frac{S_{2,\ell}}{\sigma_2^2},\\
+M_g&=w(1+\tau_0^2A)^{-1/2}
+\exp\!\left\{\frac{\tau_0^2B^2}{2(1+\tau_0^2A)}\right\}\\
+&\quad+(1-w)(1+\tau_1^2A)^{-1/2}
+\exp\!\left\{\frac{\tau_1^2B^2}{2(1+\tau_1^2A)}\right\}.
+\end{aligned}
+\end{equation}
+Thus both $\theta^g_{j\ell}$ and $z_{j\ell}$ are marginalized for a discrepancy-tree proposal. The quantities $w,\tau_0^2,\tau_1^2$ are held fixed, not integrated out in this step. For an empty trial-control leaf, $M_g=w+(1-w)=1$.
+
+\subsection{Metropolis--Hastings tree updates}\label{sec:A.4}
+The marginal tree likelihood is the observation-level density product times the product of its leaf factors. The observation product is identical under both partitions, so it cancels from the Metropolis--Hastings ratio. Suppressing the tree index and component label, a proposal $\mathcal T\to \mathcal T^*$ is accepted with probability
+\begin{equation}\label{eq:MH}
+\min\left\{1,
+\frac{p(\mathcal T^*)}{p(\mathcal T)}\frac{q(\mathcal T\mid \mathcal T^*)}{q(\mathcal T^*\mid \mathcal T)}
+\frac{\prod_{\ell\in \mathcal T^*}M_\ell}{\prod_{\ell\in \mathcal T}M_\ell}\right\}.
+\end{equation}
+The tree prior includes split/no-split probabilities and admissible variable/cutpoint rules; the proposal ratio accounts for the choice of move, node and rule. For a grow move replacing parent $P$ with children $L,R$, the likelihood contribution reduces to $M_LM_R/M_P$. The current implementation uses grow, prune and change proposals; an inadmissible proposal is rejected.
+
+\subsection{Conditional parameter distributions}\label{sec:A.5}
+After accepting or rejecting a structure, sample node parameters for the retained tree. For an $f$ leaf,
+\begin{equation}
+\theta^f_{j\ell}\mid\text{rest}\sim
+\N\!\left(\frac{B}{A+\lambda_f^{-2}},\frac{1}{A+\lambda_f^{-2}}\right).
+\end{equation}
+For a nonempty $g$ leaf, its spike probability is
+\begin{equation}\label{eq:spikeposterior}
+P(z_{j\ell}=1\mid\text{rest})=
+\frac{w\,\phi(\bar r;0,\tau_0^2+\sigma_2^2/n_{2,\ell})}
+{w\,\phi(\bar r;0,\tau_0^2+\sigma_2^2/n_{2,\ell})+(1-w)\,\phi(\bar r;0,\tau_1^2+\sigma_2^2/n_{2,\ell})}.
+\end{equation}
+This compares the density of the partial-residual mean under the two integrated components, including their prior weights. Given component variance $\tau_k^2$ ($k=0$ for $z=1$ and $k=1$ for $z=0$),
+\begin{equation}
+\theta^g_{j\ell}\mid z_{j\ell},\text{rest}\sim
+\N\!\left(\frac{B}{A+\tau_k^{-2}},\frac{1}{A+\tau_k^{-2}}\right).
+\end{equation}
+An empty leaf instead draws $z\sim\operatorname{Bernoulli}(w)$ and $\theta$ from its selected prior component; division by $n_{2,\ell}=0$ is never required.
+
+Let $L_g$ be the total number of discrepancy terminal nodes, $K_0\coloneqq \sum_{j,\ell}z_{j\ell}$ and $S_0\coloneqq \sum_{j,\ell}z_{j\ell}(\theta^g_{j\ell})^2$. With $w\sim\operatorname{Beta}(a_w,b_w)$, where $a_w=b_w=1$ by default,
+\begin{equation}
+w\mid\text{rest}\sim\operatorname{Beta}(a_w+K_0,b_w+L_g-K_0).
+\end{equation}
+When the spike variance is updated under the hierarchical prior,
+\begin{equation}
+\tau_0^2\mid\text{rest}\sim
+\operatorname{scaled\text{-}Inv}\chi^2\!\left(
+\nu_0+K_0,\frac{\nu_0s_0^2+S_0}{\nu_0+K_0}\right)
+\text{ restricted to }(0,\tau_1^2).
+\end{equation}
+For each observed control source, let $n_{s}$ denote its total sample size and define its residual sum of squares using the full current mean, $\mathrm{RSS}_{s}$. Then
+\begin{equation}
+\sigma_{s}^2\mid\text{rest}\sim
+\IG\left(\frac{\nu_\sigma+n_{s}}{2},\frac{\nu_\sigma\lambda_{\sigma,s}+\mathrm{RSS}_{s}}{2}\right).
+\end{equation}
+The treatment sum of trees is fitted separately under the normal or augmented-normal likelihood. It uses $H_h=50$, $(\alpha_h,\beta_h)=(0.95,2)$, independent $\theta^h_{j\ell}\sim\N(0,\lambda_h^2)$ with $\lambda_h^2=R_{y,1}^2/(16H_h)$, and $\sigma_1^2\sim\IG(\nu_\sigma/2,\nu_\sigma\lambda_{\sigma,1}/2)$. The treatment-specific $\lambda_{\sigma,1}$ follows the preliminary residual rule in Section A.1.
+
+\subsection{Sampling cycle and the single-arm specialization}\label{sec:A.6}
+\noindent\textbf{Algorithm A1: Bayesian backfitting for the control model.}
+\begin{enumerate}
+\item Initialize tree structures, terminal-node parameters, scales and, for censored outcomes, latent log event times.
+\item For each $f$ tree, form the partial residuals in \eqref{eq:partial}, propose a structure using $M_f$, and sample the retained tree's node parameters.
+\item For each $g$ tree, form trial-control partial residuals, propose a structure using $M_g$, and sample indicators and node parameters for the retained tree.
+\item Update $\tau_0^2$ and $w$ when estimated, and update source-specific residual variances.
+\item For survival outcomes, redraw censored latent log times above their observed log censoring bounds.
+\item Repeat; discard warm-up draws and retain predictions and scalar summaries at the stated thinning interval.
+\end{enumerate}
+Node draws occur even if a structure proposal is rejected. Logarithmic evaluation and a log-sum-exp calculation for the mixture factor avoid numerical overflow.
+
+When there are no trial controls, every $g$ leaf has $M_g=1$. Tree structures and leaf parameters for $g$ are then sampled from their specified prior, with no outcome-likelihood update. The sampler permits such prior-only trees by setting their minimum trial-control leaf size to zero. It also sets $\sigma_2^2=\sigma_3^2$ at each draw. The shared cutpoint specification and any fixed empirical prior scales are treated as conditioned-on quantities. Consequently the single-arm control prediction is $f+g$, with a prior-driven discrepancy.

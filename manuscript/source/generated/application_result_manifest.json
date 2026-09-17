@@ -1,0 +1,234 @@
+[
+  {
+    "file": "KM_results_PFS_n283.RData",
+    "md5": "a2248d1e13830d5fe5bc24c03c97d1e1"
+  },
+  {
+    "file": "AFTv2_results_PFS_n283_w1.RData",
+    "md5": "172740d14c5b78096db6bcb43fdc4644"
+  },
+  {
+    "file": "BARTv2_results_PFS_n283.RData",
+    "md5": "c0555dffe84ba9992a89f2ab74a27115"
+  },
+  {
+    "file": "HierAFT_results_PFS_n283_prior0.05.RData",
+    "md5": "dabcf8986d905f305735b6188dbbaa33"
+  },
+  {
+    "file": "HierAFT_results_PFS_n283_prior0.5.RData",
+    "md5": "bf3cd9fd4802c5091f92b31fb4a8ce5c"
+  },
+  {
+    "file": "LRC-BART_results_PFS_n283_N100.RData",
+    "md5": "975b0d7a1ce28bdd9a8ed116d1b20585"
+  },
+  {
+    "file": "LRC-BART_results_PFS_n283_N75.RData",
+    "md5": "774f7545046deef552e73ffb6d30409e"
+  },
+  {
+    "file": "LRC-BART_results_PFS_n283_N50.RData",
+    "md5": "81bc5a44d7a9d03a5d89f64074ceb6cb"
+  },
+  {
+    "file": "LRC-BART_results_PFS_n283_Nf90.RData",
+    "md5": "c6cdcabd33f68498f847ca2e84ba356c"
+  },
+  {
+    "file": "LRC-BART_results_PFS_n283_Nf50.RData",
+    "md5": "56b00f02c849103642ec348f8f50965c"
+  },
+  {
+    "file": "LRC-BART_results_PFS_n283_Nf25.RData",
+    "md5": "a6fcb7cc26a4170a8327ef3990da6156"
+  },
+  {
+    "file": "LRC-BART_results_PFS_n283_Hf50_N100.RData",
+    "md5": "ac8de272e1c6f5b4e1d098794e196665"
+  },
+  {
+    "file": "LRC-BART_results_PFS_n283_Hf50_N75.RData",
+    "md5": "b3fbfceeea17b970bd2d947838cb200a"
+  },
+  {
+    "file": "LRC-BART_results_PFS_n283_Hf50_N50.RData",
+    "md5": "821ed831f415f98614c5e48e79a04dab"
+  },
+  {
+    "file": "LRC-BART_results_PFS_n283_Hf50_Nf90.RData",
+    "md5": "5e51f9ddbbb5c6215325baa05405cdc9"
+  },
+  {
+    "file": "LRC-BART_results_PFS_n283_Hf50_Nf50.RData",
+    "md5": "10441f0232c72da0676e1a0f387da7a8"
+  },
+  {
+    "file": "LRC-BART_results_PFS_n283_Hf50_Nf25.RData",
+    "md5": "17e716ffaf9a6bbfcb361f0b8b48ac88"
+  },
+  {
+    "file": "LRC-BART_results_PFS_n283_w0.9_N100.RData",
+    "md5": "51191b779b843a7caf855f03d29bd492"
+  },
+  {
+    "file": "LRC-BART_results_PFS_n283_w0.9_N75.RData",
+    "md5": "c0dde1d784e33402087aa16dd90c308a"
+  },
+  {
+    "file": "LRC-BART_results_PFS_n283_w0.9_N50.RData",
+    "md5": "165dfc9ce585268db9e453f7627b93e1"
+  },
+  {
+    "file": "LRC-BART_results_PFS_n283_w0.9_Nf90.RData",
+    "md5": "6c4a8d15e88dd95fb9ebc77ad26fc05a"
+  },
+  {
+    "file": "LRC-BART_results_PFS_n283_w0.9_Nf50.RData",
+    "md5": "94b28fc7fd7e457a1a355dfdde0be9f7"
+  },
+  {
+    "file": "LRC-BART_results_PFS_n283_w0.9_Nf25.RData",
+    "md5": "a28bf4f716a357a9baa9e0152fa50659"
+  },
+  {
+    "file": "LRC-BART_results_PFS_n283_Hf50_w0.9_N100.RData",
+    "md5": "8b88b1cbac8966d228beb39307362f3b"
+  },
+  {
+    "file": "LRC-BART_results_PFS_n283_Hf50_w0.9_N75.RData",
+    "md5": "da813f7b36abcfe2d399bf8181f77ee6"
+  },
+  {
+    "file": "LRC-BART_results_PFS_n283_Hf50_w0.9_N50.RData",
+    "md5": "99bc8e0c2193d84b02fe0e8f38829073"
+  },
+  {
+    "file": "LRC-BART_results_PFS_n283_Hf50_w0.9_Nf90.RData",
+    "md5": "6def9df2f55ec5b774fba6911607fe29"
+  },
+  {
+    "file": "LRC-BART_results_PFS_n283_Hf50_w0.9_Nf50.RData",
+    "md5": "5e52176f395a3c5441cb99fdbc209b04"
+  },
+  {
+    "file": "LRC-BART_results_PFS_n283_Hf50_w0.9_Nf25.RData",
+    "md5": "c13474557da0b5eb810781093bdd4349"
+  },
+  {
+    "file": "KM_results_OS_n283.RData",
+    "md5": "a848d42a7f3ba335ea3ab2cf7a242f27"
+  },
+  {
+    "file": "AFTv2_results_OS_n283_w1.RData",
+    "md5": "801da513819c9321bd57e83fe077e251"
+  },
+  {
+    "file": "BARTv2_results_OS_n283.RData",
+    "md5": "fcbbe7faaaf3db92657654a683509403"
+  },
+  {
+    "file": "HierAFT_results_OS_n283_prior0.05.RData",
+    "md5": "a6c87b848a90211df1c6b959130a9583"
+  },
+  {
+    "file": "HierAFT_results_OS_n283_prior0.5.RData",
+    "md5": "4a99d3b7930dffe56f63fa747e300da2"
+  },
+  {
+    "file": "LRC-BART_results_OS_n283_N100.RData",
+    "md5": "a40aa4644af5841dcfe918a4b6345faa"
+  },
+  {
+    "file": "LRC-BART_results_OS_n283_N75.RData",
+    "md5": "b9e24f30ba531bad84c860603f3ae698"
+  },
+  {
+    "file": "LRC-BART_results_OS_n283_N50.RData",
+    "md5": "bec845732bd71b7a7873913c10abd38c"
+  },
+  {
+    "file": "LRC-BART_results_OS_n283_Nf90.RData",
+    "md5": "8dbc978c9294956e78faec00c1f8b872"
+  },
+  {
+    "file": "LRC-BART_results_OS_n283_Nf50.RData",
+    "md5": "1a29ff16a164110ff12bab27d9a00b19"
+  },
+  {
+    "file": "LRC-BART_results_OS_n283_Nf25.RData",
+    "md5": "700b6e2fe374c7b831c9a6b35ee6e945"
+  },
+  {
+    "file": "LRC-BART_results_OS_n283_Hf50_N100.RData",
+    "md5": "1644c80f5a1bb0b43d3f7f111cab4246"
+  },
+  {
+    "file": "LRC-BART_results_OS_n283_Hf50_N75.RData",
+    "md5": "410422f1d579a9bb3a15eeb46e294a6e"
+  },
+  {
+    "file": "LRC-BART_results_OS_n283_Hf50_N50.RData",
+    "md5": "f539eb2fa0a86c89227a4d58c8679522"
+  },
+  {
+    "file": "LRC-BART_results_OS_n283_Hf50_Nf90.RData",
+    "md5": "308b13dda97f709c2782557f3fd145bb"
+  },
+  {
+    "file": "LRC-BART_results_OS_n283_Hf50_Nf50.RData",
+    "md5": "5b1f38bd02248cec26437003b19de02a"
+  },
+  {
+    "file": "LRC-BART_results_OS_n283_Hf50_Nf25.RData",
+    "md5": "88f7454002eb722ac75882f30ad4388c"
+  },
+  {
+    "file": "LRC-BART_results_OS_n283_w0.9_N100.RData",
+    "md5": "5743c54c33d50b2e18928016fc496fe9"
+  },
+  {
+    "file": "LRC-BART_results_OS_n283_w0.9_N75.RData",
+    "md5": "859f8f4c8351c0dd9016735896e57e5e"
+  },
+  {
+    "file": "LRC-BART_results_OS_n283_w0.9_N50.RData",
+    "md5": "f947fb956f6d62a4d3cf4eb921d85789"
+  },
+  {
+    "file": "LRC-BART_results_OS_n283_w0.9_Nf90.RData",
+    "md5": "4e2be6d3de49eb72d1db8561131f7233"
+  },
+  {
+    "file": "LRC-BART_results_OS_n283_w0.9_Nf50.RData",
+    "md5": "43fda0a642a85a476462b5cacfde8fdc"
+  },
+  {
+    "file": "LRC-BART_results_OS_n283_w0.9_Nf25.RData",
+    "md5": "82c65356f59c6e94b5167945e7e67071"
+  },
+  {
+    "file": "LRC-BART_results_OS_n283_Hf50_w0.9_N100.RData",
+    "md5": "445737061110ec9288fc8813ca7a1d4d"
+  },
+  {
+    "file": "LRC-BART_results_OS_n283_Hf50_w0.9_N75.RData",
+    "md5": "95aeac78aa9e81b99aa990992a9a240c"
+  },
+  {
+    "file": "LRC-BART_results_OS_n283_Hf50_w0.9_N50.RData",
+    "md5": "960118439989ca0cff0bf17586aa46aa"
+  },
+  {
+    "file": "LRC-BART_results_OS_n283_Hf50_w0.9_Nf90.RData",
+    "md5": "2934642467a715e178f2afcf0617c552"
+  },
+  {
+    "file": "LRC-BART_results_OS_n283_Hf50_w0.9_Nf50.RData",
+    "md5": "91def139d7ee8d5d21845903e23fc6bc"
+  },
+  {
+    "file": "LRC-BART_results_OS_n283_Hf50_w0.9_Nf25.RData",
+    "md5": "42db99b52d20dc3910ef3e0223beeaac"
+  }
+]
