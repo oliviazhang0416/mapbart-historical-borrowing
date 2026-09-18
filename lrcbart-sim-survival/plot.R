@@ -661,7 +661,7 @@ if (sc == 3){
 
       # Try to read AFTv1 results
       tryCatch({
-        file_path <- paste0(mainDir,"lrcbart-sim-survival/res/AFTv1_p",p_obs,file_suffix)
+        file_path <- paste0(mainDir,"/lrcbart-sim-survival/res/AFTv1_p",p_obs,file_suffix)
         files_checked[[length(files_checked) + 1]] <- file_path
         if (file.exists(file_path)) {
           AFTv1_res <- read_plot_result(file_path)
@@ -684,7 +684,7 @@ if (sc == 3){
 
       # Try to read AFTv2 results
       tryCatch({
-        file_path <- paste0(mainDir,"lrcbart-sim-survival/res/AFTv2_p",p_obs,file_suffix)
+        file_path <- paste0(mainDir,"/lrcbart-sim-survival/res/AFTv2_p",p_obs,file_suffix)
         if (file.exists(file_path)) {
           AFTv2_res <- read_plot_result(file_path)
           AFTv2_res_ATE <- AFTv2_res[, c("c","iteration","bias","sd","rmse","w1distance","w2distance","ci","coverage","tp","fp","tp_calibrated")]
@@ -705,7 +705,7 @@ if (sc == 3){
 
       # Try to read AFTv3 results
       tryCatch({
-        file_path <- paste0(mainDir,"lrcbart-sim-survival/res/AFTv3_p",p_obs,file_suffix)
+        file_path <- paste0(mainDir,"/lrcbart-sim-survival/res/AFTv3_p",p_obs,file_suffix)
         if (file.exists(file_path)) {
           AFTv3_res <- read_plot_result(file_path)
           AFTv3_res_ATE <- AFTv3_res[, c("c","iteration","bias","sd","rmse","w1distance","w2distance","ci","coverage","tp","fp","tp_calibrated")]
@@ -730,7 +730,7 @@ if (sc == 3){
           aftv4_file_suffix <- paste0("_sc", sc,
             if (configuration == "Base") "" else configuration,
             "_cor", cor_val, "_prior", prior_val, paste0("_", plot_hypothesis, ".RData"))
-          file_path <- paste0(mainDir,"lrcbart-sim-survival/res/hierAFT_p",p_obs,aftv4_file_suffix)
+          file_path <- paste0(mainDir,"/lrcbart-sim-survival/res/hierAFT_p",p_obs,aftv4_file_suffix)
           if (file.exists(file_path)) {
             hierAFT_res <- read_plot_result(file_path)
             hierAFT_res_ATE <- hierAFT_res[, c("c","iteration","bias","sd","rmse","w1distance","w2distance","ci","coverage","tp","fp","tp_calibrated")]
@@ -753,7 +753,7 @@ if (sc == 3){
       # Try to read BARTv1 / BARTv2 results
       for (bver in c("BARTv1", "BARTv2", "BARTv3")) {
       tryCatch({
-        file_path <- paste0(mainDir,"lrcbart-sim-survival/res/",bver,"_p",p_obs,file_suffix)
+        file_path <- paste0(mainDir,"/lrcbart-sim-survival/res/",bver,"_p",p_obs,file_suffix)
         if (file.exists(file_path)) {
           BART_res <- read_plot_result(file_path)
           BART_res <- BART_res[BART_res$alpha == 0.95 & BART_res$beta == 2, ]
@@ -784,7 +784,7 @@ if (sc == 3){
           lrcbart_file_suffix <- paste0("_sc", sc,
             if (configuration == "Base") "" else configuration,
             "_cor", cor_val, lrc_suffix,"_N", target_N, paste0("_", plot_hypothesis, ".RData"))
-          file_path <- paste0(mainDir,"lrcbart-sim-survival/res/LRC-BART_p",p_obs,lrcbart_file_suffix)
+          file_path <- paste0(mainDir,"/lrcbart-sim-survival/res/LRC-BART_p",p_obs,lrcbart_file_suffix)
           if (file.exists(file_path)) {
             LRC_BART_res <- read_plot_result(file_path)
             LRC_BART_res <- LRC_BART_res[LRC_BART_res$alpha == 0.95 & LRC_BART_res$beta == 2, ]
@@ -855,7 +855,7 @@ if (sc == 3){
 
       for (method_info in methods_list) {
         tryCatch({
-          null_file <- paste0(mainDir,"lrcbart-sim-survival/res/", method_info$file_prefix, "_p", p_obs, null_file_suffix)
+          null_file <- paste0(mainDir,"/lrcbart-sim-survival/res/", method_info$file_prefix, "_p", p_obs, null_file_suffix)
           if (file.exists(null_file)) {
             null_res <- read_plot_result(null_file)
 
@@ -886,7 +886,7 @@ if (sc == 3){
           aftv4_null_suffix <- paste0("_sc", sc,
             if (configuration == "Base") "" else configuration,
             "_cor", cor_val, "_prior", prior_val, "_null.RData")
-          null_file <- paste0(mainDir,"lrcbart-sim-survival/res/hierAFT_p", p_obs, aftv4_null_suffix)
+          null_file <- paste0(mainDir,"/lrcbart-sim-survival/res/hierAFT_p", p_obs, aftv4_null_suffix)
           if (file.exists(null_file)) {
             null_res <- read_plot_result(null_file)
             if ("fp" %in% colnames(null_res)) {
@@ -912,7 +912,7 @@ if (sc == 3){
           lrcbart_null_suffix <- paste0("_sc", sc,
             if (configuration == "Base") "" else configuration,
             "_cor", cor_val, lrc_suffix,"_N", target_N, "_null.RData")
-          null_file <- paste0(mainDir,"lrcbart-sim-survival/res/LRC-BART_p", p_obs, lrcbart_null_suffix)
+          null_file <- paste0(mainDir,"/lrcbart-sim-survival/res/LRC-BART_p", p_obs, lrcbart_null_suffix)
           if (file.exists(null_file)) {
             null_res <- read_plot_result(null_file)
             null_res <- null_res[null_res$alpha == 0.95 & null_res$beta == 2, ]

@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-09-18" />
+  <title>Comparison of Prior Effective Sample Size Definitions</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Comparison of Prior Effective Sample Size
+Definitions</h1>
+<p class="subtitle">Neuenschwander variance calibration,
+Morita–Thall–Müller, ELIR, and the proposed variance-matching
+definition</p>
+<p class="date">2026-09-18</p>
+</header>
+<style>
+body {
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  color: #17202a;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  line-height: 1.4;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.1rem 0 1.6rem;
+}
+
+table:first-of-type {
+  display: table;
+  table-layout: fixed;
+  overflow: visible;
+  font-size: 0.8rem;
+}
+
+table:first-of-type th,
+table:first-of-type td {
+  min-width: 0;
+  max-width: none;
+  padding: 0.45rem;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  hyphens: auto;
+}
+
+table:first-of-type math {
+  font-size: 0.9em;
+}
+
+th,
+td {
+  padding: 0.65rem;
+  border: 1px solid #d5d8dc;
+  vertical-align: top;
+}
+
+thead {
+  background: #eaf2f8;
+}
+
+table:first-of-type thead tr:first-child th {
+  background: #d6eaf8;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+}
+
+table:first-of-type thead tr:nth-child(2) th {
+  background: #eaf2f8;
+}
+
+table:first-of-type tbody tr:nth-child(1),
+table:first-of-type tbody tr:nth-child(2) {
+  background: #f4f9fc;
+}
+
+table:first-of-type tbody tr:nth-child(3) {
+  background: #fbf7ed;
+}
+
+table:first-of-type tbody tr:nth-child(4) {
+  background: #f1f8f3;
+}
+
+table:first-of-type tbody tr:nth-child(5) {
+  background: #f7f2fa;
+}
+
+
+@media print {
+  @page { size: A3 landscape; margin: 10mm; }
+  body { max-width: none; padding: 0; }
+  table:first-of-type { font-size: 7.4pt; }
+}
+</style>
+<p>This table puts four prior-ESS approaches into a common notation for
+a scalar parameter. Throughout, (<em>h) denotes a historical-data
+parameter or estimand, with (h) indexing historical studies when
+applicable, and (</em>) denotes the corresponding current-study
+parameter or estimand. The two Neuenschwander rows make the calibration
+step explicit: the complete-pooling MAP prior supplies the known ESS
+anchor, and the partial-pooling MAP prior is the prior whose ESS is
+inferred.</p>
+<table class="ess-comparison">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 10%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 11%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr>
+<th rowspan="2">
+Method / case
+</th>
+<th colspan="3">
+Target
+</th>
+<th colspan="3">
+Reference
+</th>
+<th colspan="2">
+ESS
+</th>
+</tr>
+<tr>
+<th>
+Target prior
+</th>
+<th>
+Information measure
+</th>
+<th>
+Information quantity
+</th>
+<th>
+Information source
+</th>
+<th>
+Information measure
+</th>
+<th>
+Information quantity
+</th>
+<th>
+Matching / calibration
+</th>
+<th>
+Result
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<strong>Neuenschwander et al. (2010): complete pooling</strong>
+</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mn>0</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>≔</mo><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo>∣</mo><msub><mi>D</mi><mi>H</mi></msub><mo>,</mo><mi>τ</mi><mo>=</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\pi_0(\theta_\star)\coloneqq p(\theta_\star\mid D_H,\tau=0)</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mi>H</mi></msub><mo>≔</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>Y</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>Y</mi><mi>H</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">D_H\coloneqq(Y_1,\ldots,Y_H)</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>π</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\pi_0</annotation></semantics></math>
+is the complete-pooling MAP prior.
+</td>
+<td>
+Inverse marginal
+variance:<br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mn>0</mn></msub><mo>≔</mo><msub><mo>Var</mo><msub><mi>π</mi><mn>0</mn></msub></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">V_0\coloneqq\operatorname{Var}_{\pi_0}(\theta_\star)</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>V</mi><mn>0</mn></msub><annotation encoding="application/x-tex">V_0</annotation></semantics></math>
+is the complete-pooling prior variance; for a normal prior, inverse
+variance equals log-prior curvature.
+</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℐ</mi><mn>0</mn></msub><mo>≔</mo><mn>1</mn><mi>/</mi><msub><mi>V</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">\mathcal I_0\coloneqq1/V_0</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ℐ</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\mathcal I_0</annotation></semantics></math>
+is the complete-pooling prior information.
+</td>
+<td>
+–
+</td>
+<td>
+–
+</td>
+<td>
+–
+</td>
+<td>
+Calibration anchor:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>S</mi><msub><mi>S</mi><mn>0</mn></msub><mo>≔</mo><msub><mi>N</mi><mi>H</mi></msub></mrow><annotation encoding="application/x-tex">ESS_0\coloneqq N_H</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>N</mi><mi>H</mi></msub><annotation encoding="application/x-tex">N_H</annotation></semantics></math>
+is the historical sample size assigned to the complete-pooling prior.
+</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>S</mi><msub><mi>S</mi><mn>0</mn></msub><mo>=</mo><msub><mi>N</mi><mi>H</mi></msub></mrow><annotation encoding="application/x-tex">ESS_0=N_H</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>S</mi><msub><mi>S</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">ESS_0</annotation></semantics></math>
+is the anchor ESS.
+</td>
+</tr>
+<tr>
+<td>
+<strong>Neuenschwander et al. (2010): partial pooling</strong>
+</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>≔</mo><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo>∣</mo><msub><mi>D</mi><mi>H</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\pi_{\mathrm{target}}(\theta_\star)\coloneqq p(\theta_\star\mid D_H)</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>π</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><annotation encoding="application/x-tex">\pi_{\mathrm{target}}</annotation></semantics></math>
+is the partial-pooling MAP prior.
+</td>
+<td>
+Inverse marginal
+variance:<br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mo>≔</mo><msub><mo>Var</mo><msub><mi>π</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">V_{\mathrm{target}}\coloneqq\operatorname{Var}_{\pi_{\mathrm{target}}}(\theta_\star)</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>V</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><annotation encoding="application/x-tex">V_{\mathrm{target}}</annotation></semantics></math>
+is the partial-pooling prior variance and the same measure is used for
+both MAP priors.
+</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mo>≔</mo><mn>1</mn><mi>/</mi><msub><mi>V</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\mathcal I_{\mathrm{target}}\coloneqq1/V_{\mathrm{target}}</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><annotation encoding="application/x-tex">\mathcal I_{\mathrm{target}}</annotation></semantics></math>
+is information in the partial-pooling MAP prior.
+</td>
+<td>
+–
+</td>
+<td>
+–
+</td>
+<td>
+–
+</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><annotation encoding="application/x-tex">\mathcal I_{\mathrm{target}}</annotation></semantics></math><br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mfrac><mrow><mi>E</mi><mi>S</mi><msub><mi>S</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub></mrow><msub><mi>N</mi><mi>H</mi></msub></mfrac><msub><mi>ℐ</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">\displaystyle =\frac{ESS_{\mathrm{target}}}{N_H}\mathcal I_0</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>S</mi><msub><mi>S</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mi>/</mi><msub><mi>N</mi><mi>H</mi></msub></mrow><annotation encoding="application/x-tex">ESS_{\mathrm{target}}/N_H</annotation></semantics></math>
+is the information retained relative to complete pooling.
+</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>S</mi><msub><mi>S</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mo>=</mo><msub><mi>N</mi><mi>H</mi></msub><mfrac><msub><mi>V</mi><mn>0</mn></msub><msub><mi>V</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub></mfrac></mrow><annotation encoding="application/x-tex">\displaystyle ESS_{\mathrm{target}}=N_H\frac{V_0}{V_{\mathrm{target}}}</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mn>0</mn></msub><mi>/</mi><msub><mi>V</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">V_0/V_{\mathrm{target}}</annotation></semantics></math>
+is the relative-precision factor.
+</td>
+</tr>
+<tr>
+<td>
+<strong>Morita–Thall–Müller (2008)</strong>
+</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\pi_{\mathrm{target}}(\theta_\star)</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>θ</mi><mo>⋆</mo></msub><annotation encoding="application/x-tex">\theta_\star</annotation></semantics></math>
+is the current-study parameter and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>π</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><annotation encoding="application/x-tex">\pi_{\mathrm{target}}</annotation></semantics></math>
+is the supplied prior whose ESS is sought; the definition does not
+prescribe how this prior is constructed.
+</td>
+<td>
+Log-prior curvature at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>θ</mi><mo accent="true">‾</mo></mover><mo>⋆</mo></msub><annotation encoding="application/x-tex">\bar\theta_\star</annotation></semantics></math>:<br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>θ</mi><mo accent="true">‾</mo></mover><mo>⋆</mo></msub><mo>≔</mo><msub><mi>E</mi><msub><mi>π</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\bar\theta_\star\coloneqq E_{\pi_{\mathrm{target}}}(\theta_\star)</annotation></semantics></math><br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo stretchy="false" form="prefix">{</mo><mi>q</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="postfix">}</mo><mo>≔</mo><mo>−</mo><mfrac><msup><mi>d</mi><mn>2</mn></msup><mrow><mi>d</mi><msubsup><mi>θ</mi><mo>⋆</mo><mn>2</mn></msubsup></mrow></mfrac><mo>log</mo><mi>q</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\displaystyle i\{q(\theta_\star)\}\coloneqq-\frac{d^2}{d\theta_\star^2}\log q(\theta_\star)</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mo>≔</mo><msub><mi>π</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">q\coloneqq\pi_{\mathrm{target}}</annotation></semantics></math>.
+</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mo>≔</mo><mi>i</mi><mo stretchy="false" form="prefix">{</mo><msub><mi>π</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mover><mi>θ</mi><mo accent="true">‾</mo></mover><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\mathcal I_{\mathrm{target}}\coloneqq i\{\pi_{\mathrm{target}}(\bar\theta_\star)\}</annotation></semantics></math><br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mo>−</mo><msub><mrow><mfrac><msup><mi>d</mi><mn>2</mn></msup><mrow><mi>d</mi><msubsup><mi>θ</mi><mo>⋆</mo><mn>2</mn></msubsup></mrow></mfrac><mo>log</mo><msub><mi>π</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mrow><msub><mi>θ</mi><mo>⋆</mo></msub><mo>=</mo><msub><mover><mi>θ</mi><mo accent="true">‾</mo></mover><mo>⋆</mo></msub></mrow></msub></mrow><annotation encoding="application/x-tex">\displaystyle =-\left.\frac{d^2}{d\theta_\star^2}\log\pi_{\mathrm{target}}(\theta_\star)\right\rvert_{\theta_\star=\bar\theta_\star}</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><annotation encoding="application/x-tex">\mathcal I_{\mathrm{target}}</annotation></semantics></math>
+is target-prior curvature evaluated at its mean.
+</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mrow><mi>ϵ</mi><mo>,</mo><mi>m</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo>∣</mo><msub><mi>Y</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\pi_{\epsilon,m}(\theta_\star\mid Y_m)</annotation></semantics></math><br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∝</mo><msub><mi>π</mi><mi>ϵ</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><msubsup><mo>∏</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>m</mi></msubsup><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>Y</mi><mi>j</mi></msub><mo>∣</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\displaystyle \propto\pi_\epsilon(\theta_\star)\prod_{j=1}^m f(Y_j\mid\theta_\star)</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>π</mi><mi>ϵ</mi></msub><annotation encoding="application/x-tex">\pi_\epsilon</annotation></semantics></math>
+is a same-mean
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϵ</mi><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math>-information
+prior and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Y</mi><mi>m</mi></msub><annotation encoding="application/x-tex">Y_m</annotation></semantics></math>
+is a hypothetical sample of size
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>.
+</td>
+<td>
+Expected log-posterior curvature at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>θ</mi><mo accent="true">‾</mo></mover><mo>⋆</mo></msub><annotation encoding="application/x-tex">\bar\theta_\star</annotation></semantics></math>:<br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo stretchy="false" form="prefix">{</mo><mi>q</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="postfix">}</mo><mo>≔</mo><mo>−</mo><mfrac><msup><mi>d</mi><mn>2</mn></msup><mrow><mi>d</mi><msubsup><mi>θ</mi><mo>⋆</mo><mn>2</mn></msubsup></mrow></mfrac><mo>log</mo><mi>q</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\displaystyle i\{q(\theta_\star)\}\coloneqq-\frac{d^2}{d\theta_\star^2}\log q(\theta_\star)</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mo>≔</mo><msub><mi>π</mi><mrow><mi>ϵ</mi><mo>,</mo><mi>m</mi></mrow></msub></mrow><annotation encoding="application/x-tex">q\coloneqq\pi_{\epsilon,m}</annotation></semantics></math>
+and the curvature is averaged over
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Y</mi><mi>m</mi></msub><annotation encoding="application/x-tex">Y_m</annotation></semantics></math>.
+</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>m</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≔</mo><mi>i</mi><mo stretchy="false" form="prefix">{</mo><msub><mi>π</mi><mi>ϵ</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mover><mi>θ</mi><mo accent="true">‾</mo></mover><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\mathcal I_{\mathrm{ref}}(m)\coloneqq i\{\pi_\epsilon(\bar\theta_\star)\}</annotation></semantics></math><br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow></mrow><mo>+</mo><msub><mi>E</mi><msub><mi>Y</mi><mi>m</mi></msub></msub><mo stretchy="false" form="prefix">{</mo><msub><mi>i</mi><mi>F</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>Y</mi><mi>m</mi></msub><mo>;</mo><msub><mover><mi>θ</mi><mo accent="true">‾</mo></mover><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\displaystyle {}+E_{Y_m}\{i_F(Y_m;\bar\theta_\star)\}</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>i</mi><mi>F</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>Y</mi><mi>m</mi></msub><mo>;</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">i_F(Y_m;\theta_\star)</annotation></semantics></math>
+is observed likelihood information and the expectation uses the target
+prior-predictive distribution.
+</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mo>≈</mo><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>m</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal I_{\mathrm{target}}\approx\mathcal I_{\mathrm{ref}}(m)</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+is varied to obtain the closest information match.
+</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>S</mi><msub><mi>S</mi><mrow><mi mathvariant="normal">M</mi><mi mathvariant="normal">T</mi><mi mathvariant="normal">M</mi></mrow></msub><mo>≔</mo><mo>arg</mo><msub><mo>min</mo><mrow><mi>m</mi><mo>≥</mo><mn>0</mn></mrow></msub><mi>d</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>m</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\displaystyle ESS_{\mathrm{MTM}}\coloneqq\arg\min_{m\ge0}d(m)</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>m</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≔</mo><mo stretchy="false" form="prefix">|</mo><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mo>−</mo><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>m</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="postfix">|</mo></mrow><annotation encoding="application/x-tex">d(m)\coloneqq\lvert\mathcal I_{\mathrm{target}}-\mathcal I_{\mathrm{ref}}(m)\rvert</annotation></semantics></math>;
+the original definition uses integer
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+and interpolation permits a noninteger ESS.
+</td>
+</tr>
+<tr>
+<td>
+<strong>ELIR (Neuenschwander et al., 2020)</strong>
+</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\pi_{\mathrm{target}}(\theta_\star)</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>θ</mi><mo>⋆</mo></msub><annotation encoding="application/x-tex">\theta_\star</annotation></semantics></math>
+is the current-study parameter and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>π</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><annotation encoding="application/x-tex">\pi_{\mathrm{target}}</annotation></semantics></math>
+is the prior whose ESS is sought; ELIR does not restrict how this prior
+is constructed.
+</td>
+<td>
+Pointwise log-prior
+curvature:<br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo stretchy="false" form="prefix">{</mo><mi>π</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="postfix">}</mo><mo>≔</mo><mo>−</mo><mfrac><msup><mi>d</mi><mn>2</mn></msup><mrow><mi>d</mi><msubsup><mi>θ</mi><mo>⋆</mo><mn>2</mn></msubsup></mrow></mfrac><mo>log</mo><mi>π</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\displaystyle i\{\pi(\theta_\star)\}\coloneqq-\frac{d^2}{d\theta_\star^2}\log\pi(\theta_\star)</annotation></semantics></math>.
+<br>where the curvature is evaluated locally at each
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>θ</mi><mo>⋆</mo></msub><annotation encoding="application/x-tex">\theta_\star</annotation></semantics></math>.
+</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>≔</mo><mi>i</mi><mo stretchy="false" form="prefix">{</mo><msub><mi>π</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\mathcal I_{\mathrm{target}}(\theta_\star)\coloneqq i\{\pi_{\mathrm{target}}(\theta_\star)\}</annotation></semantics></math><br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mo>−</mo><mfrac><msup><mi>d</mi><mn>2</mn></msup><mrow><mi>d</mi><msubsup><mi>θ</mi><mo>⋆</mo><mn>2</mn></msubsup></mrow></mfrac><mo>log</mo><msub><mi>π</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\displaystyle =-\frac{d^2}{d\theta_\star^2}\log\pi_{\mathrm{target}}(\theta_\star)</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal I_{\mathrm{target}}(\theta_\star)</annotation></semantics></math>
+is local target-prior information.
+</td>
+<td>
+One information unit
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mn>1</mn></msub><mo>∼</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo>∣</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">Y_1\sim f(\cdot\mid\theta_\star)</annotation></semantics></math>;
+no reference prior. <br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Y</mi><mn>1</mn></msub><annotation encoding="application/x-tex">Y_1</annotation></semantics></math>
+is one unit under the current-study sampling model
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>.
+</td>
+<td>
+Expected Fisher information from one
+observation:<br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>i</mi><mi>F</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>≔</mo><msub><mi>E</mi><mrow><msub><mi>Y</mi><mn>1</mn></msub><mo>∣</mo><msub><mi>θ</mi><mo>⋆</mo></msub></mrow></msub><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">[</mo><mo>−</mo><mfrac><msup><mi>d</mi><mn>2</mn></msup><mrow><mi>d</mi><msubsup><mi>θ</mi><mo>⋆</mo><mn>2</mn></msubsup></mrow></mfrac><mo>log</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>Y</mi><mn>1</mn></msub><mo>∣</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">\displaystyle i_F(\theta_\star)\coloneqq E_{Y_1\mid\theta_\star}\!\left[-\frac{d^2}{d\theta_\star^2}\log f(Y_1\mid\theta_\star)\right]</annotation></semantics></math>.
+<br>where the expectation is under the current-study sampling model.
+</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>≔</mo><msub><mi>i</mi><mi>F</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal I_{\mathrm{ref}}(\theta_\star)\coloneqq i_F(\theta_\star)</annotation></semantics></math><br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><msub><mi>E</mi><mrow><msub><mi>Y</mi><mn>1</mn></msub><mo>∣</mo><msub><mi>θ</mi><mo>⋆</mo></msub></mrow></msub><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">[</mo><mo>−</mo><mfrac><msup><mi>d</mi><mn>2</mn></msup><mrow><mi>d</mi><msubsup><mi>θ</mi><mo>⋆</mo><mn>2</mn></msubsup></mrow></mfrac><mo>log</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>Y</mi><mn>1</mn></msub><mo>∣</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">\displaystyle =E_{Y_1\mid\theta_\star}\!\left[-\frac{d^2}{d\theta_\star^2}\log f(Y_1\mid\theta_\star)\right]</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>i</mi><mi>F</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">i_F(\theta_\star)</annotation></semantics></math>
+is expected Fisher information in one unit.
+</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal I_{\mathrm{target}}(\theta_\star)</annotation></semantics></math><br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mi>m</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">=m(\theta_\star)\mathcal I_{\mathrm{ref}}(\theta_\star)</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">m(\theta_\star)</annotation></semantics></math>
+is the local equivalent sample size.
+</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>S</mi><msub><mi>S</mi><mrow><mi mathvariant="normal">E</mi><mi mathvariant="normal">L</mi><mi mathvariant="normal">I</mi><mi mathvariant="normal">R</mi></mrow></msub><mo>≔</mo><msub><mi>E</mi><msub><mi>π</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub></msub><mo stretchy="false" form="prefix">{</mo><mi>m</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\displaystyle ESS_{\mathrm{ELIR}}\coloneqq E_{\pi_{\mathrm{target}}}\{m(\theta_\star)\}</annotation></semantics></math><br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><msub><mi>E</mi><msub><mi>π</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub></msub><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">{</mo><mfrac><mrow><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mo stretchy="true" form="postfix">}</mo></mrow></mrow><annotation encoding="application/x-tex">\displaystyle =E_{\pi_{\mathrm{target}}}\!\left\{\frac{\mathcal I_{\mathrm{target}}(\theta_\star)}{\mathcal I_{\mathrm{ref}}(\theta_\star)}\right\}</annotation></semantics></math>.
+<br>where the expectation averages local ESS over the target prior; the
+original paper denotes
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">m(\theta_\star)</annotation></semantics></math>
+by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">r(\theta_\star)</annotation></semantics></math>.
+</td>
+</tr>
+<tr>
+<td>
+<strong>Proposed conditional variance-matching ESS</strong>
+</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>θ</mi><mo>⋆</mo></msub><mo>≔</mo><msub><mi>θ</mi><mi>h</mi></msub><mo>+</mo><msub><mi>δ</mi><mo>⋆</mo></msub></mrow><annotation encoding="application/x-tex">\theta_\star\coloneqq\theta_h+\delta_\star</annotation></semantics></math>,<br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo>∣</mo><mi>w</mi><mo>,</mo><msubsup><mi>τ</mi><mn>0</mn><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\displaystyle \pi_{\mathrm{target}}(\theta_\star\mid w,\tau_0^2)</annotation></semantics></math><br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≔</mo><mo>∫</mo><msub><mi>p</mi><mi>g</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo>−</mo><msub><mi>θ</mi><mi>h</mi></msub><mo>∣</mo><mi>w</mi><mo>,</mo><msubsup><mi>τ</mi><mn>0</mn><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\displaystyle \coloneqq\int p_g(\theta_\star-\theta_h\mid w,\tau_0^2)</annotation></semantics></math><br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow></mrow><mo>×</mo><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mi>h</mi></msub><mo>∣</mo><msub><mi>D</mi><mi>H</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>d</mi><msub><mi>θ</mi><mi>h</mi></msub></mrow><annotation encoding="application/x-tex">\displaystyle {}\times p(\theta_h\mid D_H)\,d\theta_h</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>θ</mi><mi>h</mi></msub><annotation encoding="application/x-tex">\theta_h</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>δ</mi><mo>⋆</mo></msub><annotation encoding="application/x-tex">\delta_\star</annotation></semantics></math>
+are the standardized historical-control and discrepancy estimands
+induced by the posterior of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+and prior for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>,
+respectively.
+</td>
+<td>
+Inverse conditional marginal
+variance:<br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mo>,</mo><msubsup><mi>τ</mi><mn>0</mn><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo>≔</mo><msub><mo>Var</mo><msub><mi>π</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo>∣</mo><mi>w</mi><mo>,</mo><msubsup><mi>τ</mi><mn>0</mn><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">V_{\mathrm{target}}(w,\tau_0^2)\coloneqq\operatorname{Var}_{\pi_{\mathrm{target}}}(\theta_\star\mid w,\tau_0^2)</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mo>,</mo><msubsup><mi>τ</mi><mn>0</mn><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">V_{\mathrm{target}}(w,\tau_0^2)</annotation></semantics></math>
+is the conditional target-prior variance.
+</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mo>,</mo><msubsup><mi>τ</mi><mn>0</mn><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo>≔</mo><mn>1</mn><mi>/</mi><msub><mi>V</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mo>,</mo><msubsup><mi>τ</mi><mn>0</mn><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\displaystyle \mathcal I_{\mathrm{target}}(w,\tau_0^2)\coloneqq1/V_{\mathrm{target}}(w,\tau_0^2)</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mo>,</mo><msubsup><mi>τ</mi><mn>0</mn><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal I_{\mathrm{target}}(w,\tau_0^2)</annotation></semantics></math>
+is the target information conditional on the discrepancy-prior settings.
+</td>
+<td>
+One information unit
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mn>1</mn></msub><mo>∼</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>⋅</mo><mo>∣</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">Y_1\sim f(\cdot\mid\theta_\star)</annotation></semantics></math>;
+no reference prior. <br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Y</mi><mn>1</mn></msub><annotation encoding="application/x-tex">Y_1</annotation></semantics></math>
+is one unit under the current-study sampling model
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>.
+</td>
+<td>
+Expected Fisher information from one
+observation:<br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>i</mi><mi>F</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>≔</mo><msub><mi>E</mi><mrow><msub><mi>Y</mi><mn>1</mn></msub><mo>∣</mo><msub><mi>θ</mi><mo>⋆</mo></msub></mrow></msub><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">[</mo><mo>−</mo><mfrac><msup><mi>d</mi><mn>2</mn></msup><mrow><mi>d</mi><msubsup><mi>θ</mi><mo>⋆</mo><mn>2</mn></msubsup></mrow></mfrac><mo>log</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>Y</mi><mn>1</mn></msub><mo>∣</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">\displaystyle i_F(\theta_\star)\coloneqq E_{Y_1\mid\theta_\star}\!\left[-\frac{d^2}{d\theta_\star^2}\log f(Y_1\mid\theta_\star)\right]</annotation></semantics></math>.
+<br>where the expectation is under the current-study sampling model.
+</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>≔</mo><msub><mi>i</mi><mi>F</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal I_{\mathrm{ref}}(\theta_\star)\coloneqq i_F(\theta_\star)</annotation></semantics></math><br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><msub><mi>E</mi><mrow><msub><mi>Y</mi><mn>1</mn></msub><mo>∣</mo><msub><mi>θ</mi><mo>⋆</mo></msub></mrow></msub><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">[</mo><mo>−</mo><mfrac><msup><mi>d</mi><mn>2</mn></msup><mrow><mi>d</mi><msubsup><mi>θ</mi><mo>⋆</mo><mn>2</mn></msubsup></mrow></mfrac><mo>log</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>Y</mi><mn>1</mn></msub><mo>∣</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">\displaystyle =E_{Y_1\mid\theta_\star}\!\left[-\frac{d^2}{d\theta_\star^2}\log f(Y_1\mid\theta_\star)\right]</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>i</mi><mi>F</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">i_F(\theta_\star)</annotation></semantics></math>
+is expected Fisher information in one reference observation.
+</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mo>,</mo><msubsup><mi>τ</mi><mn>0</mn><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal I_{\mathrm{target}}(w,\tau_0^2)</annotation></semantics></math><br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mi>m</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mo>,</mo><msubsup><mi>τ</mi><mn>0</mn><mn>2</mn></msubsup><mo>;</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">=m(w,\tau_0^2;\theta_\star)\mathcal I_{\mathrm{ref}}(\theta_\star)</annotation></semantics></math>.
+<br>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mo>,</mo><msubsup><mi>τ</mi><mn>0</mn><mn>2</mn></msubsup><mo>;</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">m(w,\tau_0^2;\theta_\star)</annotation></semantics></math>
+is the conditional equivalent reference sample size.
+</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mo>,</mo><msubsup><mi>τ</mi><mn>0</mn><mn>2</mn></msubsup><mo>;</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mo>,</mo><msubsup><mi>τ</mi><mn>0</mn><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><msub><mi>i</mi><mi>F</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac></mrow><annotation encoding="application/x-tex">\displaystyle m(w,\tau_0^2;\theta_\star)=\frac{\mathcal I_{\mathrm{target}}(w,\tau_0^2)}{i_F(\theta_\star)}</annotation></semantics></math><br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>S</mi><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mo>,</mo><msubsup><mi>s</mi><mn>0</mn><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo>≔</mo><msub><mi>E</mi><msubsup><mi>τ</mi><mn>0</mn><mn>2</mn></msubsup></msub><mo stretchy="false" form="prefix">{</mo><mi>m</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>w</mi><mo>,</mo><msubsup><mi>τ</mi><mn>0</mn><mn>2</mn></msubsup><mo>;</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\displaystyle ESS(w,s_0^2)\coloneqq E_{\tau_0^2}\{m(w,\tau_0^2;\theta_\star)\}</annotation></semantics></math>.
+<br>where the first equality solves the matching equation and the
+expectation uses the calibration distribution indexed by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>s</mi><mn>0</mn><mn>2</mn></msubsup><annotation encoding="application/x-tex">s_0^2</annotation></semantics></math>;
+for the normal reference,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>i</mi><mi>F</mi></msub><annotation encoding="application/x-tex">i_F</annotation></semantics></math>
+is constant and the dependence on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>θ</mi><mo>⋆</mo></msub><annotation encoding="application/x-tex">\theta_\star</annotation></semantics></math>
+drops out.
+</td>
+</tr>
+</tbody>
+</table>
+<h2 id="normalnormal-comparison">Normal–normal comparison</h2>
+<p>The following derivations isolate the reference information used by
+each method under normal sampling models. Each subsection starts from
+that method’s reference construction and ends with its reference
+information quantity.</p>
+<h3
+id="neuenschwander-et-al.-2010-complete-pooling-calibration">Neuenschwander
+et al. (2010): complete-pooling calibration</h3>
+<p>Neuenschwander’s normal random-effects model starts from (H)
+historical trial estimates,</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mi>h</mi></msub><mo>∣</mo><msub><mi>θ</mi><mi>h</mi></msub><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mi>h</mi></msub><mo>,</mo><msubsup><mi>σ</mi><mi>h</mi><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mi>h</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>H</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
+Y_h\mid\theta_h\sim N(\theta_h,\sigma_h^2),
+\qquad h=1,\ldots,H,
+</annotation></semantics></math></p>
+<p>with exchangeable historical and new-trial parameters</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>θ</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>θ</mi><mi>H</mi></msub><mo>,</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo>∣</mo><mi>μ</mi><mo>,</mo><msup><mi>τ</mi><mn>2</mn></msup><mover><mo>∼</mo><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">d</mi></mrow></mover><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>μ</mi><mo>,</mo><msup><mi>τ</mi><mn>2</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\theta_1,\ldots,\theta_H,\theta_\star
+\mid\mu,\tau^2
+\overset{\mathrm{iid}}{\sim}
+N(\mu,\tau^2).
+</annotation></semantics></math></p>
+<p>For fixed (), first integrate out (_h):</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mi>h</mi></msub><mo>∣</mo><mi>μ</mi><mo>,</mo><mi>τ</mi><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>μ</mi><mo>,</mo><msubsup><mi>σ</mi><mi>h</mi><mn>2</mn></msubsup><mo>+</mo><msup><mi>τ</mi><mn>2</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+Y_h\mid\mu,\tau
+\sim N(\mu,\sigma_h^2+\tau^2).
+</annotation></semantics></math></p>
+<p>Under the paper’s locally uniform prior for (), define</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>w</mi><mi>h</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>τ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≔</mo><mfrac><mn>1</mn><mrow><msubsup><mi>σ</mi><mi>h</mi><mn>2</mn></msubsup><mo>+</mo><msup><mi>τ</mi><mn>2</mn></msup></mrow></mfrac><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>W</mi><mi>τ</mi></msub><mo>≔</mo><munderover><mo>∑</mo><mrow><mi>h</mi><mo>=</mo><mn>1</mn></mrow><mi>H</mi></munderover><msub><mi>w</mi><mi>h</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>τ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><msub><mover><mi>μ</mi><mo accent="true">̂</mo></mover><mi>τ</mi></msub><mo>≔</mo><mfrac><mrow><munderover><mo>∑</mo><mrow><mi>h</mi><mo>=</mo><mn>1</mn></mrow><mi>H</mi></munderover><msub><mi>w</mi><mi>h</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>τ</mi><mo stretchy="true" form="postfix">)</mo></mrow><msub><mi>Y</mi><mi>h</mi></msub></mrow><msub><mi>W</mi><mi>τ</mi></msub></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+w_h(\tau)\coloneqq\frac1{\sigma_h^2+\tau^2},
+\qquad
+W_\tau\coloneqq\sum_{h=1}^H w_h(\tau),
+\qquad
+\widehat\mu_\tau
+\coloneqq\frac{\sum_{h=1}^H w_h(\tau)Y_h}{W_\tau}.
+</annotation></semantics></math></p>
+<p>Normal conjugacy gives the posterior distribution of the common
+location:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>μ</mi><mo>∣</mo><msub><mi>D</mi><mi>H</mi></msub><mo>,</mo><mi>τ</mi><mo>∼</mo><mi>N</mi><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msub><mover><mi>μ</mi><mo accent="true">̂</mo></mover><mi>τ</mi></msub><mo>,</mo><mfrac><mn>1</mn><msub><mi>W</mi><mi>τ</mi></msub></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mu\mid D_H,\tau
+\sim N\!\left(\widehat\mu_\tau,\frac1{W_\tau}\right).
+</annotation></semantics></math></p>
+<p>Next use (_,N(,^2)) and integrate over the posterior of (). The
+meta-analytic predictive distribution is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>θ</mi><mo>⋆</mo></msub><mo>∣</mo><msub><mi>D</mi><mi>H</mi></msub><mo>,</mo><mi>τ</mi><mo>∼</mo><mi>N</mi><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msub><mover><mi>μ</mi><mo accent="true">̂</mo></mover><mi>τ</mi></msub><mo>,</mo><msub><mi>V</mi><mi>τ</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\theta_\star\mid D_H,\tau
+\sim
+N\!\left(\widehat\mu_\tau,V_\tau\right),
+</annotation></semantics></math></p>
+<p>where</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mi>τ</mi></msub><mo>≔</mo><mfrac><mn>1</mn><msub><mi>W</mi><mi>τ</mi></msub></mfrac><mo>+</mo><msup><mi>τ</mi><mn>2</mn></msup><mo>=</mo><mfrac><mn>1</mn><mrow><munderover><mo>∑</mo><mrow><mi>h</mi><mo>=</mo><mn>1</mn></mrow><mi>H</mi></munderover><mfrac><mn>1</mn><mrow><msubsup><mi>σ</mi><mi>h</mi><mn>2</mn></msubsup><mo>+</mo><msup><mi>τ</mi><mn>2</mn></msup></mrow></mfrac></mrow></mfrac><mo>+</mo><msup><mi>τ</mi><mn>2</mn></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+V_\tau
+\coloneqq\frac1{W_\tau}+\tau^2
+=\frac{1}{\displaystyle\sum_{h=1}^H
+\frac1{\sigma_h^2+\tau^2}}
++\tau^2.
+</annotation></semantics></math></p>
+<p>If the variance of historical trial estimate (h) is
+(_h<sup>2=</sup>2/n_h), then</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>w</mi><mi>h</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>τ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mrow><msup><mi>σ</mi><mn>2</mn></msup><mi>/</mi><msub><mi>n</mi><mi>h</mi></msub><mo>+</mo><msup><mi>τ</mi><mn>2</mn></msup></mrow></mfrac><mo>=</mo><mfrac><msub><mi>n</mi><mi>h</mi></msub><mrow><msup><mi>σ</mi><mn>2</mn></msup><mo>+</mo><msub><mi>n</mi><mi>h</mi></msub><msup><mi>τ</mi><mn>2</mn></msup></mrow></mfrac><mo>,</mo></mrow><annotation encoding="application/x-tex">
+w_h(\tau)
+=\frac{1}{\sigma^2/n_h+\tau^2}
+=\frac{n_h}{\sigma^2+n_h\tau^2},
+</annotation></semantics></math></p>
+<p>and, for possibly unequal trial sizes,</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mi>τ</mi></msub><mo>=</mo><mfrac><mn>1</mn><mrow><munderover><mo>∑</mo><mrow><mi>h</mi><mo>=</mo><mn>1</mn></mrow><mi>H</mi></munderover><mfrac><msub><mi>n</mi><mi>h</mi></msub><mrow><msup><mi>σ</mi><mn>2</mn></msup><mo>+</mo><msub><mi>n</mi><mi>h</mi></msub><msup><mi>τ</mi><mn>2</mn></msup></mrow></mfrac></mrow></mfrac><mo>+</mo><msup><mi>τ</mi><mn>2</mn></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+V_\tau
+=\frac{1}{\displaystyle\sum_{h=1}^H
+\frac{n_h}{\sigma^2+n_h\tau^2}}
++\tau^2.
+</annotation></semantics></math></p>
+<p>If all (H) historical trials have size (n_h=n), define the total
+historical sample size as (N_HHn). Then</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mi>τ</mi></msub><mo>=</mo><mfrac><mrow><msup><mi>σ</mi><mn>2</mn></msup><mo>+</mo><mi>n</mi><msup><mi>τ</mi><mn>2</mn></msup></mrow><mrow><mi>H</mi><mi>n</mi></mrow></mfrac><mo>+</mo><msup><mi>τ</mi><mn>2</mn></msup><mo>=</mo><mfrac><msup><mi>σ</mi><mn>2</mn></msup><msub><mi>N</mi><mi>H</mi></msub></mfrac><mo>+</mo><msup><mi>τ</mi><mn>2</mn></msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mfrac><mn>1</mn><mi>H</mi></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+V_\tau
+=\frac{\sigma^2+n\tau^2}{Hn}+\tau^2
+=\frac{\sigma^2}{N_H}
++\tau^2\left(1+\frac1H\right).
+</annotation></semantics></math></p>
+<p>Complete pooling is the special case (). Hence</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mn>0</mn></msub><mo>≔</mo><mo>Var</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo>∣</mo><msub><mi>D</mi><mi>H</mi></msub><mo>,</mo><mi>τ</mi><mo>=</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mrow><munderover><mo>∑</mo><mrow><mi>h</mi><mo>=</mo><mn>1</mn></mrow><mi>H</mi></munderover><mfrac><mn>1</mn><msubsup><mi>σ</mi><mi>h</mi><mn>2</mn></msubsup></mfrac></mrow></mfrac><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>ℐ</mi><mn>0</mn></msub><mo>≔</mo><mfrac><mn>1</mn><msub><mi>V</mi><mn>0</mn></msub></mfrac><mo>=</mo><munderover><mo>∑</mo><mrow><mi>h</mi><mo>=</mo><mn>1</mn></mrow><mi>H</mi></munderover><mfrac><mn>1</mn><msubsup><mi>σ</mi><mi>h</mi><mn>2</mn></msubsup></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+V_0
+\coloneqq\operatorname{Var}(\theta_\star\mid D_H,\tau=0)
+=\frac{1}{\displaystyle\sum_{h=1}^H\frac1{\sigma_h^2}},
+\qquad
+\mathcal I_0\coloneqq\frac1{V_0}
+=\sum_{h=1}^H\frac1{\sigma_h^2}.
+</annotation></semantics></math></p>
+<p>When (<em>h<sup>2=</sup>2/n_h), define (N_H</em>{h=1}^Hn_h). Then</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mn>0</mn></msub><mo>=</mo><mfrac><msup><mi>σ</mi><mn>2</mn></msup><msub><mi>N</mi><mi>H</mi></msub></mfrac><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>ℐ</mi><mn>0</mn></msub><mo>=</mo><mfrac><msub><mi>N</mi><mi>H</mi></msub><msup><mi>σ</mi><mn>2</mn></msup></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+V_0=\frac{\sigma^2}{N_H},
+\qquad
+\mathcal I_0=\frac{N_H}{\sigma^2}.
+</annotation></semantics></math></p>
+<p>The complete-pooling prior is assigned its historical count (N_H).
+Therefore, its implied information per reference patient is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><msub><mi>ℐ</mi><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow><mo>,</mo><mn>1</mn></mrow></msub><mo>≔</mo><mfrac><msub><mi>ℐ</mi><mn>0</mn></msub><msub><mi>N</mi><mi>H</mi></msub></mfrac><mo>=</mo><mfrac><mn>1</mn><mrow><msub><mi>N</mi><mi>H</mi></msub><msub><mi>V</mi><mn>0</mn></msub></mrow></mfrac><mo>=</mo><mfrac><mn>1</mn><msup><mi>σ</mi><mn>2</mn></msup></mfrac><mi>.</mi></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{
+\mathcal I_{\mathrm{ref},1}
+\coloneqq\frac{\mathcal I_0}{N_H}
+=\frac1{N_HV_0}
+=\frac1{\sigma^2}.
+}
+</annotation></semantics></math></p>
+<h3
+id="moritathallmüller-2008-reference-posterior-curvature">Morita–Thall–Müller
+(2008): reference-posterior curvature</h3>
+<p>Let the normal reference likelihood and the same-mean ()-information
+prior be</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mi>j</mi></msub><mo>∣</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mover><mo>∼</mo><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">d</mi></mrow></mover><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo>,</mo><msup><mi>σ</mi><mn>2</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mi>j</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>m</mi><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>π</mi><mi>ϵ</mi></msub><mo>≔</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>μ</mi><mn>0</mn></msub><mo>,</mo><msub><mi>V</mi><mi>ϵ</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+Y_j\mid\theta_\star\overset{\mathrm{iid}}{\sim}N(\theta_\star,\sigma^2),
+\qquad j=1,\ldots,m,
+\qquad
+\pi_\epsilon\coloneqq N(\mu_0,V_\epsilon).
+</annotation></semantics></math></p>
+<p>The resulting reference posterior is normal. Its variance is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mrow><mi>ϵ</mi><mo>,</mo><mi>m</mi></mrow></msub><mo>≔</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mn>1</mn><msub><mi>V</mi><mi>ϵ</mi></msub></mfrac><mo>+</mo><mfrac><mi>m</mi><msup><mi>σ</mi><mn>2</mn></msup></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+V_{\epsilon,m}
+\coloneqq\left(\frac1{V_\epsilon}+\frac{m}{\sigma^2}\right)^{-1}.
+</annotation></semantics></math></p>
+<p>For a normal posterior, log-posterior curvature equals inverse
+variance. Therefore, Morita’s reference information quantity is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>m</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≔</mo><mfrac><mn>1</mn><msub><mi>V</mi><mrow><mi>ϵ</mi><mo>,</mo><mi>m</mi></mrow></msub></mfrac><mo>=</mo><mfrac><mn>1</mn><msub><mi>V</mi><mi>ϵ</mi></msub></mfrac><mo>+</mo><mfrac><mi>m</mi><msup><mi>σ</mi><mn>2</mn></msup></mfrac><mi>.</mi></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{
+\mathcal I_{\mathrm{ref}}(m)
+\coloneqq\frac1{V_{\epsilon,m}}
+=\frac1{V_\epsilon}+\frac{m}{\sigma^2}.
+}
+</annotation></semantics></math></p>
+<p>The posterior variance does not depend on the realized hypothetical
+observations, so no further averaging over their values is needed in
+this normal case.</p>
+<h3 id="elir-one-observation-fisher-information">ELIR: one-observation
+Fisher information</h3>
+<p>For one observation from the normal reference likelihood,</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mn>1</mn></msub><mo>∣</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo>,</mo><msup><mi>σ</mi><mn>2</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+Y_1\mid\theta_\star\sim N(\theta_\star,\sigma^2),
+</annotation></semantics></math></p>
+<p>the expected Fisher information is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>≔</mo><msub><mi>i</mi><mi>F</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>E</mi><mrow><msub><mi>Y</mi><mn>1</mn></msub><mo>∣</mo><msub><mi>θ</mi><mo>⋆</mo></msub></mrow></msub><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">[</mo><mo>−</mo><mfrac><msup><mi>d</mi><mn>2</mn></msup><mrow><mi>d</mi><msubsup><mi>θ</mi><mo>⋆</mo><mn>2</mn></msubsup></mrow></mfrac><mo>log</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>Y</mi><mn>1</mn></msub><mo>∣</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mfrac><mn>1</mn><msup><mi>σ</mi><mn>2</mn></msup></mfrac><mi>.</mi></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{
+\mathcal I_{\mathrm{ref}}(\theta_\star)
+\coloneqq i_F(\theta_\star)
+=E_{Y_1\mid\theta_\star}\!\left[
+-\frac{d^2}{d\theta_\star^2}\log f(Y_1\mid\theta_\star)
+\right]
+=\frac1{\sigma^2}.
+}
+</annotation></semantics></math></p>
+<p>It is constant in (_). Consequently, (m) independent reference
+observations provide (m/^2) information. ELIR uses no reference
+prior.</p>
+<h3 id="proposed-conditional-variance-matching-definition">Proposed
+conditional variance-matching definition</h3>
+<p>The proposed method uses the same one-observation reference source as
+ELIR:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mn>1</mn></msub><mo>∣</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo>,</mo><msup><mi>σ</mi><mn>2</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+Y_1\mid\theta_\star\sim N(\theta_\star,\sigma^2).
+</annotation></semantics></math></p>
+<p>Thus its reference information quantity is also</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>≔</mo><msub><mi>i</mi><mi>F</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><msup><mi>σ</mi><mn>2</mn></msup></mfrac><mo>,</mo></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{
+\mathcal I_{\mathrm{ref}}(\theta_\star)
+\coloneqq i_F(\theta_\star)
+=\frac1{\sigma^2},
+}
+</annotation></semantics></math></p>
+<p>and (m) independent reference observations provide</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mspace width="0.167em"></mspace><msub><mi>ℐ</mi><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mi>m</mi><msup><mi>σ</mi><mn>2</mn></msup></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+m\,\mathcal I_{\mathrm{ref}}(\theta_\star)
+=\frac{m}{\sigma^2}.
+</annotation></semantics></math></p>
+<p>No reference prior is required. In the manuscript specialization, the
+table’s (_) is (), and the reference variance is (<em>2^2), so
+(i_F(</em>)=1/_2^2).</p>
+<h2 id="references">References</h2>
+<ol type="1">
+<li>Neuenschwander B, Capkun-Niggli G, Branson M, Spiegelhalter DJ.
+<em>Summarizing historical information on controls in clinical
+trials.</em> Clinical Trials. 2010;7(1):5–18. <a
+href="https://doi.org/10.1177/1740774509356002">doi:10.1177/1740774509356002</a>.</li>
+<li>Morita S, Thall PF, Müller P. <em>Determining the effective sample
+size of a parametric prior.</em> Biometrics. 2008;64(2):595–602. <a
+href="https://doi.org/10.1111/j.1541-0420.2007.00888.x">doi:10.1111/j.1541-0420.2007.00888.x</a>.</li>
+<li>Neuenschwander B, Weber S, Schmidli H, O’Hagan A. <em>Predictively
+consistent prior effective sample sizes.</em> Biometrics.
+2020;76(2):578–587. <a
+href="https://doi.org/10.1111/biom.13252">doi:10.1111/biom.13252</a>.</li>
+</ol>
+</body>
+</html>

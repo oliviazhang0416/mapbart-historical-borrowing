@@ -1,394 +1,300 @@
-# ESS walkthrough
+# Prior effective sample size for the RWD-informed trial-control mean
 
-Notation: \(1\) denotes trial treatment, \(2\) trial control and \(3\) historical control. Standardization uses \(\mathbf{X}_1\) and \(\mathbf{X}_2\), with \(N\coloneqq n_1+n_2\). Each participant contributes once. In a single-arm trial, \(n_2=0\), so standardization uses only \(\mathbf{X}_1\).
+## Notation and objective
 
-Status: settled with the user on 2026-09-16, including the ESS ceiling definition and limiting derivation.
+Let groups \(1\), \(2\), and \(3\) denote randomized-trial treatment, randomized-trial control, and historical control. The prior-ESS target is defined on the \(n_2\) randomized-control covariate profiles \(\mathbf X_2=(x_{2,1},\ldots,x_{2,n_2})\). Historical outcomes and covariates \((\mathbf Y_3,\mathbf X_3)\) inform the prognostic surface \(f\), whereas the discrepancy surface \(g\) describes the current-minus-historical control difference.
 
-Purpose: authoritative content reference for the future ESS sections of the main manuscript and appendix. The walkthrough below preserves the agreed explanation. Its proposed covariate/cutpoint revision is not an assertion that the analysis code has already been changed.
+The goal is to express the prior information about the standardized current-control mean as an equivalent number of observations from a prespecified reference likelihood. The construction:
 
----
+1. identifies the induced target prior and its conditional marginal variance;
+2. derives the variance contributions from \(f\) and \(g\);
+3. matches inverse target variance to Fisher information from reference observations; and
+4. averages the conditional equivalent counts over the calibration distribution of the spike variance.
 
-The aim is to find a reference sample size \(m\) such that **the posterior variance of the unknown mean under a flat-prior reference analysis equals the RWD-informed prior variance of the trial control mean**. We then interpret that matched sample size as a conditional prior ESS.
+## 1. Target prior and variance decomposition
 
-The distribution obtained from historical outcomes is a posterior relative to those outcomes. Combined with the discrepancy prior, it supplies prior information for the trial control mean.
-
-1. **Derive the reference posterior variance.**
-
-   Consider \(m\) hypothetical independent observations,
-
-   \[
-   Y_j^{\mathrm{ref}}\mid\mu
-   \overset{\mathrm{iid}}{\sim}
-   N(\mu,\sigma_2^2),
-   \qquad j=1,\ldots,m,
-   \]
-
-   with known \(\sigma_2^2\) and a flat baseline prior \(p(\mu)\propto1\).
-
-   By Bayes' rule,
-
-   \[
-   p(\mu\mid Y_{1:m}^{\mathrm{ref}})
-   \propto
-   \exp\left\{
-   -\frac{1}{2\sigma_2^2}
-   \sum_{j=1}^{m}(Y_j^{\mathrm{ref}}-\mu)^2
-   \right\}.
-   \]
-
-   Since
-
-   \[
-   \sum_j(Y_j^{\mathrm{ref}}-\mu)^2
-   =
-   \sum_j(Y_j^{\mathrm{ref}}-\bar Y^{\mathrm{ref}})^2
-   +
-   m(\mu-\bar Y^{\mathrm{ref}})^2,
-   \]
-
-   dropping the term that does not depend on \(\mu\) gives
-
-   \[
-   p(\mu\mid Y_{1:m}^{\mathrm{ref}})
-   \propto
-   \exp\left\{
-   -\frac{(\mu-\bar Y^{\mathrm{ref}})^2}
-   {2\sigma_2^2/m}
-   \right\}.
-   \]
-
-   Therefore,
-
-   \[
-   \boxed{
-   \mu\mid Y_{1:m}^{\mathrm{ref}}
-   \sim N\!\left(\bar Y^{\mathrm{ref}},\frac{\sigma_2^2}{m}\right).
-   }
-   \]
-
-   Thus, \(\sigma_2^2/m\) is the **posterior variance of the unknown mean**, rather than the variance of an individual outcome.
-
-2. **Construct the RWD-informed distribution for the trial control mean.**
-
-   Let \(\mathbf{X}_3\) and \(\mathbf{Y}_3\) denote the historical covariates and outcomes, and \(\mathbf{X}_1,\mathbf{X}_2\) the trial covariates.
-
-   The trial control surface is \(f(x)+g(x)\). Over the \(N\) trial profiles,
-
-   \[
-   \mu
-   \coloneqq 
-   \frac1N\sum_{s=1}^2\sum_{i=1}^{n_s}\{f(x_{s,i})+g(x_{s,i})\}
-   =
-   \mu_f+\mu_g.
-   \]
-
-   In the proposed revision, use \(\mathbf{X}_3\) and \(\mathbf{X}_1,\mathbf{X}_2\) to construct candidate cutpoints consistently across the preliminary \(f\) fit, the prior-tree calculation for \(g\), and the final joint fit. This does not require \(f\) and \(g\) to share realized trees.
-
-   The preliminary fit uses only \(\mathbf{Y}_3\) in its outcome likelihood:
-
-   \[
-   p(f\mid \mathbf{Y}_3,\mathbf{X}_3,\mathbf{X}_1,\mathbf{X}_2)
-   \propto
-   p(\mathbf{Y}_3\mid f,\mathbf{X}_3)
-   \,
-   p(f\mid \mathbf{X}_3,\mathbf{X}_1,\mathbf{X}_2).
-   \]
-
-   Combine this distribution with an independent discrepancy prior for \(g\). The covariates, slab variance \(\tau_1^2\), and other specified reference settings are held fixed throughout.
-
-3. **Solve the reference sample-size matching problem.**
-
-   Initially hold \(w\) and \(\tau_0^2\) fixed. Find \(m\) satisfying
-
-   \[
-   \underbrace{\frac{\sigma_2^2}{m}}_{
-   \text{reference posterior variance}
-   }
-   =
-   \underbrace{
-   \operatorname{Var}
-   \left(
-   \mu\mid
-   \mathbf{Y}_3,\mathbf{X}_3,\mathbf{X}_1,\mathbf{X}_2,
-   w,\tau_0^2
-   \right)
-   }_{
-   \text{RWD-informed prior variance for the trial mean}
-   }.
-   \]
-
-   Solving gives
-
-   \[
-   \boxed{
-   m(w,\tau_0^2)
-   =
-   \frac{\sigma_2^2}
-   {\operatorname{Var}
-   \left(
-   \mu\mid
-   \mathbf{Y}_3,\mathbf{X}_3,\mathbf{X}_1,\mathbf{X}_2,
-   w,\tau_0^2
-   \right)}.
-   }
-   \]
-
-4. **Interpret the matched sample size as conditional prior ESS.**
-
-   Suppose the solution is \(m=20\). The RWD-informed distribution for \(\mu\) then has the same variance as the reference posterior obtained from 20 independent normal observations under a flat baseline prior.
-
-   Under this variance-matching definition, we therefore assign the RWD-informed distribution a **prior ESS of 20 reference observations**.
-
-   More generally, \(m(w,\tau_0^2)\) is its **conditional prior ESS**, conditional on \(w\) and \(\tau_0^2\). It may be noninteger because it represents an information equivalent, rather than an actual patient count.
-
-5. **Define how conditional ESS values are summarized over the spike variance.**
-
-   For a candidate \(s_0^2\), specify
-
-   \[
-   \tau_0^2
-   \sim
-   \text{scaled-Inv-}\chi^2(\nu_0,s_0^2).
-   \]
-
-   Different values of \(\tau_0^2\) produce different matched sample sizes \(m(w,\tau_0^2)\). The calibration chooses their mean:
-
-   \[
-   \boxed{
-   \mathrm{ESS}(w,s_0^2)
-   \coloneqq 
-   E_{\tau_0^2}[m(w,\tau_0^2)].
-   }
-   \]
-
-   Equivalently, the unexpanded definition is
-
-   \[
-   \mathrm{ESS}(w,s_0^2)
-   =
-   E_{\tau_0^2}
-   \left[
-   \frac{\sigma_2^2}
-   {\operatorname{Var}
-   \left(
-   \mu\mid
-   \mathbf{Y}_3,\mathbf{X}_3,\mathbf{X}_1,\mathbf{X}_2,
-   w,\tau_0^2
-   \right)}
-   \right].
-   \]
-
-   **Averaging these conditional matches is an additional calibration choice.** It does not follow automatically from variance matching.
-
-6. **Calculate \(V_f\).**
-
-   Define
-
-   \[
-   \boxed{
-   V_f
-   \coloneqq 
-   \operatorname{Var}
-   (\mu_f\mid \mathbf{Y}_3,\mathbf{X}_3,\mathbf{X}_1,\mathbf{X}_2).
-   }
-   \]
-
-   For each preliminary posterior draw, calculate
-
-   \[
-   \mu_f^{(b)}
-   \coloneqq 
-   \frac1N\sum_{s=1}^2\sum_{i=1}^{n_s} f^{(b)}(x_{s,i}).
-   \]
-
-   The variance across these averages estimates \(V_f\). It includes uncertainty in the \(f\) trees and leaf parameters, including dependence among predictions at different trial profiles.
-
-7. **Calculate \(V_g\), including the averages over indicators and trees.**
-
-   For fixed discrepancy trees,
-
-   \[
-   \mu_g
-   =
-   \sum_{j,\ell}a_{j\ell}\theta^g_{j\ell},
-   \qquad
-   a_{j\ell}
-   \coloneqq 
-   \frac{\#\{\text{trial profiles in leaf }(j,\ell)\}}{N}.
-   \]
-
-   Under the mixture prior,
-
-   \[
-   z_{j\ell}\mid w\sim\operatorname{Bernoulli}(w),
-   \]
-
-   \[
-   \theta^g_{j\ell}\mid z_{j\ell},\tau_0^2
-   \sim
-   N\!\left(
-   0,\,
-   z_{j\ell}\tau_0^2+(1-z_{j\ell})\tau_1^2
-   \right).
-   \]
-
-   Conditional independence gives
-
-   \[
-   \operatorname{Var}(\mu_g\mid\mathcal T^g,z,\tau_0^2)
-   =
-   \sum_{j,\ell}a_{j\ell}^2
-   \{z_{j\ell}\tau_0^2+(1-z_{j\ell})\tau_1^2\}.
-   \]
-
-   First average over \(z\). Every conditional component has mean zero, so the between-component mean term in the law of total variance vanishes. Using \(E(z_{j\ell}\mid w)=w\),
-
-   \[
-   \operatorname{Var}(\mu_g\mid\mathcal T^g,w,\tau_0^2)
-   =
-   \{w\tau_0^2+(1-w)\tau_1^2\}
-   \sum_{j,\ell}a_{j\ell}^2.
-   \]
-
-   Next average over the specified tree prior, independent of \(w\) and the scales. The conditional mean is again zero for every configuration. Consequently,
-
-   \[
-   \boxed{
-   V_g(w,\tau_0^2)
-   =
-   \{w\tau_0^2+(1-w)\tau_1^2\}
-   E_{\mathcal T^g}\left[\sum_{j,\ell}a_{j\ell}^2\right],
-   }
-   \]
-
-   where
-
-   \[
-   V_g(w,\tau_0^2)
-   \coloneqq 
-   \operatorname{Var}
-   (\mu_g\mid \mathbf{X}_3,\mathbf{X}_1,\mathbf{X}_2,w,\tau_0^2).
-   \]
-
-   Thus, \(V_g\) is the prior variance of the average discrepancy after integrating out leaf parameters, indicators, and trees.
-
-8. **Substitute the variance decomposition and select the all-spike reference.**
-
-   In the calibration reference, the RWD-updated \(f\) distribution and discrepancy prior are independent conditional on the specified settings. Therefore,
-
-   \[
-   \operatorname{Var}
-   \left(
-   \mu\mid
-   \mathbf{Y}_3,\mathbf{X}_3,\mathbf{X}_1,\mathbf{X}_2,
-   w,\tau_0^2
-   \right)
-   =
-   V_f+V_g(w,\tau_0^2).
-   \]
-
-   Hence the conditional prior ESS is
-
-   \[
-   m(w,\tau_0^2)
-   =
-   \frac{\sigma_2^2}{V_f+V_g(w,\tau_0^2)}.
-   \]
-
-   Here, \(V_g\) adds uncertainty about transferring the historical surface to the trial population. It discounts the information attributed to the historical fit.
-
-   For spike-scale calibration, choose the all-spike reference \(w=1\), retaining the specified tree prior:
-
-   \[
-   V_g(1,\tau_0^2)
-   =
-   \tau_0^2
-   E_{\mathcal T^g}\left[\sum_{j,\ell}a_{j\ell}^2\right].
-   \]
-
-   Its mean conditional ESS is therefore
-
-   \[
-   \boxed{
-   \mathrm{ESS}_{\tau_0}(s_0^2)
-   \coloneqq 
-   E_{\tau_0^2}[m(1,\tau_0^2)]
-   =
-   E_{\tau_0^2}
-   \left[
-   \frac{\sigma_2^2}
-   {V_f+V_g(1,\tau_0^2)}
-   \right].
-   }
-   \]
-
-9. **Define and derive the ESS ceiling.**
-
-   The ceiling is the largest prior ESS available under the all-spike calibration reference when the discrepancy contributes no uncertainty. Hold \(V_f>0\), \(\sigma_2^2\), \(\nu_0>0\), and the specified tree prior fixed.
-
-   First, generate the scaled inverse-chi-square prior as
-
-   \[
-   \tau_0^2=\frac{\nu_0s_0^2}{U},
-   \qquad U\sim\chi^2_{\nu_0}.
-   \]
-
-   For every fixed \(U>0\), \(\tau_0^2\) approaches zero as \(s_0^2\) approaches zero. This takes a limit through positive prior scales.
-
-   Second, under the all-spike reference,
-
-   \[
-   V_g(1,\tau_0^2)
-   =
-   \tau_0^2
-   E_{\mathcal T^g}\left[\sum_{j,\ell}a_{j\ell}^2\right].
-   \]
-
-   The tree-weight expectation is fixed and finite: the nonnegative leaf weights sum to one within each tree, so their squared sum across the sum-of-trees is at most \(H_g\). Consequently, \(V_g(1,\tau_0^2)\) approaches zero, and the conditional ESS approaches
-
-   \[
-   \frac{\sigma_2^2}{V_f+V_g(1,\tau_0^2)}
-   \;\longrightarrow\;
-   \frac{\sigma_2^2}{V_f}.
-   \]
-
-   Third, passing this limit through the expectation requires justification. Every conditional ESS satisfies
-
-   \[
-   0\leq
-   \frac{\sigma_2^2}{V_f+V_g(1,\tau_0^2)}
-   \leq
-   \frac{\sigma_2^2}{V_f}.
-   \]
-
-   Using the common \(U\) representation above, the quantities being averaged converge almost surely and are bounded by the same finite constant. Bounded convergence therefore gives
-
-   \[
-   \boxed{
-   \mathrm{ESS}_{\mathrm{ceiling}}
-   \coloneqq 
-   \lim_{s_0^2\downarrow0}
-   \mathrm{ESS}_{\tau_0}(s_0^2)
-   =
-   \frac{\sigma_2^2}{V_f}.
-   }
-   \]
-
-   This explains both the limit and the upper bound. Removing discrepancy uncertainty leaves the historical-fit uncertainty \(V_f\); it does not make the trial control mean known perfectly. Adding nonnegative discrepancy variance increases the denominator and reduces ESS.
-
-   The all-spike condition matters. If \(w<1\) remains fixed, the slab still contributes uncertainty as the spike variance vanishes, so the limit is generally smaller than \(\sigma_2^2/V_f\).
-
-   For example, \(\sigma_2^2=4\) and \(V_f=0.05\) give a ceiling of 80. Under no discrepancy, the historical-data-informed distribution for the trial control mean has the same variance as the flat-prior reference posterior based on 80 independent observations. The f90, f50, and f25 requested targets are then 72, 40, and 20; an absolute target of 100 is capped at 80.
-
-   The ceiling depends on the historical fit, target covariate profiles, and reference variance. It need not equal either cohort's patient count. It bounds this prior calibration quantity, not information after incorporating trial outcomes. A finite positive scale grid generally only approaches the limiting ceiling. For survival, the reference observations concern uncensored log event times, not patients under the trial's censoring pattern.
-
-The all-spike choice concerns calibration; the final joint fit can update both \(f\) and \(g\) using RCT outcomes. Also, averaging conditional ESS values differs from matching the fully marginalized prior variance. The latter would instead give
+Define the historical-control, discrepancy, and current-control means over \(\mathbf X_2\) by
 
 \[
-\frac{\sigma_2^2}
-{V_f+E_{\tau_0^2}[V_g(1,\tau_0^2)]}.
+\mu_f\coloneqq \frac1{n_2}\sum_{i=1}^{n_2}f(x_{2,i}),
+\qquad
+\mu_g\coloneqq \frac1{n_2}\sum_{i=1}^{n_2}g(x_{2,i}),
+\qquad
+\mu\coloneqq\mu_f+\mu_g.
 \]
 
-In the current implementation, \(\sigma_2^2\) is estimated from RCT controls in two-arm analyses and then held fixed for calibration. The calibration scale law is untruncated, whereas fitting truncates \(\tau_0^2<\tau_1^2\).
+A preliminary historical fit produces the posterior of \(f\) from \((\mathbf Y_3,\mathbf X_3)\), evaluated at \(\mathbf X_2\). Independently, the specified prior for \(g\) induces a distribution for \(\mu_g\). Together they induce the target prior
 
-**Open numerical implementation issue.** The saved ceiling uses the variance from all preliminary standardized-mean draws, but the saved central ESS curve averages conditional-ratio calculations using separate block estimates of that variance. The block variances are rescaled to have mean equal to the full-draw variance. Because inversion is nonlinear, the averaged curve's zero-scale limit need not equal the saved ceiling and can exceed it. See the Gaussian two-arm [variance calculation](../../lrcbart-sim-gaussian/ess_local/ess_cal.R:210), [ceiling calculation](../../lrcbart-sim-gaussian/ess_local/ess_cal.R:260), and [curve averaging](../../lrcbart-sim-gaussian/ess_local/ess_cal.R:320). Alignment of the central numerical curve with the same \(V_f\) remains open; saving this derivation does not change calibration code, targets, or results.
+\[
+\pi_{\mathrm{target}}
+(\mu\mid\mathbf Y_3,\mathbf X_3,\mathbf X_2,w,\tau_0^2).
+\]
+
+This notation names the induced prior; it does not introduce a separate modeling distribution. Conditional on \(w\), \(\tau_0^2\), the covariates, and all other fixed prior settings, the historical posterior for \(f\) and the prior for \(g\) are independent. Hence
+
+\[
+\begin{aligned}
+V_{\mathrm{target}}(w,\tau_0^2)
+&\coloneqq
+\operatorname{Var}
+(\mu\mid\mathbf Y_3,\mathbf X_3,\mathbf X_2,w,\tau_0^2)\\
+&=V_f+V_g(w,\tau_0^2),
+\end{aligned}
+\]
+
+where
+
+\[
+V_f\coloneqq
+\operatorname{Var}(\mu_f\mid\mathbf Y_3,\mathbf X_3,\mathbf X_2)
+\]
+
+and
+
+\[
+V_g(w,\tau_0^2)\coloneqq
+\operatorname{Var}(\mu_g\mid\mathbf X_2,w,\tau_0^2).
+\]
+
+\(V_f\) is the uncertainty remaining in the standardized historical surface after observing the historical data. \(V_g\) is the uncertainty introduced when transporting that surface to the current-control population.
+
+## 2. Calculating \(V_f\)
+
+For posterior draw \(b=1,\ldots,B\) from the preliminary historical fit, calculate
+
+\[
+\mu_f^{(b)}\coloneqq
+\frac1{n_2}\sum_{i=1}^{n_2}f^{(b)}(x_{2,i}).
+\]
+
+Then estimate \(V_f\) by
+
+\[
+\widehat V_f
+=
+\frac1{B-1}\sum_{b=1}^B
+(\mu_f^{(b)}-\bar\mu_f)^2,
+\qquad
+\bar\mu_f\coloneqq B^{-1}\sum_{b=1}^B\mu_f^{(b)}.
+\]
+
+Equivalently,
+
+\[
+V_f
+=\frac1{n_2^2}
+\sum_{i=1}^{n_2}\sum_{i'=1}^{n_2}
+\operatorname{Cov}
+\{f(x_{2,i}),f(x_{2,i'})
+\mid\mathbf Y_3,\mathbf X_3,\mathbf X_2\}.
+\]
+
+The variance of posterior averages retains tree uncertainty and covariance among predictions at different target profiles. Averaging pointwise variances would omit the covariance terms.
+
+## 3. Calculating \(V_g(w,\tau_0^2)\)
+
+Write the discrepancy surface as
+
+\[
+g(x)\coloneqq
+\sum_{h^g=1}^{H_g}
+\sum_{\ell\in\mathcal T_{h^g}^g}
+\theta^g_{h^g\ell}\mathbf1\{x\in\ell\}.
+\]
+
+For terminal node \(\ell\) of discrepancy tree \(h^g\), define its target-profile weight
+
+\[
+a_{h^g\ell}\coloneqq
+\frac1{n_2}\sum_{i=1}^{n_2}
+\mathbf1\{x_{2,i}\in\ell\text{ of tree }h^g\}.
+\]
+
+Regrouping the profile averages gives
+
+\[
+\mu_g
+=\sum_{h^g,\ell}a_{h^g\ell}\theta^g_{h^g\ell}.
+\]
+
+The leaf prior is
+
+\[
+z_{h^g\ell}\mid w\sim\operatorname{Bernoulli}(w),
+\qquad
+\theta^g_{h^g\ell}\mid z_{h^g\ell},\tau_0^2,\tau_1^2
+\sim
+\begin{cases}
+N(0,\tau_0^2),&z_{h^g\ell}=1,\\
+N(0,\tau_1^2),&z_{h^g\ell}=0.
+\end{cases}
+\]
+
+Conditional on the trees and indicators, independence and the zero prior means give
+
+\[
+\operatorname{Var}(\mu_g\mid\mathcal T^g,\mathbf z,w,\tau_0^2)
+=
+\sum_{h^g,\ell}a_{h^g\ell}^2
+\{z_{h^g\ell}\tau_0^2+(1-z_{h^g\ell})\tau_1^2\}.
+\]
+
+The conditional mean remains zero when indicators and trees are integrated out, so the between-mean terms in both applications of the law of total variance vanish. Therefore
+
+\[
+\boxed{
+V_g(w,\tau_0^2)
+=
+\{w\tau_0^2+(1-w)\tau_1^2\}
+E_{\mathcal T^g}
+\left(\sum_{h^g,\ell}a_{h^g\ell}^2\right).
+}
+\]
+
+The expectation is with respect to the discrepancy-tree prior used for calibration. It is evaluated by prior-tree simulation.
+
+## 4. Target and reference information
+
+The proposed method measures target-prior information by inverse conditional marginal variance:
+
+\[
+\mathcal I_{\mathrm{target}}(w,\tau_0^2)
+\coloneqq
+\frac1{V_{\mathrm{target}}(w,\tau_0^2)}
+=\frac1{V_f+V_g(w,\tau_0^2)}.
+\]
+
+This is a global concentration measure. If the target prior is normal, it also equals its constant negative log-prior curvature; exact normality is not required for the variance-based definition.
+
+Use one normal current-control observation as the reference information unit:
+
+\[
+Y\mid\mu\sim N(\mu,\sigma_2^2),
+\]
+
+where \(\sigma_2^2\) is fixed for the theoretical calibration. Its expected Fisher information is
+
+\[
+\mathcal I_{\mathrm{ref}}(\mu)
+\coloneqq i_F(\mu)
+\coloneqq
+E_{Y\mid\mu}
+\left[-\frac{\partial^2}{\partial\mu^2}
+\log p(Y\mid\mu)\right]
+=\frac1{\sigma_2^2}.
+\]
+
+No reference prior is required. Independence makes the reference information additive, so \(m\) observations supply \(m/\sigma_2^2\).
+
+## 5. Conditional matching and prior ESS
+
+For fixed \(w\) and \(\tau_0^2\), define \(m(w,\tau_0^2)\) by writing the target information on the left and reference information on the right:
+
+\[
+\mathcal I_{\mathrm{target}}(w,\tau_0^2)
+=m(w,\tau_0^2)\mathcal I_{\mathrm{ref}}(\mu).
+\]
+
+Thus
+
+\[
+\boxed{
+m(w,\tau_0^2)
+=\frac{\sigma_2^2}{V_f+V_g(w,\tau_0^2)}.
+}
+\]
+
+The scale \(s_0^2\) indexes the calibration distribution of \(\tau_0^2\). The proposed prior ESS averages the conditional equivalent counts:
+
+\[
+\boxed{
+\operatorname{ESS}(w,s_0^2)
+\coloneqq
+E_{\tau_0^2}\{m(w,\tau_0^2)\}
+=E_{\tau_0^2}
+\left[
+\frac{\sigma_2^2}{V_f+V_g(w,\tau_0^2)}
+\right].
+}
+\]
+
+The result can be noninteger because it is an information equivalent. It is conditional on the selected target profiles, reference likelihood, historical dataset, covariate-dependent tree prior, and fixed calibration settings.
+
+## 6. All-spike calibration and information ceiling
+
+For prior-scale selection, set \(w=1\) and use the untruncated distribution
+
+\[
+\tau_0^2\sim\operatorname{scaled\text{-}Inv}\chi^2(\nu_0,s_0^2).
+\]
+
+Then
+
+\[
+V_g(1,\tau_0^2)
+=\tau_0^2
+E_{\mathcal T^g}
+\left(\sum_{h^g,\ell}a_{h^g\ell}^2\right)
+\]
+
+and
+
+\[
+\operatorname{ESS}_{\tau_0}(s_0^2)
+\coloneqq\operatorname{ESS}(1,s_0^2)
+=E_{\tau_0^2}
+\left[
+\frac{\sigma_2^2}{
+V_f+\tau_0^2E_{\mathcal T^g}
+(\sum_{h^g,\ell}a_{h^g\ell}^2)}
+\right].
+\]
+
+Under \(0<V_f<\infty\), \(0<\sigma_2^2<\infty\), \(\nu_0>0\), and a finite discrepancy tree almost surely, this curve is continuous, strictly decreasing, and strictly convex in \(s_0^2>0\). Its limits are
+
+\[
+\lim_{s_0^2\downarrow0}
+\operatorname{ESS}_{\tau_0}(s_0^2)
+=\frac{\sigma_2^2}{V_f},
+\qquad
+\lim_{s_0^2\to\infty}
+\operatorname{ESS}_{\tau_0}(s_0^2)=0.
+\]
+
+Hence
+
+\[
+\operatorname{ESS}_{\mathrm{ceiling}}
+\coloneqq\frac{\sigma_2^2}{V_f}.
+\]
+
+As \(s_0^2\downarrow0\), discrepancy variation vanishes but historical-posterior uncertainty remains. The ceiling therefore depends on the information supplied by the historical data through \(V_f\); it is not a historical head count.
+
+## 7. Relationship to established prior-ESS definitions
+
+All four definitions compare a target-prior information quantity with a calibrated or reference information quantity, but they use different information measures and calibrations.
+
+| Method | Target information | Reference or calibration | ESS interpretation |
+| --- | --- | --- | --- |
+| Neuenschwander et al. (2010) | Inverse marginal variance \(1/V_{\mathrm{target}}\) of a partial-pooling MAP prior | Complete-pooling MAP prior with variance \(V_0\) and assigned ESS \(N_H\) | \(N_HV_0/V_{\mathrm{target}}\): information retained relative to complete pooling |
+| Morita–Thall–Müller (2008) | Log-prior curvature at the target-prior mean | Expected log-posterior curvature from a same-mean vague prior plus \(m\) hypothetical observations | The \(m\) giving the closest curvature match |
+| ELIR | Pointwise log-prior curvature | Expected Fisher information in one current-study observation | Prior expectation of the local information ratio |
+| Proposed method | Inverse conditional marginal variance \(1/\{V_f+V_g(w,\tau_0^2)\}\) | Expected Fisher information \(1/\sigma_2^2\) in one normal current-control observation | Mean, over \(\tau_0^2\), of the conditional variance-matched counts |
+
+Neuenschwander’s complete-pooling row is an ESS anchor rather than a hypothetical-likelihood reference. Morita’s reference object is a posterior formed from a low-information prior and hypothetical data. ELIR and the proposed method use one-observation Fisher information directly, but ELIR averages local curvature ratios over the target prior, whereas the proposed method averages conditional inverse-variance matches over the spike-variance calibration distribution. The proposed ESS therefore does not inherit ELIR’s predictive-consistency property.
+
+## 8. Implementation and interpretation
+
+Numerical calibration substitutes a fixed estimate \(\widehat\sigma_2^2\) for the theoretical \(\sigma_2^2\). The theoretical curve estimates \(V_f\) from all preliminary posterior draws, simulates discrepancy trees from the calibration prior, and uses common chi-square draws across the scale grid. The reported selector additionally constructs block-specific estimates of \(V_f\) and applies its stated 0.95 acceptance rule. That selection procedure is an implementation rule rather than a change to the ESS definition.
+
+The calibration distribution for \(\tau_0^2\), the calibration tree support, and the final fitting prior need not coincide. In particular, calibration uses an untruncated spike-variance distribution, while the two-arm fit uses a truncated distribution and single-arm fits may fix \(\tau_0^2\). Reported ESS must therefore be labeled as the calibration definition rather than an exact post-fit information measure.
+
+An ESS of \(m\) means that the full historical-data-informed target prior has, on average over the spike-variance calibration distribution, the same conditional precision about the specified current-control mean as \(m\) independent observations from the normal reference likelihood. It is not the number of historical patients retained, a compatibility diagnostic, or an additive patient count. Overall and subgroup ESS values are generally nonadditive because their standardized means are correlated and the inverse-variance transformation is nonlinear.
+
+The group-2 target requires prespecified current-control profiles. When \(n_2=0\), the same definition can be used only after specifying a separate target profile set; it cannot be formed from an empty \(\mathbf X_2\).
+
+## References
+
+1. Neuenschwander B, Capkun-Niggli G, Branson M, Spiegelhalter DJ. *Summarizing historical information on controls in clinical trials.* Clinical Trials. 2010;7(1):5–18.
+2. Morita S, Thall PF, Müller P. *Determining the effective sample size of a parametric prior.* Biometrics. 2008;64(2):595–602.
+3. Neuenschwander B, Weber S, Schmidli H, O’Hagan A. *Predictively consistent prior effective sample sizes.* Biometrics. 2020;76(2):578–587.

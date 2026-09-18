@@ -37,13 +37,13 @@ Suppressing the fixed outcome-centering constant in the notation, write
 
 \[
 \boxed{
-f(x)\coloneqq \sum_{j=1}^{H_f}\sum_{\ell\in\mathcal T_j^f}\theta^f_{j\ell}\mathbf 1\{x\in\ell\},
+f(x)\coloneqq \sum_{h^f=1}^{H_f}\sum_{\ell\in\mathcal T_{h^f}^f}\theta^f_{h^f\ell}\mathbf 1\{x\in\ell\},
 \qquad
-g(x)\coloneqq \sum_{j=1}^{H_g}\sum_{\ell\in\mathcal T_j^g}\theta^g_{j\ell}\mathbf 1\{x\in\ell\}.
+g(x)\coloneqq \sum_{h^g=1}^{H_g}\sum_{\ell\in\mathcal T_{h^g}^g}\theta^g_{h^g\ell}\mathbf 1\{x\in\ell\}.
 }
 \]
 
-Here \(\mathcal T_j^f\) and \(\mathcal T_j^g\) denote tree structures, and \(\theta^f_{j\ell}\) and \(\theta^g_{j\ell}\) their terminal-node parameters. In each sum, \(\ell\in\mathcal T_j^k\) indexes the terminal-node regions. Each node contributes its parameter when the profile lies in that region. The centering constant is restored when forming outcome predictions.
+Here \(\mathcal T_{h^f}^f\) and \(\mathcal T_{h^g}^g\) denote prognostic and discrepancy tree structures, and \(\theta^f_{h^f\ell}\) and \(\theta^g_{h^g\ell}\) their terminal-node parameters. In each sum, \(\ell\) indexes a terminal-node region. Each node contributes its parameter when the profile lies in that region. The centering constant is restored when forming outcome predictions.
 
 The two sums of trees have separate tree structures. Their priors favor smaller trees through depth-dependent splitting probabilities:
 
@@ -72,7 +72,7 @@ Candidate splitting variables and cutpoints can be shared while the realized tre
 The \(f\)-leaf parameters have normal priors:
 
 \[
-\theta^f_{j\ell}\mid \mathcal T_j^f
+\theta^f_{h^f\ell}\mid \mathcal T_{h^f}^f
 \sim N(0,\lambda_f^2),
 \]
 
@@ -81,7 +81,7 @@ independently conditional on the tree structures and fixed prior scale.
 For each \(g\) leaf,
 
 \[
-z_{j\ell}\mid w
+z_{h^g\ell}\mid w
 \sim\operatorname{Bernoulli}(w),
 \]
 
@@ -89,11 +89,11 @@ and
 
 \[
 \boxed{
-\theta^g_{j\ell}\mid z_{j\ell},\tau_0^2,\tau_1^2
+\theta^g_{h^g\ell}\mid z_{h^g\ell},\tau_0^2,\tau_1^2
 \sim
 \begin{cases}
-N(0,\tau_0^2),&z_{j\ell}=1,\\
-N(0,\tau_1^2),&z_{j\ell}=0,
+N(0,\tau_0^2),&z_{h^g\ell}=1,\\
+N(0,\tau_1^2),&z_{h^g\ell}=0,
 \end{cases}
 \qquad
 0<\tau_0^2<\tau_1^2.
@@ -109,7 +109,7 @@ Consequently, the prior encourages the RCT-control mean to remain near \(f(x)\),
 Several distinctions matter:
 
 - The spike is continuous, so a spike leaf can have a nonzero contribution.
-- \(z_{j\ell}\) is specific to a leaf; The group subscripts identify treatment and control sources.
+- \(z_{h^g\ell}\) is specific to a leaf; the group subscripts identify treatment and control sources.
 - \(w\) is a shared prior allocation probability, not a patient-specific borrowing weight.
 - At a profile \(x\), the discrepancy \(g(x)\) combines one leaf contribution from every discrepancy tree.
 

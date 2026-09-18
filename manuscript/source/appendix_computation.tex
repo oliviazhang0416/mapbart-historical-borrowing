@@ -31,30 +31,30 @@ Prior ESS Monte Carlo & 2,000 prior trees, 4,000 scale draws, 20 variance blocks
 Scale grid and selector & 141 log-spaced values from $10^{-6}$ to 10; block acceptance fraction 0.95\\
 \bottomrule
 \end{tabular}
-\caption*{The sampler overrides the discrepancy minimum leaf size to zero when no trial controls are present. The calibration prior-tree simulation has its own admissibility and maximum-depth rule, discussed in Appendix B.9. Historical and treatment priors use their respective outcome ranges.}
+\caption*{The sampler overrides the discrepancy minimum leaf size to zero when no trial controls are present. The calibration prior-tree simulation has its own admissibility and maximum-depth rule, discussed in Appendix B.7. Historical and treatment priors use their respective outcome ranges.}
 \end{table}
 
 \subsection{Partial residuals}\label{sec:A.2}
-For the current tree $j$, remove its contribution from the respective sum. Conditional on every other tree and current variance values, form
+For the current prognostic tree $h^f$ or discrepancy tree $h^g$, remove its contribution from the respective sum. Conditional on every other tree and current variance values, form
 \begin{equation}\label{eq:partial}
 \begin{aligned}
-r_{3,i}^f&\coloneqq Y_{3,i}-f^{(-j)}(x_{3,i}),\\
-r_{2,i}^f&\coloneqq Y_{2,i}-f^{(-j)}(x_{2,i})-g(x_{2,i}),\\
-r_{2,i}^g&\coloneqq Y_{2,i}-f(x_{2,i})-g^{(-j)}(x_{2,i}).
+r_{3,i}^f&\coloneqq Y_{3,i}-f^{(-h^f)}(x_{3,i}),\\
+r_{2,i}^f&\coloneqq Y_{2,i}-f^{(-h^f)}(x_{2,i})-g(x_{2,i}),\\
+r_{2,i}^g&\coloneqq Y_{2,i}-f(x_{2,i})-g^{(-h^g)}(x_{2,i}).
 \end{aligned}
 \end{equation}
-The residuals with subscript $2$ use trial controls only. $f^{(-j)}$ and $g^{(-j)}$ denote the respective sums with tree $j$ omitted; the tree index is suppressed on the residuals. These residuals remain fixed when comparing the current and proposed structures for tree $j$. For survival data, $Y_{3,i}$ and $Y_{2,i}$ in these calculations are the current observed or augmented log event time.
+The residuals with subscript $2$ use trial controls only. $f^{(-h^f)}$ and $g^{(-h^g)}$ denote the respective sums with the current tree omitted; the tree index is suppressed on the residuals. These residuals remain fixed when comparing current and proposed structures. For survival data, $Y_{3,i}$ and $Y_{2,i}$ in these calculations are the current observed or augmented log event time.
 
 \subsection{Marginal leaf likelihoods}\label{sec:A.3}
 Within a specified leaf, write $r_i$ for the relevant partial residuals, suppressing their source labels only in the generic normal integral. For an $f$ leaf these include both $r_{3,i}^f$ and $r_{2,i}^f$, with their respective residual variances; for a $g$ leaf they include only $r_{2,i}^g$.
 \begin{lemma}[Normal leaf integral]\label{lem:leaf}
 Suppose $r_i\mid\theta\sim\N(\theta,\sigma_i^2)$ independently in a leaf and $\theta\sim\N(0,q^2)$, with $q^2>0$. Let $A\coloneqq \sum_i\sigma_i^{-2}$ and $B\coloneqq \sum_i r_i\sigma_i^{-2}$. The marginal leaf density is
 \begin{equation}\label{eq:leafdensity}
-p(\mathbf r_\ell\mid \mathcal T_j,\text{rest})=
+p(\mathbf r_\ell\mid \mathcal T_{h^k}^k,\text{rest})=
 \left[\prod_{i\in\ell}\phi(r_i;0,\sigma_i^2)\right]
 (1+q^2A)^{-1/2}\exp\!\left\{\frac{q^2B^2}{2(1+q^2A)}\right\}.
 \end{equation}
-Here $\mathcal T_j$ denotes the current tree, with the component superscript suppressed, and $\theta$ denotes its leaf parameter. The last argument of $\phi$ is variance; the result also holds for an empty leaf, using $A=B=0$ and an empty product of one.
+Here $k\in\{f,g\}$, $\mathcal T_{h^k}^k$ denotes the current component-specific tree, and $\theta$ denotes its leaf parameter. The last argument of $\phi$ is variance; the result also holds for an empty leaf, using $A=B=0$ and an empty product of one.
 \end{lemma}
 \begin{proof}
 Factor the observation-level product from the normal likelihood and integrate the remaining prior-weighted kernel:
@@ -83,7 +83,7 @@ M_g&=w(1+\tau_0^2A)^{-1/2}
 \exp\!\left\{\frac{\tau_1^2B^2}{2(1+\tau_1^2A)}\right\}.
 \end{aligned}
 \end{equation}
-Thus both $\theta^g_{j\ell}$ and $z_{j\ell}$ are marginalized for a discrepancy-tree proposal. The quantities $w,\tau_0^2,\tau_1^2$ are held fixed, not integrated out in this step. For an empty trial-control leaf, $M_g=w+(1-w)=1$.
+Thus both $\theta^g_{h^g\ell}$ and $z_{h^g\ell}$ are marginalized for a discrepancy-tree proposal. The quantities $w,\tau_0^2,\tau_1^2$ are held fixed, not integrated out in this step. For an empty trial-control leaf, $M_g=w+(1-w)=1$.
 
 \subsection{Metropolis--Hastings tree updates}\label{sec:A.4}
 The marginal tree likelihood is the observation-level density product times the product of its leaf factors. The observation product is identical under both partitions, so it cancels from the Metropolis--Hastings ratio. Suppressing the tree index and component label, a proposal $\mathcal T\to \mathcal T^*$ is accepted with probability
@@ -97,23 +97,23 @@ The tree prior includes split/no-split probabilities and admissible variable/cut
 \subsection{Conditional parameter distributions}\label{sec:A.5}
 After accepting or rejecting a structure, sample node parameters for the retained tree. For an $f$ leaf,
 \begin{equation}
-\theta^f_{j\ell}\mid\text{rest}\sim
+\theta^f_{h^f\ell}\mid\text{rest}\sim
 \N\!\left(\frac{B}{A+\lambda_f^{-2}},\frac{1}{A+\lambda_f^{-2}}\right).
 \end{equation}
 For a nonempty $g$ leaf, its spike probability is
 \begin{equation}\label{eq:spikeposterior}
-P(z_{j\ell}=1\mid\text{rest})=
+P(z_{h^g\ell}=1\mid\text{rest})=
 \frac{w\,\phi(\bar r;0,\tau_0^2+\sigma_2^2/n_{2,\ell})}
 {w\,\phi(\bar r;0,\tau_0^2+\sigma_2^2/n_{2,\ell})+(1-w)\,\phi(\bar r;0,\tau_1^2+\sigma_2^2/n_{2,\ell})}.
 \end{equation}
 This compares the density of the partial-residual mean under the two integrated components, including their prior weights. Given component variance $\tau_k^2$ ($k=0$ for $z=1$ and $k=1$ for $z=0$),
 \begin{equation}
-\theta^g_{j\ell}\mid z_{j\ell},\text{rest}\sim
+\theta^g_{h^g\ell}\mid z_{h^g\ell},\text{rest}\sim
 \N\!\left(\frac{B}{A+\tau_k^{-2}},\frac{1}{A+\tau_k^{-2}}\right).
 \end{equation}
 An empty leaf instead draws $z\sim\operatorname{Bernoulli}(w)$ and $\theta$ from its selected prior component; division by $n_{2,\ell}=0$ is never required.
 
-Let $L_g$ be the total number of discrepancy terminal nodes, $K_0\coloneqq \sum_{j,\ell}z_{j\ell}$ and $S_0\coloneqq \sum_{j,\ell}z_{j\ell}(\theta^g_{j\ell})^2$. With $w\sim\operatorname{Beta}(a_w,b_w)$, where $a_w=b_w=1$ by default,
+Let $L_g$ be the total number of discrepancy terminal nodes, $K_0\coloneqq \sum_{h^g,\ell}z_{h^g\ell}$ and $S_0\coloneqq \sum_{h^g,\ell}z_{h^g\ell}(\theta^g_{h^g\ell})^2$. With $w\sim\operatorname{Beta}(a_w,b_w)$, where $a_w=b_w=1$ by default,
 \begin{equation}
 w\mid\text{rest}\sim\operatorname{Beta}(a_w+K_0,b_w+L_g-K_0).
 \end{equation}
