@@ -4,19 +4,27 @@
 
 This note summarizes the changes from `mapbart-historical-borrowing-pr1/revision/05-writing/main_draft.tex` and its included theory and results sections to the current manuscript in `lrcbart-historical-borrowing/manuscript/`. It distinguishes changes in exposition from changes in the reported analyses. The revision manuscript remains unchanged.
 
+## Theory update: human review required (19 September 2026)
+
+**The revised Theorems 2 and 3 in Section 2.5 and their proofs in Appendix C are working mathematical drafts and still require human review before submission or reliance as validated theoretical guarantees.** Review should cover the assumptions, posterior-concentration argument, adaptive-estimator risk calculation, strict MSE inequality, conflict limits, and transfer to standardized treatment contrasts.
+
+The two objectives are now learning local practical agreement and characterizing borrowing benefit and error. Theorem 2 jointly learns the total historical mean and discrepancy in fixed Gaussian regions under proper normal baseline priors. Its conclusion is expressed through the posterior probability of practical agreement, with no patient-labeling rule. Theorem 3 gives an exact regional estimator and repeated-sampling risk under a **flat historical-mean prior**; it establishes MSE improvement under exact agreement and quantifies the residual error under conflict. Its prior differs from Theorem 2 and the fitted BART model. Neither theorem establishes full-ensemble consistency, uniform robustness, or a censored-outcome result. The original fixed-leaf theorems are retained as supporting lemmas in Appendix C.5.
+
+The broader full-model learning and risk objectives remain open. The development note is [theory_objectives.md](content_migration/theory_objectives.md), with a knitted HTML version beside it. This update changes theoretical exposition and proofs; model fitting, simulation outputs, ESS calibration, and application results are unchanged.
+
 ## 1. Organization and writing
 
 The draft has been rewritten in the style of a statistical methods submission, with standard statistical and BART terminology. The main text follows Introduction, Methods, Simulation studies, Multiple-myeloma application, and Discussion. Detailed calculations, proofs, implementation qualifications and complete results are organized into Appendix A–F.
 
 The revision assembled the main article, displays and web appendices into one document. The current version separates them into three documents, each with its editable `.tex` file alongside the PDF:
 
-- `main`: the article, including the main equations and three conditional/calibration theorems.
+- `main`: the article, including the main equations and the prior-ESS theorem and two regional benchmark theorems.
 - `main_tables_figures`: seven tables and Figures 1--2.
-- `appendix`: computation, ESS derivation, conditional theory, survival calculations, and complete simulation/application results.
+- `appendix`: computation, ESS derivation, regional theory and supporting leaf calculations, survival calculations, and complete simulation/application results.
 
 The approved explanatory material is retained in `content_migration/`. These notes are the basis of the redraft, rather than additional sections to insert verbatim. The handoff is a description of manuscript changes, not a study-running guide.
 
-As of 19 September 2026, `main.pdf` is 12 pages and `appendix.pdf` is 56 pages. Both build without undefined references or overfull boxes. The appendix retains one known duplicate PDF-destination warning caused by splitting Table S2 across two `longtable` environments; the visible table is complete. The ESS comparison HTML and the model, computation, ESS and application walkthroughs in `content_migration/` have been synchronized with the manuscript notation.
+As of 19 September 2026, `main.pdf` is 13 pages and `appendix.pdf` is 59 pages. Both build without undefined references or overfull boxes. The appendix retains one known duplicate PDF-destination warning caused by splitting Table S2 across two `longtable` environments; the visible table is complete. The ESS comparison HTML and the model, computation, ESS and application walkthroughs in `content_migration/` have been synchronized with the manuscript notation.
 
 ## 2. Model specification: clarify the data groups and conditioning
 
@@ -62,7 +70,7 @@ The computation walkthrough has been shortened and reorganized around partial re
 
 The text states explicitly that discrepancy tree proposals integrate out both the terminal-node parameter and `z_{h^g\ell}`, conditional on the shared hyperparameters. After a tree is retained, including after rejection of a proposed move, its indicators and node parameters are sampled conditionally. Appendix A provides the normal integral, sampling steps and acceptance probability. The posterior spike probability is denoted `gamma(rbar)` and the additional mixture shrinkage by `Delta_mix(rbar)`, avoiding collisions with the RWD-informed prior `pi` and information notation `I`.
 
-The theoretical presentation is more compact and narrower. Calibration is now Theorem 1; bounded additional shrinkage relative to the slab-only leaf estimate is Theorem 2; conditional learning of a leaf discrepancy is Theorem 3. The revision's extended fixed-partition ensemble results, detailed detection-threshold discussion and block-rule asymptotics have not all been carried into the new theorem statements. This is a reduction in scope, not a new proof of full-model robustness. The revision already qualified its theory; the redraft preserves the distinctions between leaf inference, latent-component selection, and inference with unknown tree structures.
+The current theory consists of prior ESS calibration (Theorem 1), learning local practical agreement in a joint fixed-region model (Theorem 2), and regional borrowing benefit and conflict risk (Theorem 3). Appendix C contains both new proofs, exact risk identities, fixed-weight contrast implications, and the previous conditional leaf results as supporting lemmas. The scope and human-review requirements are detailed in the theory-update note above. The full sum-of-trees extension remains unproved; in particular, the exact risk benchmark uses a flat baseline prior rather than the proper Gaussian baseline prior in the learning theorem and fitted model.
 
 ## 5. Simulation reporting: use the current study results
 
@@ -113,8 +121,8 @@ Comparator display labels use -NP for trial-only controls, -CP for complete pool
 
 The implemented prior-scale calibration does not fully coincide with the theoretical prior-ESS definition. The reported selector uses block-specific estimates of historical uncertainty, a finite scale grid and implementation-specific spike-variance and tree-generation rules. Consequently, the reported prior ESS should be interpreted as the information summary under the stated calibration procedure rather than as an exact description of the prior used in every final fit. Full alignment would require a methodological revision and rerunning the affected analyses.
 
-The simulations contain 100 replicates per setting and evaluate alternative-hypothesis scenarios only. They therefore provide limited precision for comparisons between methods and do not establish Type I error control or decision-rule calibration. The conditional theoretical results apply within a fixed discrepancy-tree leaf and do not establish robustness or posterior consistency for the full sum-of-trees model. In the single-arm setting, trial outcomes do not identify the untreated-control discrepancy, so conclusions remain dependent on the discrepancy prior, covariate support and equal-residual-variance assumption.
+The simulations contain 100 replicates per setting and evaluate alternative-hypothesis scenarios only. They therefore provide limited precision for comparisons between methods and do not establish Type I error control or decision-rule calibration. The revised theoretical results apply to fixed-region Gaussian benchmarks, with the original conditional leaf calculations retained in the appendix. They still need human review and do not establish robustness or posterior consistency for the fitted sum-of-trees model. In the single-arm setting, trial outcomes do not identify the untreated-control discrepancy, so conclusions remain dependent on the discrepancy prior, covariate support and equal-residual-variance assumption.
 
 ## 8. Outstanding submission items
 
-Author information, funding, conflicts of interest and the code/data-access statement remain to be supplied before submission.
+Human mathematical review of Theorems 2 and 3 and Appendix C remains outstanding. Author information, funding, conflicts of interest and the code/data-access statement also remain to be supplied before submission.

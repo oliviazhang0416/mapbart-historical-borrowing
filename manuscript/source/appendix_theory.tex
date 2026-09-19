@@ -1,38 +1,179 @@
-\section{Conditional robustness and discrepancy learning}\label{sec:C}
-\subsection{Posterior component odds}\label{sec:C.1}
-Fix a discrepancy leaf, the other tree contributions, $n\geq1$, $\sigma_1^2>0$, $0<w<1$ and ordered positive variances $\tau_0^2<\tau_1^2$. Let $\bar r$ be its trial-control partial-residual mean. Bayes' rule applied to the two normal marginal densities gives the posterior spike odds
+\section{Local agreement and regional borrowing properties}\label{sec:C}
+\subsection{Regional model and scope}\label{sec:C.1}
+The main-text results address two questions: whether the posterior learns practical agreement between control sources, and how borrowing changes estimation of the current-control mean. They concern a joint Gaussian model on fixed regions. The historical and current-control means are both estimated; neither is treated as a known prediction from another tree update. These results are benchmarks for the borrowing construction, rather than guarantees for the fitted sum-of-trees model.
+
+For main-text Theorem~\ref{T-thm:regional_learning}, let $R_1,\ldots,R_J$ be a fixed finite partition. Within region $j$, independent observations follow
+\[
+Y_{2,ji}\sim\N(f_j^*,\sigma_2^2),\qquad
+Y_{1,ji}\sim\N(f_j^*+g_j^*,\sigma_1^2),
+\]
+with known positive residual variances. The fitted model uses independent priors across regions, with $f_j\sim\N(0,\lambda_j^2)$ independent of $g_j\sim w\N(0,\tau_0^2)+(1-w)\N(0,\tau_1^2)$. All prior parameters are fixed, with $0<\lambda_j^2<\infty$, $0<w<1$, and $0<\tau_0^2<\tau_1^2<\infty$. Each source's sample size tends to infinity in every region. No relative growth-rate restriction is needed for this finite-region result.
+
+Main-text Theorem~\ref{T-thm:borrowing_risk} instead uses the flat prior $p(f)\propto1$ for the historical mean in one region, retaining the proper discrepancy mixture and fixed known variances. This change removes baseline shrinkage from the exact risk comparison. Its posterior is proper when both source sample sizes are positive, as the normal integral in Section~\ref{sec:C.3} shows. The flat-baseline risk guarantee must not be transferred to the normal baseline prior without a separate argument.
+
+\subsection{Proof of main-text Theorem 2}\label{sec:C.2}
+Fix region $j$, suppress its index on $v_s\coloneqq\sigma_s^2/n_{s,j}$, and let $\beta_j=(f_j,g_j)^\top$. The sufficient statistic
+\begin{equation}\label{eq:regional_sufficient}
+\widehat\beta_j=
+\begin{pmatrix}\bar Y_{2,j}\\\bar Y_{1,j}-\bar Y_{2,j}\end{pmatrix}
+\end{equation}
+has normal sampling distribution with mean $\beta_j^*=(f_j^*,g_j^*)^\top$ and covariance
+\begin{equation}\label{eq:regional_sampling_covariance}
+\Sigma_j=\begin{pmatrix}v_2&-v_2\\-v_2&v_1+v_2\end{pmatrix}.
+\end{equation}
+As both sample sizes increase, the strong law gives $\widehat\beta_j\to\beta_j^*$ almost surely and $\Sigma_j\to0$.
+
+Conditional on discrepancy component $k\in\{0,1\}$, the prior covariance of $\beta_j$ is $P_{jk}=\operatorname{diag}(\lambda_j^2,\tau_k^2)$. Normal updating gives
+\begin{equation}\label{eq:regional_posterior}
+\begin{aligned}
+C_{jk}&=(\Sigma_j^{-1}+P_{jk}^{-1})^{-1},\\
+m_{jk}&=C_{jk}\Sigma_j^{-1}\widehat\beta_j
+=\widehat\beta_j-C_{jk}P_{jk}^{-1}\widehat\beta_j.
+\end{aligned}
+\end{equation}
+Because $0\prec C_{jk}\preceq\Sigma_j$ in the positive-semidefinite order, $C_{jk}\to0$. The matrix $P_{jk}$ is fixed and positive definite, so $m_{jk}\to\beta_j^*$ almost surely. Each component posterior therefore puts probability tending to one in any neighborhood of $\beta_j^*$. The posterior mixture has the same property: its probability outside a neighborhood is at most the larger of the two component probabilities. This argument does not require the mixture allocation probability to converge to zero or one.
+
+A finite union bound over $j$ establishes the simultaneous posterior convergence in the theorem. The bound
+\[
+|(f_j+g_j)-(f_j^*+g_j^*)|\leq|f_j-f_j^*|+|g_j-g_j^*|
+\]
+proves learning of the current-control means. Finally, if $|g_j^*|\ne c$, put $\delta_j=\bigl||g_j^*|-c\bigr|>0$. A posterior draw for which $|g_j|$ and $|g_j^*|$ are on opposite sides of $c$ must satisfy $|g_j-g_j^*|\geq\delta_j$. Posterior concentration makes this event's probability vanish. There are finitely many regions, so the practical-agreement limits hold almost surely in all of them simultaneously. This conclusion concerns posterior probabilities directly and introduces no decision cutoff for $B_{c,j}$.
+
+\subsection{Proof of main-text Theorem 3}\label{sec:C.3}
+\noindent\textbf{Joint posterior and borrowing coefficient.}
+Suppress the region index and write $\mu_1=f+g$, $v_s=\sigma_s^2/n_s$, $V=v_1+v_2$, and $D=\bar Y_1-\bar Y_2$. Integrating the flat-baseline likelihood over $f$ gives
+\begin{equation}\label{eq:regional_flat_integral}
+\int_{\mathbb R}\phi(\bar Y_1;f+g,v_1)\phi(\bar Y_2;f,v_2)\,df
+=\phi(D;g,V).
+\end{equation}
+Integrating this expression against the two proper discrepancy components gives the positive finite mixture $w\phi(D;0,V+\tau_0^2)+(1-w)\phi(D;0,V+\tau_1^2)$. Thus the joint posterior is proper, and its spike probability is $\gamma(D)$ in main-text equation~\eqref{T-eq:regional_weight}. Under component $k$,
+\[
+g\mid D,k\sim\N\!\left(\frac{\tau_k^2}{V+\tau_k^2}D,
+\frac{V\tau_k^2}{V+\tau_k^2}\right).
+\]
+Define the precision-weighted mean and coefficient
+\begin{equation}\label{eq:regional_T}
+T\coloneqq\frac{v_2\bar Y_1+v_1\bar Y_2}{V},\qquad a_*\coloneqq\frac{v_1}{V}.
+\end{equation}
+Conditional on $g$ and the observations, the posterior mean of $\mu_1$ is $T+a_*g$. Hence its component-specific posterior mean is $\bar Y_1-a_kD$, where $a_k=v_1/(V+\tau_k^2)$. Averaging over the components proves main-text equation~\eqref{T-eq:regional_estimator}.
+
+The posterior spike odds are
+\begin{equation}\label{eq:regional_odds}
+\frac{\gamma(D)}{1-\gamma(D)}
+=C\exp(-\kappa D^2),\qquad
+C=\frac{w}{1-w}\sqrt{\frac{V+\tau_1^2}{V+\tau_0^2}},\qquad
+\kappa=\frac12\left(\frac1{V+\tau_0^2}-\frac1{V+\tau_1^2}\right)>0.
+\end{equation}
+It follows that $\gamma(D)$ decreases strictly with $|D|>0$ and tends to zero as $|D|\to\infty$. Because $a_0>a_1>0$, the coefficient $a(D)=a_1+(a_0-a_1)\gamma(D)$ has the stated monotonicity and limit. Also $0<a(D)<a_*=v_1/V$.
+
+\noindent\textbf{Exact risk and benefit under agreement.}
+Let $d=\mu_1-f$ denote the fixed true discrepancy in the sampling experiment. Under independent normal sampling, $T$ and $D$ are independent, with
+\begin{equation}\label{eq:regional_T_distribution}
+\E_d(T)=\mu_1-a_*d,\qquad
+\Var_d(T)=\frac{v_1v_2}{V},\qquad D\sim\N(d,V).
+\end{equation}
+The posterior-mean estimator can be written as $\widehat\mu_1=T+\{a_*-a(D)\}D$. Taking its expectation or squared error proves the bias and risk expressions in main-text equation~\eqref{T-eq:regional_risk}.
+
+At $d=0$, $a(D)$ is even and $D$ is symmetrically distributed, so $\E_0\{a(D)D\}=0$. The estimator is therefore unbiased. Since $0<a(D)<a_*$ and $P(D\ne0)=1$,
+\begin{equation}\label{eq:agreement_risk_gain}
+\begin{aligned}
+R(0)&=\frac{v_1v_2}{V}+\E_0\!\left[\{a_*-a(D)\}^2D^2\right]\\
+&<\frac{v_1v_2}{V}+a_*^2\E_0(D^2)
+=\frac{v_1v_2}{V}+\frac{v_1^2}{V}=v_1.
+\end{aligned}
+\end{equation}
+This is a strict repeated-sampling mean squared error improvement over the trial-only mean. It is not a statement about posterior interval width in every dataset. The normal-expectation formula for $R(d)$ is continuous in $d$, by dominated convergence on compact sets of $d$. Thus a neighborhood of exact agreement also has $R(d)<v_1$, although its size depends on both sampling variances and the prior parameters.
+
+For numerical evaluation, a second risk identity follows by normal integration by parts:
+\begin{equation}\label{eq:regional_stein_risk}
+R(d)=v_1+\E_d\{a(D)^2D^2\}
+-2v_1\E_d\{a(D)+Da'(D)\}.
+\end{equation}
+Indeed, $\E(\bar Y_1-\mu_1\mid D)=a_*(D-d)$ and
+$\E_d\{(D-d)h(D)\}=V\E_d\{h'(D)\}$ for $h(D)=a(D)D$.
+The smooth bounded coefficient and its Gaussian-decaying derivative make the integration valid. Treating $a(D)$ as a fixed coefficient would omit the derivative term and would not give the correct risk.
+
+\noindent\textbf{Severe conflict at fixed sample sizes.}
+Write $b(D)=(a_0-a_1)\gamma(D)$. Then $a(D)=a_1+b(D)$ and $0\leq b(D)\leq(a_0-a_1)C\exp(-\kappa D^2)$. For each fixed integer $q\geq0$, completing the square gives
+\[
+\E_d\{|D|^q e^{-\kappa D^2}\}
+=O\!\left[(1+|d|^q)
+\exp\!\left\{-\frac{\kappa d^2}{1+2\kappa V}\right\}\right].
+\]
+Consequently, the bias contribution $\E_d\{b(D)D\}$ tends to zero. Comparing the risk formula with the constant-coefficient estimator $\bar Y_1-a_1D$ also leaves only polynomial multiples of these vanishing expectations. Therefore
+\begin{equation}\label{eq:regional_conflict_limits}
+\begin{aligned}
+\operatorname{Bias}_d(\widehat\mu_1)&=-a_1d+o(1),\\
+R(d)&=a_1^2d^2+(1-a_1)^2v_1+a_1^2v_2+o(1),
+\end{aligned}
+\qquad |d|\to\infty.
+\end{equation}
+Dividing by $d$ and $d^2$, respectively, proves the theorem's limits. A finite normal slab therefore leaves unbounded borrowing bias over arbitrarily large true discrepancies at fixed sample sizes.
+
+Increasing trial information is a different limit. With fixed positive prior scales, fixed true $d$, and bounded $v_2$, the inequality $a(D)\leq v_1/\tau_0^2$ gives
+\begin{equation}\label{eq:regional_increasing_trial}
+|\operatorname{Bias}_d(\widehat\mu_1)|
+\leq\frac{v_1}{\tau_0^2}\E_d|D|
+\leq\frac{v_1}{\tau_0^2}\bigl(|d|+\sqrt{v_1+v_2}\bigr)
+\longrightarrow0\quad\text{as }v_1\downarrow0.
+\end{equation}
+This limit does not permit the spike variance to shrink arbitrarily with the sample size.
+
+\subsection{Implications for standardized treatment contrasts}\label{sec:C.4}
+Let $p_j\geq0$, $\sum_jp_j=1$, be fixed target-region weights. Write $e_j=\widehat\mu_{1,j}-\mu_{1,j}$ and $b_j=\E(e_j)$. The mean squared error of the standardized control estimate is
+\begin{equation}\label{eq:regional_aggregate_risk}
+\E\!\left(\sum_jp_je_j\right)^2
+=\left(\sum_jp_jb_j\right)^2+
+\sum_{j,k}p_jp_k\Cov(e_j,e_k).
+\end{equation}
+Under independent regional data and fixed independent regional priors in the flat-baseline benchmark, the off-diagonal covariance terms vanish. If all regions have exact agreement, the regional estimators are unbiased and their aggregate risk is $\sum_jp_j^2R_j(0)<\sum_jp_j^2v_{1,j}$, the risk of the standardized trial-only control mean.
+
+For the treatment contrast, write the error of the same independent treatment estimator as $e_{\mathrm{trt}}$, with bias $b_{\mathrm{trt}}$. The contrast error is $e_{\mathrm{trt}}-\sum_jp_je_j$, so its mean squared error is
+\[
+\Var(e_{\mathrm{trt}})+\sum_{j,k}p_jp_k\Cov(e_j,e_k)
++\left(b_{\mathrm{trt}}-\sum_jp_jb_j\right)^2.
+\]
+Under exact agreement in all regions, the strict control-risk improvement therefore also improves contrast estimation relative to the same treatment estimator with trial-only controls. Under conflict, the weighted control biases must be retained; if the treatment estimator is unbiased, the contrast bias is $-\sum_jp_jb_j$.
+
+These formulas condition on the regional weights and design. Shared estimated mixture parameters and overlapping trees can induce regional dependence, so covariance terms cannot be discarded for the fitted ensemble. Under the learning model of Theorem~\ref{T-thm:regional_learning}, posterior consistency of all regional control means also implies consistency of their fixed weighted mean. Adding a consistently learned treatment mean yields consistency of the corresponding contrast. An extension from fixed regions and weights to a learned ensemble standardized over empirical trial covariates requires its own design and posterior-concentration argument.
+
+\subsection{Supporting properties of a conditional discrepancy leaf}\label{sec:C.5}
+The following two lemmas retain the original leaf-level calculations as supporting results. Fix a discrepancy-tree partition, every other tree contribution, $n\geq1$ trial-control partial residuals $\mathbf r$ in a leaf, $\sigma_1^2>0$, $0<w<1$, and $0<\tau_0^2<\tau_1^2<\infty$. Let $\bar r$ be their mean, and let $z=1$ denote the spike component. Normal marginalization gives
 \begin{equation}\label{eq:odds}
 \frac{P(z=1\mid\mathbf r)}{P(z=0\mid\mathbf r)}
 =\frac{w}{1-w}\sqrt{\frac{\tau_1^2+\sigma_1^2/n}{\tau_0^2+\sigma_1^2/n}}
 \exp\left[-\frac{\bar r^2}{2}
 \left\{\frac{1}{\tau_0^2+\sigma_1^2/n}-\frac{1}{\tau_1^2+\sigma_1^2/n}\right\}\right].
 \end{equation}
-For this proof only, denote the positive leading coefficient by $C$ and the positive coefficient of $\bar r^2$ in the exponent by $\kappa$. Then the spike probability is $\gamma(\bar r)\coloneqq P(z=1\mid\mathbf r)=C e^{-\kappa\bar r^2}/(1+C e^{-\kappa\bar r^2})$. 
+For this subsection, write these odds as $C_{\ell}e^{-\kappa_{\ell}\bar r^2}$, with $C_{\ell},\kappa_{\ell}>0$, and put $\gamma_{\ell}(\bar r)=P(z=1\mid\mathbf r)$ and $\omega_k=\tau_k^2/(\tau_k^2+\sigma_1^2/n)$.
 
-\subsection{Proof of main-text Theorem 2}\label{sec:C.2}
-The posterior mean under component $k$ is $\omega_k\bar r$, where $\omega_k\coloneqq \tau_k^2/(\tau_k^2+\sigma_1^2/n)$. Because $\omega_1>\omega_0$, the difference between the mixture posterior mean and the slab-only posterior mean is
-\begin{equation}
-\Delta_{\mathrm{mix}}(\bar r)\coloneqq -\gamma(\bar r)(\omega_1-\omega_0)\bar r.
-\end{equation}
-Using $\gamma(\bar r)\leq C e^{-\kappa\bar r^2}$,
-\begin{equation}
-|\Delta_{\mathrm{mix}}(\bar r)|\leq(\omega_1-\omega_0)C|\bar r|e^{-\kappa\bar r^2}
-\leq\frac{(\omega_1-\omega_0)C}{\sqrt{2e\kappa}}.
-\end{equation}
-The first upper bound tends to zero in both tails, proving boundedness and tail attenuation. This is the extra shrinkage attributable to the spike relative to the slab-only mean. Relative to the unshrunk likelihood mean $\bar r$, the remaining slab shrinkage is $(\omega_1-1)\bar r$, which is unbounded for fixed $n$ and finite $\tau_1^2$. The result bounds additional mixture shrinkage relative to the slab, not total shrinkage relative to the likelihood mean.
+\begin{lemma}[Bounded additional shrinkage in a fixed leaf]\label{lem:leaf_shrinkage}
+Under the stated conditional leaf model, the difference between the mixture posterior mean and the slab-only posterior mean is bounded as a function of $\bar r$ and tends to zero as $|\bar r|\to\infty$.
+\end{lemma}
+\begin{proof}
+The component means are $\omega_k\bar r$. Hence the difference is $\Delta_{\mathrm{mix}}(\bar r)=-\gamma_{\ell}(\bar r)(\omega_1-\omega_0)\bar r$. Since $\gamma_{\ell}(\bar r)\leq C_{\ell}e^{-\kappa_{\ell}\bar r^2}$,
+\[
+|\Delta_{\mathrm{mix}}(\bar r)|\leq(\omega_1-\omega_0)C_{\ell}|\bar r|e^{-\kappa_{\ell}\bar r^2}
+\leq\frac{(\omega_1-\omega_0)C_{\ell}}{\sqrt{2e\kappa_{\ell}}}.
+\]
+The first bound tends to zero in both tails. Relative to the unshrunk likelihood mean $\bar r$, the remaining slab shrinkage is $(\omega_1-1)\bar r$, which is unbounded at fixed $n$ and finite $\tau_1^2$.
+\end{proof}
 
-\subsection{Proof of main-text Theorem 3}\label{sec:C.3}
-Equation \eqref{eq:odds} is strictly decreasing in $|\bar r|>0$. If $C>1$, the posterior spike probability exceeds one half exactly when $|\bar r|<\sqrt{\log(C)/\kappa}$; if $C\leq1$, it never exceeds one half. There is no universal threshold independent of $w$, sample size and scales.
+\begin{lemma}[Conditional learning of a leaf discrepancy]\label{lem:leaf_learning}
+At fixed sample size, the posterior spike probability decreases strictly with $|\bar r|>0$. If the fixed leaf receives independent $\N(d,\sigma_1^2)$ partial residuals, all other quantities remain fixed, and $n\to\infty$, then for its parameter $\theta$ and $|d|\ne c$,
+$P(|\theta|<c\mid\mathbf r)\to\ind\{|d|<c\}$ almost surely. The spike probability need not converge to zero or one.
+\end{lemma}
+\begin{proof}
+Monotonicity follows from equation~\eqref{eq:odds}. Almost surely $\bar r\to d$. Each component posterior has mean $\omega_k\bar r\to d$ and variance $(n/\sigma_1^2+\tau_k^{-2})^{-1}\to0$. Thus each component, and their posterior mixture, concentrates at $d$. Positive separation from the tolerance boundary proves the probability limit. Nevertheless, the spike probability converges to
+\[
+\frac{w\phi(d;0,\tau_0^2)}{w\phi(d;0,\tau_0^2)+(1-w)\phi(d;0,\tau_1^2)},
+\]
+which is strictly between zero and one for finite $d$. Learning a discrepancy does not uniquely identify its overlapping prior component.
+\end{proof}
 
-Now suppose the partial residuals are independent $\N(d,\sigma_1^2)$ observations. Almost surely $\bar r\to d$. For both $k=0,1$, the conditional posterior mean $\omega_k\bar r\to d$ and variance $(n/\sigma_1^2+\tau_k^{-2})^{-1}\to0$. Each normal component therefore concentrates at $d$, and so does every convex mixture of them. If $|d|\ne c$, its posterior probability of $(-c,c)$ converges to $\ind\{|d|<c\}$.
+\subsection{Extension to the full model}\label{sec:C.6}
+The regional theorems fix the partition and all prior parameters; the risk theorem additionally uses a flat baseline prior. In the fitted model, tree structures, other contributions, the shared mixture probability, and the spike variance are estimated and dependent, with data-dependent scale choices. The proper Gaussian baseline prior also contributes shrinkage. None of the regional risk or learning results automatically transfers to that setting. A sum of tree functions can have multiple tree decompositions, so the scientifically meaningful target is the total $g(x)$, together with $f(x)$ and $f(x)+g(x)$.
 
-Nevertheless, the posterior spike probability converges to
-\begin{equation}
-\frac{w\,\phi(d;0,\tau_0^2)}{w\,\phi(d;0,\tau_0^2)+(1-w)\,\phi(d;0,\tau_1^2)},
-\end{equation}
-which lies strictly between zero and one for finite $d$ under the stated assumptions. The overlapping component densities therefore prevent consistent identification of a unique mixture allocation at a finite leaf mean. The boundary $|d|=c$ is excluded from the probability-limit claim.
+A full-model learning result would require joint posterior concentration of the historical and current-control functions over the target covariate distribution, with adequate support from both sources. Subject to separation from the tolerance boundary, such concentration could justify convergence of posterior practical-agreement probabilities averaged over that population. It would not by itself imply uniform convergence at every profile, exact recovery of tree boundaries, or an estimation-risk improvement.
 
-\subsection{Scope of the conditional assertions}\label{sec:C.4}
-The proofs fix the tree partition and the other tree contributions. In the full model, those contributions, the partition, $w$ and the spike variance are estimated and dependent. Posterior concentration of their sum requires additional assumptions and arguments. A sum of tree functions also admits multiple tree decompositions, so identifiability of individual terminal-node effects is not the same as identification of $f$ or $f+g$.
-
-With both control sources and adequate support, the historical likelihood informs $f$ and the trial-control likelihood informs $f+g$. The resulting difference can be learned where both functions are estimable. Without trial controls, the likelihood contains no information about $g$ under the separate treatment model. Neither the leaf theorem nor an ESS calculation supplies that missing information. The regional-discrepancy figure reports finite-sample empirical regional behavior; Table 7 reports patient-profile prior information and is not evidence for conditional-discrepancy consistency in the single-arm application.
+Without trial controls, the separate treatment likelihood supplies no information about $g$. Neither a regional theorem nor an ESS calculation supplies that missing information. The regional-discrepancy figure reports finite-sample empirical behavior; Table 7 reports patient-profile prior information and is not evidence that the discrepancy is consistently learned in the single-arm application. Censored-outcome extensions likewise require additional arguments rather than treating imputed log times as fully observed independent data in these proofs.

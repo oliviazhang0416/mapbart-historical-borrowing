@@ -8,7 +8,7 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-Historical control data can improve the precision of clinical-trial analyses, but residual differences between populations may vary with patient characteristics. We propose locally robust commensurate Bayesian additive regression trees, which represent historical prognosis and trial-specific discrepancy by separate sums of trees. A continuous spike-and-slab prior allows discrepancy contributions to shrink toward zero or depart from historical agreement. We define prior effective sample size for the current-control mean by matching uncertainty under a prior informed by real-world data (RWD) to that of a normal reference experiment and averaging the equivalent counts over a prior-scale distribution. This definition provides a reference for prior-scale selection and an explicit information ceiling. We derive marginal leaf likelihoods for posterior computation and establish conditional shrinkage and learning properties. Simulations with Gaussian and censored survival outcomes illustrate precision gains under compatible controls and protection against bias from complete pooling, although source-adjusted BART remains competitive and small regional discrepancies are difficult to recover. An application to a single-arm multiple-myeloma trial reports restricted mean survival contrasts and historical information at the trial patients' covariate profiles. The implemented prior-scale selection and fitting distributions are distinguished from the theoretical prior effective sample size reference.
+Historical control data can improve the precision of clinical-trial analyses, but residual differences between populations may vary with patient characteristics. We propose locally robust commensurate Bayesian additive regression trees, which represent historical prognosis and trial-specific discrepancy by separate sums of trees. A continuous spike-and-slab prior allows discrepancy contributions to shrink toward zero or depart from historical agreement. We define prior effective sample size for the current-control mean by matching uncertainty under a prior informed by real-world data (RWD) to that of a normal reference experiment and averaging the equivalent counts over a prior-scale distribution. This definition provides a reference for prior-scale selection and an explicit information ceiling. We derive marginal leaf likelihoods for posterior computation and, in fixed-region Gaussian benchmarks, establish learning of practical agreement and characterize estimation benefit and conflict risk. Simulations with Gaussian and censored survival outcomes illustrate precision gains under compatible controls and protection against bias from complete pooling, although source-adjusted BART remains competitive and small regional discrepancies are difficult to recover. An application to a single-arm multiple-myeloma trial reports restricted mean survival contrasts and historical information at the trial patients' covariate profiles. The implemented prior-scale selection and fitting distributions are distinguished from the theoretical prior effective sample size reference.
 \end{abstract}
 \noindent\textit{Keywords:} Bayesian additive regression trees; commensurate prior; effective sample size; external controls; historical borrowing; survival analysis.
 
@@ -23,7 +23,7 @@ Power priors discount the historical likelihood, whereas commensurate priors lin
 Bayesian additive regression trees (BART) approximate regression functions by regularized sums of trees \citep{Chipman2010BART}. BART-based external-data methods and covariate-adaptive borrowing designs extend adjustment beyond linear relationships \citep{ZhouJi2021,Jin2023CAHB}. Covariate adjustment and discrepancy modeling nevertheless have distinct roles: the former represents prognosis, whereas the latter describes residual differences between trial and historical controls at the same covariate values. Separately regularizing these functions allows a complex prognostic relationship to coexist with a simpler source discrepancy.
 
 \noindent\textbf{Contribution.}
-We propose locally robust commensurate BART (\lrc{}), with separate sums of trees for historical prognosis and trial-specific discrepancy. A continuous spike-and-slab prior on discrepancy terminal-node parameters provides local shrinkage toward historical agreement. We define prior effective sample size (ESS) for an RWD-informed prior on the current-control mean and use it as a reference for prior-scale selection. We also derive marginal leaf likelihoods for Bayesian backfitting and conditional results describing additional shrinkage and discrepancy learning within a fixed leaf. Gaussian and survival simulations assess operating characteristics, and a multiple-myeloma application illustrates standardized survival comparisons and patient-profile prior ESS. In single-arm studies, the discrepancy remains prior-driven because trial-control outcomes are unavailable.
+We propose locally robust commensurate BART (\lrc{}), with separate sums of trees for historical prognosis and trial-specific discrepancy. A continuous spike-and-slab prior on discrepancy terminal-node parameters provides local shrinkage toward historical agreement. We define prior effective sample size (ESS) for an RWD-informed prior on the current-control mean and use it as a reference for prior-scale selection. We also derive marginal leaf likelihoods for Bayesian backfitting. Joint regional Gaussian benchmarks establish learning of practical agreement and quantify the estimation benefit and conflict risk of borrowing; supporting leaf calculations describe the mixture mechanism. Gaussian and survival simulations assess operating characteristics, and a multiple-myeloma application illustrates standardized survival comparisons and patient-profile prior ESS. In single-arm studies, the discrepancy remains prior-driven because trial-control outcomes are unavailable.
 
 \section{Methods}
 \subsection{Data structure and estimand}
@@ -176,24 +176,76 @@ An ESS of $m$ means that the RWD-informed prior supplies, on average over the ca
 \subsection{Posterior computation}
 We use Bayesian backfitting, updating one tree conditional on all other trees and shared parameters. An $f$-tree update uses partial residuals from both control sources with their respective residual precisions. A $g$-tree update uses trial-control partial residuals only. The terminal-node parameter is integrated out when proposing a tree structure; for $g$, the latent mixture indicator is also integrated out. Metropolis--Hastings updates therefore use products of closed-form marginal leaf factors. After retaining a tree, its node indicators and parameters are sampled from their conditional distributions. Shared variances and the mixture probability are updated separately. Appendix~\ref{A-sec:A} gives the derivation, the acceptance probability and the sampling algorithm.
 
-\subsection{Local discrepancy and conditional robustness}
+\subsection{Local agreement and regional borrowing properties}
 \noindent\textbf{Local discrepancy summary.}
-A directly interpretable discrepancy summary is
+For a prespecified tolerance $c>0$, define
 \begin{equation}\label{eq:local}
-B_c(x)\coloneqq P\{|g(x)|<c\mid\text{observed data}\},\qquad c>0.
+B_c(x)\coloneqq P\{|g(x)|<c\mid\text{observed data}\}.
 \end{equation}
-This is the posterior probability of a practically small source difference. It is neither a likelihood weight nor prior ESS. Its interpretation depends on the outcome scale and the chosen tolerance $c$.
+This is the posterior probability of practical agreement between the control sources at covariate profile $x$. Its interpretation depends on the outcome scale and the chosen tolerance. It is neither a likelihood weight nor prior ESS.
 
-\noindent\textbf{Conditional properties.}
-The following results describe shrinkage and learning within a fixed discrepancy-tree leaf.
-\begin{theorem}[Bounded additional shrinkage in a fixed leaf]\label{thm:bound}
-Condition on a discrepancy-tree structure, all other tree contributions, $n\geq1$ trial-control observations in a leaf, $\sigma_{1}^2>0$, $0<w<1$ and $0<\tau_0^2<\tau_1^2<\infty$. As a function of the leaf's partial-residual mean $\bar r$, the difference between the mixture posterior mean and the slab-only posterior mean is bounded and tends to zero as $|\bar r|\to\infty$.
-\end{theorem}
+\noindent\textbf{Joint regional model.}
+We study two properties: learning practical agreement and characterizing the estimation benefit and error induced by borrowing. The following results use a Gaussian model on a fixed finite partition $R_1,\ldots,R_J$ of the target covariate domain. Within region $j$, independent historical and trial controls have means $f_j$ and $f_j+g_j$, with known positive residual variances $\sigma_2^2$ and $\sigma_1^2$. Here $g_j$ is the total regional source difference. Both source means are unknown and estimated jointly. Use independent priors across regions, with $f_j\sim\N(0,\lambda_j^2)$ independent of
+\[
+g_j\sim w\N(0,\tau_0^2)+(1-w)\N(0,\tau_1^2),
+\qquad 0<w<1,\quad 0<\tau_0^2<\tau_1^2<\infty.
+\]
+All prior parameters are fixed, with $0<\lambda_j^2<\infty$.
 
-\begin{theorem}[Conditional learning of a leaf discrepancy]\label{thm:detect}
-For a fixed leaf and sample size under Theorem~\ref{thm:bound}, the posterior spike probability decreases strictly with $|\bar r|>0$. For the large-sample statement, hold the partition, other tree contributions, $\sigma_{1}^2,w,\tau_0^2,\tau_1^2$ fixed and let $n\to\infty$. If the partial residuals are independent $\N(d,\sigma_{1}^2)$ observations and $\theta$ denotes the leaf parameter, then, for $|d|\ne c$, $P(|\theta|<c\mid\mathbf r)$ converges almost surely to $\ind\{|d|<c\}$. The posterior spike probability need not converge to zero or one because both prior components have positive density at every finite $d$.
+\begin{theorem}[Learning local practical agreement]\label{thm:regional_learning}
+Suppose the regional model is correctly specified, with true parameters $f_j^*,g_j^*$. As the numbers $n_{1,j}$ and $n_{2,j}$ of controls from both sources tend to infinity in every region, for every $\epsilon>0$,
+\[
+\Pi\left\{\max_{1\leq j\leq J}
+\bigl(|f_j-f_j^*|+|g_j-g_j^*|\bigr)>\epsilon\mid\mathcal D\right\}\longrightarrow0
+\]
+almost surely under the true sampling law, where $\mathcal D$ denotes the observed control data. Thus the current-control means $f_j+g_j$ are also consistently learned. If $|g_j^*|\ne c$ in every region, the following limits hold simultaneously:
+\begin{equation}\label{eq:regional_agreement}
+B_{c,j}\coloneqq\Pi(|g_j|<c\mid\mathcal D)
+\longrightarrow
+\begin{cases}
+1,& |g_j^*|<c,\\
+0,& |g_j^*|>c,
+\end{cases}
+\quad\text{almost surely}.
+\end{equation}
 \end{theorem}
-These results concern a fixed terminal node conditional on the other tree contributions. They characterize shrinkage and learning within that conditional model; they do not establish robustness or posterior consistency for the full sum of trees. Appendix~\ref{A-sec:C} gives the proofs.
+For $x\in R_j$, $B_c(x)=B_{c,j}$. The posterior increasingly supports practical agreement where the true difference is small and rules it out where the difference exceeds the tolerance. This interpretation uses posterior probabilities directly, without a labeling rule.
+
+\noindent\textbf{Estimation benefit and conflict risk.}
+For an exact risk calculation in one region, retain the discrepancy mixture but replace the normal prior on the historical mean $f$ by the flat prior $p(f)\propto1$. This is a separate benchmark assumption. Write $\mu_1=f+g$, $d=\mu_1-f$ for the true discrepancy, $v_s=\sigma_s^2/n_s>0$, $V=v_1+v_2$, and $D=\bar Y_1-\bar Y_2$. Let
+\begin{equation}\label{eq:regional_weight}
+\begin{aligned}
+\gamma(D)&=\frac{w\phi(D;0,V+\tau_0^2)}
+{w\phi(D;0,V+\tau_0^2)+(1-w)\phi(D;0,V+\tau_1^2)},\\
+a_k&=\frac{v_1}{V+\tau_k^2},\qquad
+a(D)=\gamma(D)a_0+\{1-\gamma(D)\}a_1,
+\end{aligned}
+\end{equation}
+where $\phi(\cdot;m,v)$ is a normal density with mean $m$ and variance $v$.
+
+\begin{theorem}[Regional borrowing benefit and conflict risk]\label{thm:borrowing_risk}
+Under the flat-baseline regional benchmark, the posterior mean of the current-control mean is
+\begin{equation}\label{eq:regional_estimator}
+\widehat\mu_1=\{1-a(D)\}\bar Y_1+a(D)\bar Y_2.
+\end{equation}
+The coefficient $a(D)$ decreases strictly with $|D|>0$ and tends to $a_1>0$ as $|D|\to\infty$. Put $a_*=v_1/V$. Its repeated-sampling bias and mean squared error are
+\begin{equation}\label{eq:regional_risk}
+\begin{aligned}
+\operatorname{Bias}_d(\widehat\mu_1)&=-\E_d\{a(D)D\},\\
+R(d)\coloneqq\E_d(\widehat\mu_1-\mu_1)^2
+&=\frac{v_1v_2}{V}
++\E_d\!\left[\{(a_*-a(D))D-a_*d\}^2\right],
+\end{aligned}
+\end{equation}
+where the expectations on the right are over $D\sim\N(d,V)$. Under exact agreement, $d=0$, the estimator is unbiased and $R(0)<v_1$, the mean squared error of the trial-only mean. For fixed sample sizes and prior parameters, as $|d|\to\infty$,
+\[
+\frac{\operatorname{Bias}_d(\widehat\mu_1)}{d}\longrightarrow-a_1,
+\qquad \frac{R(d)}{d^2}\longrightarrow a_1^2.
+\]
+\end{theorem}
+Theorem~\ref{thm:borrowing_risk} establishes an estimation benefit under agreement and quantifies the remaining error under conflict. The finite normal slab leaves residual shrinkage, so the benchmark does not have uniformly bounded borrowing bias over arbitrarily large discrepancies. The mean squared error result does not imply that every realized posterior interval is shorter.
+
+Appendix~\ref{A-sec:C} gives the proofs, implications for standardized contrasts, and supporting fixed-leaf calculations. These regional results account for uncertainty in both source means, but do not establish consistency or risk guarantees for learned tree ensembles, updated shared hyperparameters, data-dependent prior scales, or censored outcomes. The flat-baseline risk calculation is not a result for the proper Gaussian baseline prior in Theorem~\ref{thm:regional_learning}. Learning the total discrepancy under the full model remains a theoretical objective.
 
 \subsection{Survival outcomes and single-arm trials}
 \noindent\textbf{Survival outcomes.}
@@ -303,7 +355,7 @@ Prior ESS provides an estimand-specific description of historical information. I
 \noindent\textbf{Limitations.}
 Several limitations merit attention. First, the block-based selection procedure, spike-variance distribution and tree support used in the reported fits differ from the theoretical prior ESS reference. Aligning these components would permit prior ESS to describe the fitting prior directly; the present results instead use it as a prior-scale selection reference. Second, single-arm trials provide no outcome information about the trial-control discrepancy under the separate treatment model. Their results depend on the discrepancy prior, covariate support and residual-variance assumptions. The application also adjusts for a postinduction characteristic and is interpreted as a standardized model-based comparison rather than an identified causal effect.
 
-Third, survival prior ESS is expressed in uncensored normal-reference units on the log-time scale. A reference design incorporating censoring would be required to translate it into an equivalent trial sample size. The supplementary simulation RMST summaries also use the modified functionals specified in Appendix~\ref{A-sec:D.5}. Finally, 100 replicates provide limited precision for operating-characteristic comparisons, and Type I error was not evaluated. The conditional leaf results establish neither full-model robustness nor posterior consistency.
+Third, survival prior ESS is expressed in uncensored normal-reference units on the log-time scale. A reference design incorporating censoring would be required to translate it into an equivalent trial sample size. The supplementary simulation RMST summaries also use the modified functionals specified in Appendix~\ref{A-sec:D.5}. Finally, 100 replicates provide limited precision for operating-characteristic comparisons, and Type I error was not evaluated. The regional theoretical results require fixed partitions and prior parameters; their learning and risk conclusions have not been established for the fitted tree ensembles. In particular, the risk calculation uses a flat baseline prior, and the finite normal slab retains shrinkage under extreme conflict.
 
 \noindent\textbf{Further work.}
 Further work could align the prior ESS and fitting specifications, evaluate decision rules under null scenarios, and investigate prior sensitivity and discrepancy recovery over a broader range of source differences. A reference survival experiment with prespecified censoring would extend the information interpretation to trial-design settings.
