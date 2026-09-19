@@ -109,7 +109,7 @@ Source references: [run_all.R](../../lrcbart-sim-survival-single-arm/run_all.R) 
 
 Folder: `lrcbart-case-study-mm`.
 
-Use harmonized covariates, 30 EloKRd patients, and 253 UCMM controls. The 48-control dataset is not in this reporting set.
+Use harmonized covariates, 30 EloKRd patients, and 200 verified triplet-treated UCMM controls.
 
 Report the complete LRC-BART 2-by-2 configuration set:
 
@@ -140,7 +140,7 @@ Comparators:
 - Standard BART.
 - Hierarchical AFT with both prior settings 0.05 and 0.5.
 
-Both PFS and OS are included in the reporting set. There are 29 method/configuration rows per endpoint, 58 in total. Five-year RMST estimates by arm, ratios, differences, and intervals are saved. PFS versus OS placement in the main text and appendix remains to be settled. The separate decision to show only PFS in the ESS table does not exclude OS from the application results tables.
+Both PFS and OS are included in the reporting set. There are 29 method/configuration rows per endpoint, 58 in total. Five-year RMST estimates by arm, ratios, differences, and intervals are saved. Table 7 reports PFS patient-profile prior ESS and the UCMM count matching each displayed age-group and categorical-covariate combination; OS remains in the application outcome tables.
 
 Source references: [application README](../../lrcbart-case-study-mm/README.md), [lrcBART.R](../../lrcbart-case-study-mm/lrcBART.R), and [summarize.R](../../lrcbart-case-study-mm/summarize.R).
 

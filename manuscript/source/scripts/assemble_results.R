@@ -66,7 +66,11 @@ stopifnot(status==0L)
 write_json(reg,file.path(out,"generated/regional_results.json"),auto_unbox=TRUE,pretty=TRUE)
 
 appdir<-file.path(root,"lrcbart-case-study-mm")
-app<-readRDS(file.path(appdir,"res/results_table.RData"))
+# Construct the application summary directly from saved model fits.
+app_env <- new.env()
+invisible(capture.output(sys.source(file.path(appdir,"summarize.R"), envir=app_env)))
+app <- app_env$results_table
+rm(app_env)
 app$rmst_trt<-app$rmst_ctrl<-app$rmst_ucmm<-NA_real_
 if("rmst_ucmm_population" %in% names(app))
  app$rmst_ucmm_population<-ifelse(app$method=="KM","UCMM",NA_character_)
@@ -79,7 +83,7 @@ for(i in seq_len(nrow(app))){
  if(app$method[i]=="KM") app$rmst_ucmm[i]<-as.numeric(z$rmst_ctrl_est[1])
 }
 write_json(app,file.path(out,"generated/application_results.json"),dataframe="rows",auto_unbox=TRUE,pretty=TRUE,na="null")
-e<-new.env();load(file.path(appdir,"data_cleaned/merged_elokrd_ucmm_n283.RData"),e);dat<-e$merged
+e<-new.env();load(file.path(appdir,"data_cleaned/merged_elokrd_ucmm_n230.RData"),e);dat<-e$merged
 cohort<-list()
 for(k in c(1,0)){
  d<-dat[dat$trt==k,]; x<-list(cohort=if(k==1)"EloKRd" else "UCMM",n=nrow(d),
@@ -93,47 +97,9 @@ for(k in c(1,0)){
 write_json(cohort,file.path(out,"generated/cohort.json"),auto_unbox=TRUE,pretty=TRUE)
 cat("Aggregated",length(provenance),"simulation files and",nrow(app),"application results.\n")
 
-# Recover the historical prediction draws using the exact saved calibration settings.
-# Canonical study checkpoints and result files are never overwritten.
-library(Rcpp)
-sourceCpp(file.path(root,"lrcBART","clrcbart.cpp"),cacheDir=file.path(tempdir(),"manuscript_cpp"))
-sourceCpp(file.path(root,"lrcBART","cess.cpp"),cacheDir=file.path(tempdir(),"manuscript_cpp"))
-oldcal<-readRDS(file.path(appdir,"res/ess/ess_pfs_n283_Hf10.RData"))
-ess_data_file<-file.path(appdir,"data_cleaned/merged_elokrd_ucmm_n283.RData")
-ess_outcome<-"PFS";ess_data_tag<-"n283"
-ess_X_all<-as.matrix(dat[,c("age","male","race_Black","race_Other","hispanic","high_risk_cyto","asct")])
-ess_time<-dat$pfs_months/12;ess_status<-dat$pfs_status;ess_trt<-dat$trt
-ess_H_g<-oldcal$H_g;ess_H_f<-oldcal$H_f
-ess_n_burn<-oldcal$settings$n_burn;ess_n_draw<-oldcal$settings$n_draw;ess_seed<-oldcal$settings$seed
-ess_checkpoint_dir<-tempfile("manuscript_pfs_recovery_")
-source(file.path(appdir,"ess_local/ess_cal.R"),local=TRUE)
-recovery_error<-max(abs(ess_calibration$stage1_mu_draws-oldcal$stage1_mu_draws))
-tr<-dat[dat$trt==1,]
-groups<-data.frame(Age=cut(tr$age,c(-Inf,50,60,70,Inf),right=FALSE,labels=c("<50","50-59","60-69","70+")),
- Sex=ifelse(tr$male==1,"Male","Female"),
- Race=ifelse(tr$race_Black==1,"Black",ifelse(tr$race_Other==1,"Other","White")),
- Hispanic=ifelse(tr$hispanic==1,"Yes","No"),Risk=ifelse(tr$high_risk_cyto==1,"High","Standard"),
- ASCT=ifelse(tr$asct==1,"Yes","No"),stringsAsFactors=FALSE)
-key<-apply(groups,1,paste,collapse="|");keys<-unique(key);gr<-list()
-s0<-oldcal$s0_sq[["100"]];set.seed(460116);tau<-3*s0/rchisq(100000,3)
-for(i in seq_along(keys)){
- idx<-which(key==keys[i]);Vf<-var(rowMeans(ess_stage1_f_test[,idx,drop=FALSE]))
- cg<-cess_cg(t(ess_stage1_xtest[idx,,drop=FALSE]),ess_cg_cutpoints,.5,3,10000L,12L,as.integer(1700+i))
- ess<-mean(oldcal$sigma1_sq/(Vf+5*cg*tau))
- row<-groups[idx[1],];row$n<-length(idx);row$Vf<-Vf;row$weight_sq_sum<-5*cg;row$ess<-ess
- gr[[i]]<-row
-}
-g<-do.call(rbind,gr);rownames(g)<-NULL
-write_json(g,file.path(out,"generated/subgroup_ess.json"),dataframe="rows",auto_unbox=TRUE,pretty=TRUE)
-write_json(list(age_bands=c("<50","50-59","60-69","70+"),historical_prediction_recovery_max_error=recovery_error,
- sigma1_sq=oldcal$sigma1_sq,s0_sq=s0,groups=nrow(g),tree_draws_per_group=10000,scale_draws=100000,
- historical_draws=nrow(ess_stage1_f_test),ESS_range=range(g$ess),overall_saved_calibration=oldcal$targets),
- file.path(out,"generated/subgroup_provenance.json"),auto_unbox=TRUE,pretty=TRUE)
-
-status <- system2(file.path(R.home("bin"),"Rscript"), shQuote(file.path(out,"scripts/build_subgroup_table.R")))
+# Build the patient-profile PFS information table from the saved calibration.
+status <- system2(file.path(R.home("bin"),"Rscript"), shQuote(file.path(out,"scripts/build_profile_table.R")))
 stopifnot(status==0L)
-cat("Subgroup table ESS:",nrow(g),"joint groups; recovered-draw maximum error",recovery_error,
-    "; ESS range",range(g$ess),"\n")
 
 # The calibration illustration uses fixed replicate 1 of Gaussian Sc1.
 cal_path<-file.path(root,"lrcbart-sim-gaussian/res/ess/ess_data_p10_sc1_alternative_1_Hg5.RData")
@@ -159,7 +125,7 @@ write_json(list(list(panel="Gaussian, two-arm",path=cal_path),
 
 app_cal <- list()
 for(ep in c("pfs","os")) for(h in c(10,50)) {
-  cp<-file.path(appdir,paste0("res/ess/ess_",ep,"_n283_Hf",h,".RData"))
+  cp<-file.path(appdir,paste0("res/ess/ess_",ep,"_n230_Hf",h,".RData"))
   z<-readRDS(cp)
   for(i in seq_len(nrow(z$targets))) {
     t<-as.list(z$targets[i,]);t$outcome<-toupper(ep);t$H_f<-h;t$ceiling<-z$ceiling

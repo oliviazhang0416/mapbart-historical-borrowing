@@ -46,7 +46,7 @@ OUTCOME <- Sys.getenv("OUTCOME", unset = "PFS")
 stopifnot(OUTCOME %in% c("PFS", "OS"))
 merged_file <- Sys.getenv(
   "MERGED_FILE",
-  unset = file.path(projDir, "data_cleaned", "merged_elokrd_ucmm_n283.RData")
+  unset = file.path(projDir, "data_cleaned", "merged_elokrd_ucmm_n230.RData")
 )
 if (!file.exists(merged_file) &&
     file.exists(file.path(projDir, "data_cleaned", basename(merged_file))))

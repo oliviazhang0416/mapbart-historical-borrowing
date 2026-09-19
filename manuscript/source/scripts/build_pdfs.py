@@ -8,7 +8,7 @@ texbin=Path('/Library/TeX/texbin')
 with tempfile.TemporaryDirectory(prefix='build-',dir=source) as temporary:
     build=Path(temporary)
     relative_build=build.relative_to(manuscript)
-    for name in ['main_tables_figures','appendix','main']:
+    for name in ['main_tables_figures','main','appendix','main']:
         commands=[[str(texbin/'pdflatex'),'-interaction=nonstopmode','-halt-on-error',
                    f'-output-directory={relative_build}',name+'.tex']]
         if name!='main_tables_figures':
@@ -23,8 +23,8 @@ with tempfile.TemporaryDirectory(prefix='build-',dir=source) as temporary:
         warnings=[line for line in log.splitlines() if 'Overfull' in line or 'undefined' in line.lower()]
         if warnings:
             print(name+': '+ '\n'.join(warnings))
-        if name in ['main_tables_figures','appendix']:
-            refname = 'tables_refs.aux' if name=='main_tables_figures' else 'appendix_refs.aux'
+        if name in ['main_tables_figures','appendix','main']:
+            refname = {'main_tables_figures':'tables_refs.aux', 'appendix':'appendix_refs.aux', 'main':'main_refs.aux'}[name]
             labels = [line for line in (build/(name+'.aux')).read_text().splitlines() if line.startswith(r'\newlabel')]
             (source/'generated'/refname).write_text('\n'.join(labels)+'\n')
         shutil.copy2(build/(name+'.pdf'),manuscript/(name+'.pdf'))

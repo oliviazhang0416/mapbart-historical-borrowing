@@ -42,7 +42,7 @@ library(dplyr)
 source(file.path(projectDir, "rmst_helpers.R"))
 # LRC-BART MODIFICATION END
 rmst_tau <- 3   # RMST restriction horizon (admin-censoring horizon); additional output
-rmst_control_sigma <- "adaptive"  # control-arm RMST sigma: "trt"|"own"|"adaptive" (robust across n)
+rmst_control_sigma <- "own"  # use the control model's own residual SD for control-arm RMST
 
 # LRC-BART MODIFICATION START
 data_folder <- "data"

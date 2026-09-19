@@ -41,7 +41,7 @@ library(RcppEigen)
 library(survival)
 source(file.path(projectDir, "rmst_helpers.R"))
 rmst_tau <- 3
-rmst_control_sigma <- "adaptive"
+rmst_control_sigma <- "own"
 
 sc <- 3
 hypo <- "alternative"

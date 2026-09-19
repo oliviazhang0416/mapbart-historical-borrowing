@@ -1,4 +1,4 @@
-# Refresh only the application from current saved results; preserve simulation and subgroup summaries.
+# Refresh the application from current saved results and calibration summaries.
 options(device=function(...) pdf(file=NULL, ...))
 library(jsonlite)
 library(ggplot2)
@@ -9,7 +9,11 @@ script_file <- normalizePath(sub("^--file=","",script_arg))
 root <- normalizePath(file.path(dirname(script_file),"../../.."))
 out <- file.path(root, "manuscript/source")
 appdir<-file.path(root,"lrcbart-case-study-mm")
-app<-readRDS(file.path(appdir,"res/results_table.RData"))
+# Construct the application summary directly from saved model fits.
+app_env <- new.env()
+invisible(capture.output(sys.source(file.path(appdir,"summarize.R"), envir=app_env)))
+app <- app_env$results_table
+rm(app_env)
 app$rmst_trt<-app$rmst_ctrl<-app$rmst_ucmm<-NA_real_
 if("rmst_ucmm_population" %in% names(app))
  app$rmst_ucmm_population<-ifelse(app$method=="KM","UCMM",NA_character_)
@@ -22,7 +26,7 @@ for(i in seq_len(nrow(app))){
  if(app$method[i]=="KM") app$rmst_ucmm[i]<-as.numeric(z$rmst_ctrl_est[1])
 }
 write_json(app,file.path(out,"generated/application_results.json"),dataframe="rows",auto_unbox=TRUE,pretty=TRUE,na="null")
-e<-new.env();load(file.path(appdir,"data_cleaned/merged_elokrd_ucmm_n283.RData"),e);dat<-e$merged
+e<-new.env();load(file.path(appdir,"data_cleaned/merged_elokrd_ucmm_n230.RData"),e);dat<-e$merged
 cohort<-list()
 for(k in c(1,0)){
  d<-dat[dat$trt==k,]; x<-list(cohort=if(k==1)"EloKRd" else "UCMM",n=nrow(d),
@@ -36,7 +40,7 @@ for(k in c(1,0)){
 write_json(cohort,file.path(out,"generated/cohort.json"),auto_unbox=TRUE,pretty=TRUE)
 app_cal <- list()
 for(ep in c("pfs","os")) for(h in c(10,50)) {
-  cp<-file.path(appdir,paste0("res/ess/ess_",ep,"_n283_Hf",h,".RData"))
+  cp<-file.path(appdir,paste0("res/ess/ess_",ep,"_n230_Hf",h,".RData"))
   z<-readRDS(cp)
   for(i in seq_len(nrow(z$targets))) {
     t<-as.list(z$targets[i,]);t$outcome<-toupper(ep);t$H_f<-h;t$ceiling<-z$ceiling
@@ -46,6 +50,12 @@ for(ep in c("pfs","os")) for(h in c(10,50)) {
   }
 }
 write_json(app_cal,file.path(out,"generated/application_calibration.json"),auto_unbox=TRUE,pretty=TRUE)
+
+status <- system2(
+  file.path(R.home("bin"), "Rscript"),
+  shQuote(file.path(out, "scripts/build_profile_table.R"))
+)
+stopifnot(status == 0L)
 
 stopifnot(nrow(app)==58L, all(is.finite(app$rmst_ucmm[app$method=="KM"])),
           all(is.na(app$rmst_ucmm[app$method!="KM"])))

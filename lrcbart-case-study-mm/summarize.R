@@ -31,7 +31,7 @@ projectDir <- file.path(.lrcRoot, "lrcbart-case-study-mm")
 resultDir <- file.path(projectDir, "res")
 merged_file <- Sys.getenv(
   "MERGED_FILE",
-  unset = file.path(projectDir, "data_cleaned", "merged_elokrd_ucmm_n283.RData")
+  unset = file.path(projectDir, "data_cleaned", "merged_elokrd_ucmm_n230.RData")
 )
 data_tag <- regmatches(
   basename(merged_file), regexpr("n[0-9]+", basename(merged_file))
@@ -161,9 +161,7 @@ for (outcome in outcomes) {
 if (!length(rows)) stop("No completed case-study result files found")
 results_table <- do.call(rbind, rows)
 rownames(results_table) <- NULL
-write.csv(results_table, file.path(resultDir, "results_table.csv"),
-          row.names = FALSE)
-saveRDS(results_table, file.path(resultDir, "results_table.RData"))
+# Summaries stay in memory and are printed; individual model files are the saved results.
 
 display_table <- results_table[, c(
   "outcome", "method", "config", "target", "contrast_control",
@@ -193,5 +191,5 @@ cat("\nRMST in years: estimate [95% interval]\n",
     "Only KM reports observed, unadjusted UCMM RMST and has no hypothetical control.\n",
     sep = "")
 print(arm_table, row.names = FALSE)
-cat("Saved", file.path(resultDir, "results_table.csv"), "\n")
+
 # LRC-BART ADDITION END

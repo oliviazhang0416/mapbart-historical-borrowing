@@ -3,7 +3,7 @@
 #   1. Clean and merge the private source data
 #   2. Run both PFS and OS analyses
 #   3. Construct the ESS plots after all requested LRC-BART fits finish
-#   4. Build the result table
+#   4. Print the result summary (no extra summary files)
 
 rm(list = ls())
 
@@ -52,7 +52,7 @@ stopifnot(length(outcomes) >= 1L, all(outcomes %in% c("PFS", "OS")))
 merged_file <- Sys.getenv(
   "MERGED_FILE",
   unset = file.path(projectDir, "data_cleaned",
-                     "merged_elokrd_ucmm_n283.RData")
+                     "merged_elokrd_ucmm_n230.RData")
 )
 if (!grepl("^/", merged_file))
   merged_file <- file.path(projectDir, "data_cleaned", basename(merged_file))

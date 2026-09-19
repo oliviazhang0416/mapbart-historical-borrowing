@@ -1,0 +1,26 @@
+{
+  "rows": 30,
+  "unique_profiles": 30,
+  "finite_ESS_rows": 30,
+  "PFS_only": true,
+  "exact_age_used": true,
+  "age_display_decimals": 1,
+  "historical_n": 200,
+  "EloKRd_age_group_n": {
+    "<50": 3,
+    "50-59": 10,
+    "60-69": 8,
+    "70+": 9
+  },
+  "UCMM_covariate_combination_n_min": 0,
+  "UCMM_covariate_combination_n_max": 22,
+  "UCMM_covariate_combination_zero_rows": 13,
+  "UCMM_covariate_combination_row_sum": 133,
+  "displayed_covariate_combinations": 22,
+  "UCMM_patients_in_displayed_combinations": 78,
+  "UCMM_patients_outside_displayed_combinations": 122,
+  "ESS_min": 3.781633618492,
+  "ESS_max": 24.536842029011,
+  "V_profile_f_min": 0.04783640168276,
+  "V_profile_f_max": 0.4643141627319
+}

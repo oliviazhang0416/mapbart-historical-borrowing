@@ -43,14 +43,16 @@ lrcbart-case-study-mm/private_data/
 *.fdb_latexmk
 
 # ---------------------------------------------------------------------------
-# HELD PENDING REVIEW: 25-column cleaned cohorts (adds iss/riss/ecog, full
-# cytogenetics, heavy/light chain, best_response) beyond the 13 analysis
-# columns published on main. Not used by the analysis scripts. Delete these
-# four lines to publish them.
+# HELD: per-source cleaned cohorts carry 25 columns (iss/riss/ecog, full
+# cytogenetics, heavy/light chain, best_response) well beyond the columns the
+# analysis uses. Matched by pattern, not by name, so a cohort renumbering
+# (n253 -> n200) cannot silently publish them.
+#
+# The merged_* analysis sets are the 18-column files already published on
+# main and are NOT held.
 # ---------------------------------------------------------------------------
-lrcbart-case-study-mm/data_cleaned/elokrd_cleaned_n30.RData
-lrcbart-case-study-mm/data_cleaned/ucmm_cleaned_n253.RData
-lrcbart-case-study-mm/data_cleaned/ucmm_cleaned_n48.RData
+lrcbart-case-study-mm/data_cleaned/ucmm_cleaned_*.RData
+lrcbart-case-study-mm/data_cleaned/elokrd_cleaned_*.RData
 
 # Python build artifacts
 __pycache__/

@@ -128,11 +128,11 @@ true_rmst_ratio <- function(data_tmp, tau = 3, K = 120, effect = NULL) {
 # NOTE: pass the CONTROL model's own sigma-hat as sig_c for "own"/"adaptive" to work.
 compute_rmst_metrics <- function(mu_t, sig_t, mu_c, sig_c, data_tmp,
                                  tau = 3, K = 120, threshold = 0.95, floor = 0.05,
-                                 control_sigma = "trt") {
+                                 control_sigma = "own") {
   sig_ctrl <- switch(control_sigma,
                      own      = sig_c,
                      adaptive = if (median(sig_t, na.rm = TRUE) <= median(sig_c, na.rm = TRUE)) sig_t else sig_c,
-                     sig_t)   # "trt" / default
+                     sig_t)   # "trt"
   true_sig_c <- if (!is.null(data_tmp$sigma_rwd)) data_tmp$sigma_rwd else data_tmp$sigma_rct
   Rt <- rmst_subj_mat(mu_t, sig_t,    tau, K)  # treatment arm: always its own sigma-hat
   Rc <- rmst_subj_mat(mu_c, sig_ctrl, tau, K)  # control arm: per control_sigma

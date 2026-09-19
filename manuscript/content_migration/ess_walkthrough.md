@@ -289,7 +289,7 @@ Numerical calibration substitutes a fixed estimate \(\widehat\sigma_{1}^2\) for 
 
 The calibration uses an untruncated spike-variance distribution and its specified tree support. The two-arm fit uses a truncated spike-variance distribution, and single-arm fits may fix \(\tau_0^2\). The reported prior ESS therefore corresponds to the calibration specification.
 
-An ESS of \(m\) means that the RWD-informed prior has, on average over the spike-variance calibration distribution, the same conditional precision about the specified current-control mean as \(m\) independent observations from the normal reference likelihood. Overall and subgroup ESS values are generally nonadditive because their standardized means are correlated and the inverse-variance transformation is nonlinear.
+An ESS of \(m\) means that the RWD-informed prior has, on average over the spike-variance calibration distribution, the same conditional precision about the specified current-control mean as \(m\) independent observations from the normal reference likelihood. Pointwise ESS values do not generally sum or average to the overall ESS because predictions at different profiles are correlated and the inverse-variance transformation is nonlinear.
 
 For a single-arm analysis, the current-control standardization profiles are specified separately.
 

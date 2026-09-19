@@ -1,10 +1,21 @@
 \section{Application details and supplementary results}\label{sec:F}
 \subsection{Analysis extract and harmonized variables}\label{sec:F.1}
-The available merged analysis extract has 30 EloKRd and 253 UCMM observations. Starting from 797 UCMM records, the preparation code excludes negative OS/PFS times (790 remain), requires a recorded induction start (303), excludes ASCT on or before induction (254), and excludes E-Rd/Elo-Rd regimens (253). The 48-control subset used in an earlier analysis is not used. The EloKRd analysis uses the available subset of the published study \citep{Derman2022}.
+The available merged analysis extract has 30 EloKRd and 200 triplet-treated UCMM observations. Starting from 797 UCMM records, the preparation code excludes negative OS/PFS times (790 remain), requires a recorded induction start (303), excludes E-Rd/Elo-Rd (302), and retains verified three-agent regimens (200). The EloKRd analysis uses the available subset of the published study \citep{Derman2022}.
+
+\paragraph{Triplet-only C3 selection.}
+Figure~\ref{fig:ucmm_selection_appendix} shows the sequential exclusions. C2 contains 302 patients after excluding E-Rd/Elo-Rd. The triplet rule then excludes 102 patients with doublets ($n=66$), single-agent treatment ($n=4$), four or more treatment agents ($n=19$), or other/unclear treatment records ($n=13$). C3 therefore contains 200 UCMM controls, or 230 observations when merged with the 30 EloKRd patients. Classification uses the recorded induction components rather than the source triplet flag. Steroids count as treatment agents; zoledronic acid is supportive therapy. VRd plus vorinostat is excluded because it contains four treatment agents, despite a source triplet flag.
+
+The retained regimen labels and counts are VRd (107), KRd (38), CyBorD (22), CRd (5), Cy-Kd (4), IRd (4), KPd (4), VTD (4), PDd (3), VPd (2), and one each of BRd, Dara-Rd, Elo-Vd, O-Rd, VAD, VMP and VRd-Zoledronic. In this extract, PDd records bortezomib, doxorubicin and dexamethasone; O-Rd records oprozomib, lenalidomide and dexamethasone. The 13 other/unclear records are not assumed to be triplets. Covariate harmonization retains all 200 analysis controls.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\linewidth]{ucmm_cohort_selection.pdf}
+\caption{UCMM inclusion and exclusion flow through C2 and the triplet-only analysis cohort. Counts refer to sequential, mutually exclusive exclusions.}\label{fig:ucmm_selection_appendix}
+\end{figure}
 
 The EloKRd extract supplies times from first treatment (C1D1); the UCMM code constructs times from induction start. OS ends at death or last contact. UCMM PFS ends at the first progression or death, using the recorded first-progression date with a recurrence-date fallback; otherwise it ends at last contact. Zero UCMM PFS times are floored at 0.1 month before logarithmic analysis. EloKRd PFS status 2 (death without prior progression) is recoded as an event. Differences in source-specific endpoint ascertainment may remain despite this harmonization.
 
-Variable selection first retains variables complete in EloKRd, then drops variables with the greatest UCMM missingness until all 253 UCMM records are complete on the retained set. The final numeric model predictors have no missing values. This data-dependent availability rule should be distinguished from a clinically prespecified adjustment set.
+Variable selection first retains variables complete in EloKRd, then drops variables with the greatest UCMM missingness until all 200 triplet-treated UCMM records are complete on the retained set. The final numeric model predictors have no missing values. This data-dependent availability rule should be distinguished from a clinically prespecified adjustment set.
 
 \begin{table}[htbp]
 \centering\small
@@ -12,7 +23,7 @@ Variable selection first retains variables complete in EloKRd, then drops variab
 \begin{tabular}{p{1.3in}p{4.6in}}
 \toprule
 Dimension & Numeric model representation and coding\\\midrule
-Age & Continuous age in years: enrollment age for EloKRd; age at the identification date for UCMM, with diagnosis-age fallback. Table 7 uses $<50$, $[50,60)$, $[60,70)$ and $\geq70$ for grouping only.\\
+Age & Continuous age in years: enrollment age for EloKRd; age at the identification date for UCMM, with diagnosis-age fallback. Table 7 groups rows into $<50$, $[50,60)$, $[60,70)$ and $\geq70$ years for display, shows age to one decimal year, and uses exact age in every calculation.\\
 Sex & Male indicator: 1 for male, 0 for female; source strings beginning with M or F are harmonized.\\
 Race & Black and Other indicators, with White as reference. White/Caucasian and Black/African labels are combined. Other comprises remaining harmonized categories, including Other/Unknown; it is not an imputation of a known race.\\
 Hispanic/Latino & 1 for ``Hispanic or Latino''; 0 for the non-Hispanic labels in the extract. Ethnicity remains a separate dimension from race.\\
@@ -32,12 +43,12 @@ The five comparator settings are KM, AFT-CP, BART-CP and hierarchical AFT at dis
 \input{generated/tableS10}
 \clearpage
 
-\subsection{Construction of the joint-subgroup PFS table}\label{sec:F.3}
-The table includes only the 22 joint combinations observed in EloKRd, defined by age band, sex, race, Hispanic/Latino status, cytogenetic risk and ASCT. EloKRd and UCMM counts are tabulated separately for those same combinations using the harmonized analysis extract. The displayed counts sum to 30 and 98, respectively; the other 155 UCMM patients belong to combinations not represented in EloKRd and are omitted from the display, but remain in the historical model fit. Every displayed row has a numerical ESS for its empirical trial-subgroup mean. A group represented by one person is retained and has the pointwise special case of the subgroup-mean definition. Exact ages remain in the predictions; other predictors are not set to a common reference.
+\subsection{Construction of the patient-profile PFS table}\label{sec:F.3}
+Table 7 contains one row for each of the 30 EloKRd patients. Rows are ordered by age group ($<50$, 50--59, 60--69 and $\geq70$ years) and exact age. The age group and UCMM count are displayed separately on every row. A row retains that patient's complete model profile: exact age, sex, race, Hispanic/Latino status, cytogenetic risk and ASCT. Age is rounded to one decimal year in the display, while all calculations use its exact value. The other predictors are not set to common reference values.
 
-The preliminary historical model is the primary PFS specification with $H_f=10$. The 4,000 retained joint posterior predictions give the sample variance of each subgroup posterior mean, including cross-profile dependence. Prior-tree calculations use 10,000 trees per group under the combined-covariate candidate rule, and the expectation over spike variance uses 100,000 chi-square draws with $\nu_0=3$ and the globally selected $s_0^2=0.00630957$.
+The preliminary historical model is the primary PFS specification with $H_f=10$. Its 4,000 retained posterior predictions at the EloKRd profiles give $V_f(x_i)$ directly as the sample variance across draws for each patient. For a single profile, one leaf from each discrepancy tree has weight one, so the all-spike discrepancy variance is $H_g\tau_0^2$. The expectation uses 100,000 chi-square draws with $\nu_0=3$ and the globally selected $s_0^2=0.00398107$.
 
-Every group uses the same historical residual-variance reference and scale law. Table 7 evaluates the full-variance expectation-of-ratios definition, rather than the block-based central curve used for scale selection. It uses the preliminary historical fit, not the final outcome fit. Rows are ordered hierarchically by age band, sex, race, Hispanic/Latino status, cytogenetic risk and ASCT. The two observed-count columns describe patients within each combination, whereas ESS uses information from the full historical cohort. ESS is reported to one decimal place. Only PFS appears in this table; OS remains in the outcome tables.
+For each row, the UCMM cohort count is obtained by matching historical patients on age group, sex, race, Hispanic/Latino status, cytogenetic risk and ASCT. Counts repeat when EloKRd rows share a displayed combination and should not be summed down the table. A count is descriptive and does not restrict the historical fit used for that row's ESS. Every profile uses the same historical residual-variance reference and scale law. Table 7 evaluates the full-variance expectation-of-ratios definition using the preliminary historical fit. ESS is reported to one decimal place, ranges from 3.8 to 24.5, and is expressed in uncensored normal-reference observations for the conditional mean log-PFS at the same profile. Only PFS appears in this table; OS remains in the outcome tables.
 
 \subsection{Prior ESS calibration and MCMC diagnostics}\label{sec:F.4}
 The preliminary application calibration uses 2,000 warm-up and 4,000 retained draws, 2,000 prior trees, 4,000 scale draws and the 141-value scale grid. Table S11(a) reports requested/capped targets, selected scales, the block-based curve and the full-variance ESS evaluated with the estimated prior-tree weight expectation. The latter uses 100,000 deterministic chi-square quantiles for numerical integration. Differences reflect block averaging and numerical integration error; the reciprocal-variance ordering in Appendix B applies with common scale draws.

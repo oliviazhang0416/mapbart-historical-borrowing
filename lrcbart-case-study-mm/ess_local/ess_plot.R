@@ -36,7 +36,7 @@ get_arg <- function(flag, default) {
 
 projectDir <- file.path(.lrcRoot, "lrcbart-case-study-mm")
 outcome <- toupper(get_arg("--outcome", "PFS"))
-data_tag <- get_arg("--data-tag", "n283")
+data_tag <- get_arg("--data-tag", "n230")
 hf_values <- as.integer(strsplit(get_arg("--hf", "10,50"), ",", fixed = TRUE)[[1]])
 stopifnot(length(hf_values) > 0L, all(hf_values %in% c(10L, 50L)))
 resDir <- get_arg("--resdir", file.path(projectDir, "res", "ess"))

@@ -60,7 +60,7 @@ cat(sprintf("=== BARTv2.R: OUTCOME = %s ===\n", OUTCOME))
 # 1. LOAD MERGED DATA
 # ============================================================
 merged_file <- Sys.getenv("MERGED_FILE",
-                          unset = file.path(projDir, "data_cleaned/merged_elokrd_ucmm_n283.RData"))
+                          unset = file.path(projDir, "data_cleaned/merged_elokrd_ucmm_n230.RData"))
 if (!file.exists(merged_file) &&
     file.exists(file.path(projDir, "data_cleaned", basename(merged_file))))
   merged_file <- file.path(projDir, "data_cleaned", basename(merged_file))

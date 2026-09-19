@@ -1,0 +1,23 @@
+{
+  "data_file": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/data_cleaned/merged_elokrd_ucmm_n230.RData",
+  "data_md5": "1fbc6d8b21f48a6ca4c3cd8c2a72948f",
+  "calibration_file": "/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/res/ess/ess_pfs_n230_Hf10.RData",
+  "calibration_md5": "7dfeb04a03a74f61e4f50b7a2fd796c3",
+  "outcome": "PFS",
+  "historical_cohort": "UCMM verified triplet regimens",
+  "historical_n": 200,
+  "trial_profiles": 30,
+  "unique_trial_profiles": 30,
+  "H_f": 10,
+  "H_g": 5,
+  "nu0": 3,
+  "s0_sq": 0.003981071705535,
+  "sigma1_sq": 1.918077867219,
+  "scale_draws": 100000,
+  "scale_seed": 460116,
+  "UCMM_count_matching_variables": ["Age_group", "Sex", "Race", "Hispanic_Latino", "Cytogenetic_risk", "ASCT"],
+  "displayed_covariate_combinations": 22,
+  "UCMM_patients_in_displayed_combinations": 78,
+  "UCMM_patients_outside_displayed_combinations": 122,
+  "ESS_range": [3.781633618492, 24.536842029011]
+}

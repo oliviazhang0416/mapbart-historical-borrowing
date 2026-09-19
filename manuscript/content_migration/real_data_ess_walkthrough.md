@@ -1,204 +1,143 @@
-# PFS ESS in the real-data application
+# Patient-profile prior ESS in the multiple-myeloma application
 
-Notation: \(\mathrm{trt}\), \(1\), and \(2\) denote randomized treatment, randomized control, and RWD control. Standardization uses \(\mathbf{X}_{\mathrm{trt}}\) and \(\mathbf{X}_1\), with \(N\coloneqq n_{\mathrm{trt}}+n_1\). Each participant contributes once. In a single-arm trial, \(n_1=0\), so standardization uses only \(\mathbf{X}_{\mathrm{trt}}\).
+## Purpose and scope
 
-Status: settled with the user, including interpretation and nonadditivity. The latest display decision replaces Figure 2 entirely with Table 7: the 22 joint covariate combinations observed in EloKRd, separate EloKRd and UCMM counts, and numerical PFS ESS for the 22 combinations represented in EloKRd. Every displayed combination has a defined empirical trial-subgroup target and numerical ESS. This supersedes the earlier dot-plot, pointwise-row and separate-panel designs.
+Table 7 reports progression-free-survival (PFS) prior effective sample size for each of the 30 EloKRd patient covariate profiles. The information comes from the full 200-patient triplet UCMM cohort through the preliminary historical model. Overall survival remains in the outcome tables and is not included in this local-information table.
 
-Purpose: authoritative content reference for the ESS subsection of the future real-data application. This extends the [settled ESS definition](ess_walkthrough.md) to individual trial covariate profiles and subgroup means. The pointwise derivation remains valid background; the agreed main table targets subgroup means, as specified in section 6. The remaining application content is not yet settled. Saving this text does not recalculate study results or regenerate the manuscript table.
+The six displayed covariate dimensions are continuous age, sex, race, Hispanic/Latino status, cytogenetic risk and ASCT. Race is represented in the model by Black and Other indicators with White as reference, so the six dimensions correspond to seven numeric predictors. ASCT is postinduction.
 
-Approved style: a table of joint covariates, EloKRd and UCMM counts, and numerical ESS, as specified in section 6. The user requested removal of the synthetic preview files; this written specification remains the design reference. The approved bands are under 50, 50–59, 60–69, and 70+ (left-closed intervals at 50, 60 and 70); exact ages remain in predictions. The manuscript build includes Table 7.
+## 1. Profile-specific target
 
----
-
-1. **Start from the saved ESS definition and identify the target.**
-
-   The saved overall target is the trial-standardized mean control outcome,
-
-   \[
-   \mu\coloneqq \frac1N\sum_{i=1}^{N}\{f(x_{\mathrm{trt},i})+g(x_{\mathrm{trt},i})\},
-   \]
-
-   with the general ESS definition
-
-   \[
-   \mathrm{ESS}(w,s_0^2)
-   =E_{\tau_0^2}\left[
-   \frac{\sigma_{1}^2}
-   {\operatorname{Var}(\mu\mid
-   \mathbf{Y}_{2},\mathbf{X}_{2},\mathbf{X}_{\mathrm{trt}},\mathbf{X}_{1},w,\tau_0^2)}
-   \right].
-   \]
-
-   For PFS, the surfaces describe mean log event time. The historical outcome records \(\mathbf{Y}_{2}\) include the observed PFS times and censoring indicators, handled through the survival likelihood.
-
-   A pointwise display changes the scalar target to
-
-   \[
-   \mu(x_{\mathrm{trt},i})\coloneqq f(x_{\mathrm{trt},i})+g(x_{\mathrm{trt},i}),
-   \]
-
-   the mean log-PFS time under control at trial patient \(i\)'s complete covariate profile. It retains the same preliminary historical fit, covariate conditioning, fixed reference variance, and globally calibrated PFS prior settings. Trial profiles are used because the question concerns information about control outcomes for the trial population.
-
-2. **Apply the same variance-matching definition at a profile.**
-
-   The pointwise extension of the saved definition is
-
-   \[
-   \boxed{
-   \mathrm{ESS}(w,s_0^2;x_{\mathrm{trt},i})
-   =E_{\tau_0^2}\left[
-   \frac{\sigma_{1}^2}
-   {\operatorname{Var}(\mu(x_{\mathrm{trt},i})\mid
-   \mathbf{Y}_{2},\mathbf{X}_{2},\mathbf{X}_{\mathrm{trt}},\mathbf{X}_{1},w,\tau_0^2)}
-   \right].
-   }
-   \]
-
-   As in the saved definition, this reference combines the historical-outcome posterior for \(f\) with an independent prior for \(g\). It is not the final joint posterior after trial-control outcomes have been incorporated.
-
-   Define
-
-   \[
-   V_f(x_{\mathrm{trt},i})\coloneqq \operatorname{Var}\{f(x_{\mathrm{trt},i})\mid
-   \mathbf{Y}_{2},\mathbf{X}_{2},\mathbf{X}_{\mathrm{trt}},\mathbf{X}_{1}\},
-   \]
-
-   \[
-   V_g(w,\tau_0^2;x_{\mathrm{trt},i})
-   \coloneqq \operatorname{Var}\{g(x_{\mathrm{trt},i})\mid
-   \mathbf{X}_{2},\mathbf{X}_{\mathrm{trt}},\mathbf{X}_{1},w,\tau_0^2\}.
-   \]
-
-   The variance defining \(V_g\) is taken under the discrepancy prior. Their sum is the variance in the denominator. At a single profile, exactly one leaf contributes from each of the \(H_g\) discrepancy trees. The contributing leaf has weight one, and all other leaves have weight zero. Thus the sum of squared weights is \(H_g\) for every tree configuration. Integrating the mixture indicators and trees gives
-
-   \[
-   V_g(w,\tau_0^2;x_{\mathrm{trt},i})
-   =H_g\{w\tau_0^2+(1-w)\tau_1^2\}.
-   \]
-
-   For the saved all-spike calibration reference, set \(w=1\), retaining the specified tree prior. Consequently,
-
-   \[
-   V_g(1,\tau_0^2;x_{\mathrm{trt},i})=H_g\tau_0^2,
-   \]
-
-   and
-
-   \[
-   \boxed{
-   \mathrm{ESS}_{\tau_0}(s_0^2;x_{\mathrm{trt},i})
-   =E_{\tau_0^2}\left[
-   \frac{\sigma_{1}^2}{V_f(x_{\mathrm{trt},i})+V_g(1,\tau_0^2;x_{\mathrm{trt},i})}
-   \right]
-   =E_{\tau_0^2}\left[
-   \frac{\sigma_{1}^2}{V_f(x_{\mathrm{trt},i})+H_g\tau_0^2}
-   \right].
-   }
-   \]
-
-   The expectation uses the same untruncated scaled-inverse-chi-squared calibration law with parameters \(\nu_0,s_0^2\) as the saved overall ESS. Use the same globally calibrated PFS \(s_0^2\) for every profile; do not recalibrate it separately for each patient or subgroup. Estimate \(V_f(x_{\mathrm{trt},i})\) from the variance of the preliminary posterior predictions at that profile, and average the displayed ratio over draws from the calibration scale law.
-
-3. **Interpret one point.**
-
-   Suppose
-
-   \[
-   \mathrm{ESS}_{\tau_0}(s_0^2;x_{\mathrm{trt},i})=20.
-   \]
-
-   The RWD-informed prior information about the mean log-PFS time under control at this complete covariate profile is worth approximately 20 reference control observations, under the all-spike calibration reference.
-
-   More precisely, at each fixed \(\tau_0^2\), find the number of independent normal-reference observations whose flat-prior posterior variance for the mean equals the RWD-informed prior variance of \(f(x_{\mathrm{trt},i})+g(x_{\mathrm{trt},i})\). Average those matched counts over the calibration distribution of \(\tau_0^2\). A value of 20 is that average; it does not assert that the fully scale-marginalized prior has variance \(\sigma_{1}^2/20\).
-
-   The information comes from the full RWD dataset through the fitted model. It is not restricted to historical patients with exactly the same covariates or membership in the displayed subgroup. The units are uncensored log-PFS reference observations, not actual trial patients with the trial's censoring pattern. In this single-arm application, the reference residual variance uses the assumption \(\sigma_{1}^2=\sigma_{2}^2\).
-
-   Higher values indicate more precise RWD-informed prior estimates of the control mean at those profiles. With the same \(H_g\), reference variance, and scale law across profiles, this variation comes through \(V_f(x_{\mathrm{trt},i})\). It does not establish outcome compatibility between the RWD and unobserved trial controls, or quantify a realized posterior gain from borrowing.
-
-4. **Explain the pointwise display considered earlier.**
-
-   The earlier display calculated one pointwise ESS for each of the 30 trial profiles and displayed the same 30 values against age, sex, race, ethnicity, high-risk cytogenetics, and ASCT status in six panels. This is retained as a possible diagnostic, not the selected main Figure 2. The PFS-only scope remains agreed; omit OS points and the PFS-versus-OS legend.
-
-   Each dot uses the patient's full observed predictor vector. For example, a dot under ASCT: Yes uses that patient's actual age, sex, race, ethnicity, and cytogenetic risk together with ASCT status. Other predictors are not replaced by averages or held at reference values.
-
-   A panel groups or positions these profile-specific values by its horizontal-axis predictor. It does not display a separate ESS for a subgroup mean. Differences between groups may reflect their other covariates as well, and cannot be attributed solely to the displayed predictor. The vertical value for a given patient is identical across the six panels; any horizontal jitter only separates overlapping points.
-
-5. **Distinguish pointwise, subgroup, and overall ESS.**
-
-   For a subgroup \(G\) with \(N_G\) trial patients, its mean control log-PFS target is
-
-   \[
-   \mu_G\coloneqq \frac1{N_G}\sum_{i\in G}\{f(x_{\mathrm{trt},i})+g(x_{\mathrm{trt},i})\}.
-   \]
-
-   Its ESS must be calculated by substituting \(\mu_G\) into the saved variance-matching definition, retaining the same reference settings and scale law. Adding the patient-profile ESS values within \(G\) does not generally give the ESS of \(\mu_G\).
-
-   Likewise, subgroup ESS values are not generally additive to the overall ESS. For the two disjoint ASCT groups, let \(p\) be the proportion of trial patients with ASCT. Then
-
-   \[
-   \mu=p\mu_{\mathrm{ASCT}}+(1-p)\mu_{\mathrm{no\ ASCT}}.
-   \]
-
-   At each fixed spike variance in the same calibration reference, suppressing the common conditioning only to shorten this identity,
-
-   \[
-   \begin{aligned}
-   \operatorname{Var}(\mu)
-   ={}&p^2\operatorname{Var}(\mu_{\mathrm{ASCT}})
-   +(1-p)^2\operatorname{Var}(\mu_{\mathrm{no\ ASCT}})\\
-   &+2p(1-p)\operatorname{Cov}
-   (\mu_{\mathrm{ASCT}},\mu_{\mathrm{no\ ASCT}}).
-   \end{aligned}
-   \]
-
-   The overall ESS is obtained by matching this overall variance and then averaging the matched counts over the scale law. Adding subgroup ESS values does not account for the weights, shared-model covariance, or the inverse-variance transformation. Thus there is no general identity equating their sum to overall ESS; equality can occur in special cases.
-
-   Patient-profile ESS values likewise neither sum nor generally average to overall ESS. Their sum is not constrained to the overall calibration target. Calculating ESS for a subgroup or the whole trial requires the variance of that target mean, including dependence among predictions at different profiles.
-
-6. **Report joint-subgroup ESS and observed cohort counts in Table 7.**
-
-   The user selected exactly option 1's visual style, with option 4's subgroup-mean ESS target. Each row represents one distinct observed combination of **age band, sex, race, Hispanic/Latino status, cytogenetic risk, and ASCT status**. Its main message is: **the historical cohort supplies this much prior information for estimating the mean control outcome in each joint subgroup**.
-
-   The RWD supplies the information. The trial covariates define the target subgroup. Include every distinct combination represented in EloKRd once. Count UCMM patients in those same combinations. Omit historical-only combinations and combinations absent from both cohorts. Patients matching on all five categorical predictors and the age band belong to the same row. Use their actual complete trial profiles when averaging the control surface, including each patient's exact age. Age bands define display groups only; they do not replace continuous age in the model or predictions, and band midpoints are not substituted for actual ages. Do not restrict the historical fit to matching historical subgroup members.
-
-   Apply the saved all-spike calibration definition to the subgroup target from section 5:
-
-   \[
-   \boxed{
-   \mathrm{ESS}_{\tau_0}(s_0^2;G)
-   =E_{\tau_0^2}\left[
-   \frac{\sigma_{1}^2}
-   {\operatorname{Var}(\mu_G\mid
-   \mathbf{Y}_{2},\mathbf{X}_{2},\mathbf{X}_{\mathrm{trt}},\mathbf{X}_{1},w=1,\tau_0^2)}
-   \right].
-   }
-   \]
-
-   Retain the same globally calibrated PFS scale law, historical fit, and fixed reference variance for all subgroups. Compute the variance of the subgroup mean, including dependence among predictions. For f, this requires taking the variance across posterior draws of the within-subgroup average. For g, it requires the subgroup leaf weights in the saved tree-prior calculation; the single-profile simplification H_g * tau_0^2 is not generally the variance of a subgroup mean.
-
-   An ESS of 20 for a row means that the full RWD-informed prior supplies information equivalent to approximately 20 reference control observations for estimating mean control log-PFS among trial patients with that complete combination of categories, averaged over the calibration scale law. The normal-reference units, single-arm variance assumption, distinction from fully marginalized variance, and nonadditivity qualifications above continue to apply. Differences between subgroup scores are not isolated effects of any one predictor. A combination represented by one patient is still a valid row, for which the subgroup-mean ESS reduces to pointwise ESS; no minimum subgroup size has been imposed by this design choice.
-
-   Agreed display:
-
-   - Replace Figure 2 entirely with Table 7, PFS only; no dot plot remains.
-   - Columns: Age band, Sex, Race, Hispanic/Latino, Cytogenetic risk, ASCT, EloKRd n, UCMM n, RWD prior ESS.
-   - Include only the 22 combinations observed in EloKRd; omit all combinations with zero EloKRd patients. Order hierarchically by the displayed covariates: ascending age bands; Female, Male; White, Black, Other; No, Yes; Standard, High; No, Yes.
-   - Age bands are under 50, 50–59, 60–69 and 70+. Exact ages remain in predictions.
-   - Counts refer to observed patients within each displayed combination and sum to 30 EloKRd and 98 UCMM patients. The remaining 155 UCMM patients are omitted from the display but retained in the full historical model fit.
-   - Report numerical ESS to one decimal place for the 22 combinations represented in EloKRd. Every displayed combination has trial profiles and a numerical ESS. Do not invent representative ages.
-   - Each ESS uses the full historical fit and the unchanged subgroup-mean definition. It is not computed only from the historical patients counted in that row, and subgroup ESS values are not additive.
-   - Retain the equivalent uncensored normal-reference units and the postinduction-ASCT qualification in the table note.
-
-   The pointwise derivation remains explanatory background. The earlier separate-panel choice is superseded, and the synthetic preview files have been removed at the user's request. No supplementary figure has been committed by this choice.
-
-## Implementation boundary for the revised figure
-
-The existing revision figure computes the pointwise quantity
+For EloKRd patient \(i\), let \(x_i\) be the complete model covariate vector and define the conditional mean control log-PFS
 
 \[
-\frac{\widehat\sigma_{1}^2}
-{\widehat V_f(x_{\mathrm{trt},i})+H_g\,\overline{\tau_0^2}},
+\mu_i \coloneqq f(x_i)+g(x_i).
 \]
 
-where the scale samples supplied to the map come from the fitted control model. This puts the mean scale inside the denominator and does not implement the settled expectation of conditional ratios under the calibration scale law. The relevant source is `revision/01-code/lrcbart/R/lrcbart.R`, function `lrc_ess_map`, called by `revision/04-application/code/run_lrcbart.R`; `make_figures.R` currently displays both PFS and OS.
+The preliminary historical model is fitted to all UCMM outcomes and evaluated at \(x_i\). Its posterior uncertainty at that profile is
 
-The implemented main table preserves the 22 PFS subgroup-mean ESS values under the settled scale-averaging definition and adds observed counts from the harmonized analysis extract. The observed-combination table does not extend the ESS calculation to hypothetical profiles. Existing candidate-cutpoint/tree-support and single-arm fixed-scale differences remain implementation issues. No canonical study fit, analysis script or cleaned dataset was changed. See source/generated/subgroup_provenance.json for ESS provenance and source/generated/subgroup_table_validation.json for count and grid validation.
+\[
+V_f(x_i)
+\coloneqq
+\operatorname{Var}\{f(x_i)\mid
+\mathbf Y_2,\mathbf X_2,x_i\}.
+\]
+
+The 4,000 retained preliminary posterior predictions give the sample estimate of \(V_f(x_i)\). The historical data are not filtered to patients whose covariates exactly match \(x_i\).
+
+## 2. Discrepancy variance at one profile
+
+At a single profile, exactly one terminal node contributes from each of the \(H_g\) discrepancy trees. The contributing node has weight one. Therefore
+
+\[
+V_g(w,\tau_0^2;x_i)
+=H_g\{w\tau_0^2+(1-w)\tau_1^2\}.
+\]
+
+The calibration reference sets \(w=1\), giving
+
+\[
+V_g(1,\tau_0^2;x_i)=H_g\tau_0^2.
+\]
+
+This single-profile identity does not require prior-tree simulation because the sum of squared profile weights is exactly one in every tree.
+
+## 3. Matching reference and prior ESS
+
+The reference experiment for the same patient profile is
+
+\[
+Y_{ij}^{\mathrm{ref}}\mid x_i
+\sim N(\mu_i,\sigma_1^2).
+\]
+
+The target prior and the reference experiment therefore concern the same scalar parameter, \(\mu_i\). One reference observation supplies Fisher information \(1/\sigma_1^2\). At fixed \(\tau_0^2\), matching that reference information to the inverse RWD-informed prior variance gives
+
+\[
+m_i(\tau_0^2)
+=
+\frac{\sigma_1^2}
+{V_f(x_i)+H_g\tau_0^2}.
+\]
+
+The patient-profile ESS averages these matched counts over the calibration distribution:
+
+\[
+\boxed{
+\operatorname{ESS}_{\tau_0}(s_0^2;x_i)
+=E_{\tau_0^2}\left[
+\frac{\sigma_1^2}
+{V_f(x_i)+H_g\tau_0^2}
+\right],
+\qquad
+\tau_0^2\sim
+\operatorname{scaled\text{-}Inv}\chi^2(\nu_0,s_0^2).
+}
+\]
+
+The application uses \(H_f=10\), \(H_g=5\), \(\nu_0=3\), \(s_0^2=0.00398107\), and the saved PFS residual variance \(\sigma_1^2=1.91808\). The single-arm reference uses the UCMM residual variance under \(\sigma_1^2=\sigma_2^2\). Every profile uses the same \(\sigma_1^2\), \(H_g\), and scale law. Differences across rows arise from \(V_f(x_i)\).
+
+## 4. Interpretation
+
+If a row has prior ESS 20, the UCMM-informed prior supplies, on average over the spike-variance calibration law, the same conditional precision about mean control log-PFS at that covariate profile as approximately 20 independent normal-reference observations with that same profile.
+
+The unit is one uncensored normal-reference observation on the log-PFS scale. It is not an equivalent number of patients under the trial's censoring distribution. The value describes prior precision and does not establish compatibility between UCMM outcomes and unobserved EloKRd control outcomes. It also does not quantify a realized posterior gain from borrowing.
+
+The full UCMM fit informs every row. The displayed UCMM count summarizes how many historical patients match the row's age group and categorical covariates, but the ESS is not computed only from those patients. A high ESS therefore need not track the displayed count.
+
+## 5. Relationship to the overall ESS
+
+The standardized overall current-control target is
+
+\[
+\bar\mu=\frac1{30}\sum_{i=1}^{30}\mu_i.
+\]
+
+Its variance includes covariance among predictions:
+
+\[
+\operatorname{Var}(\bar\mu)
+=\frac1{30^2}\left[
+\sum_i\operatorname{Var}(\mu_i)
++\sum_{i\ne i'}\operatorname{Cov}(\mu_i,\mu_{i'})
+\right].
+\]
+
+The same fitted functions inform all profiles, so these covariance terms generally do not vanish. The variance-to-ESS transformation is also nonlinear. The 30 pointwise ESS values therefore do not sum or generally average to the overall ESS. The overall ESS must be calculated from the variance of \(\bar\mu\).
+
+## 6. Table 7 specification
+
+Table 7 contains 30 rows ordered by age group and exact age. Age group and UCMM cohort count are displayed on every row. Its columns are:
+
+1. age group;
+2. age;
+3. sex;
+4. race;
+5. Hispanic/Latino status;
+6. cytogenetic risk;
+7. ASCT;
+8. UCMM cohort count for the displayed covariate combination;
+9. prior ESS.
+
+The displayed categories are under 50, 50--59, 60--69 and 70 years or older. A row's UCMM count is the number of triplet-treated historical controls matching its age group, sex, race, Hispanic/Latino status, cytogenetic risk and ASCT. Counts repeat when EloKRd rows share a combination and are not additive down the table. Age is displayed to one decimal year, while calculations use exact age. Prior ESS is displayed to one decimal place. The observed pointwise values range from 3.8 to 24.5. The table note states that the combination counts are descriptive, the full historical cohort informs each profile, and the common calibration settings, reference unit, nonaggregation property, compatibility limitation and postinduction status of ASCT continue to apply.
+
+## 7. Reproducible calculation
+
+The saved calibration object contains the 30 values of \(V_f(x_i)\) in the same order as the EloKRd rows in the merged analysis extract. For each profile, draw
+
+\[
+U_b\sim\chi^2_3,
+\qquad
+\tau_{0b}^2=\frac{3s_0^2}{U_b},
+\]
+
+and compute
+
+\[
+\widehat{\operatorname{ESS}}_i
+=\frac1B\sum_{b=1}^B
+\frac{\widehat\sigma_1^2}
+{\widehat V_f(x_i)+H_g\tau_{0b}^2}.
+\]
+
+The manuscript build uses \(B=100{,}000\) common scale draws for all 30 profiles. Reusing the draws makes cross-profile comparisons depend only on the saved profile-specific historical uncertainty.

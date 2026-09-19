@@ -1,9 +1,9 @@
 # LRC-BART myeloma case study
 
 This application compares the 30-patient EloKRd trial treatment cohort with
-253 UCMM external controls for progression-free survival (PFS) and overall
-survival (OS). All adjusted methods use one harmonized seven-column covariate
-matrix:
+200 triplet-treated UCMM external controls for progression-free survival (PFS)
+and overall survival (OS). The merged analysis file contains 230 patients. All
+adjusted methods use one harmonized seven-column covariate matrix:
 
 ```text
 age, male, race_Black, race_Other, hispanic, high_risk_cyto, asct
@@ -19,13 +19,13 @@ Rscript run_all.R
 ```
 
 `run_all.R` cleans and merges the private data, runs PFS and OS, constructs
-the ESS plots after all model fits finish, and writes the result table.
+the ESS plots after all model fits finish, and prints the result summary.
 
 ## Run settings
 
 All configured methods run by default. `SCRIPTS` can select case-study
 analysis methods while leaving data preparation, available ESS plotting,
-and the result table enabled.
+and the printed result summary enabled.
 
 `OUTCOMES` and `LRC_CONFIGS` select both analyses and summary rows. For example,
 `OUTCOMES=PFS LRC_CONFIGS=Hf50 Rscript run_all.R` runs PFS analyses with the
@@ -82,13 +82,9 @@ with `rmst_ucmm_population = "UCMM"` and a 95% confidence interval. Its horizon
 is capped at the shorter arm's maximum follow-up, and its treatment contrast
 uses observed UCMM control. KM has no hypothetical-control estimate.
 
-`res/results_table.csv` and `res/results_table.RData` include numeric
-`rmst_trt_*`, `rmst_hyp_ctrl_*`, and `rmst_ucmm_*` estimate/lower/upper columns,
-plus the UCMM population, RMST horizon, interval type, and contrast-control
-label. The printed summary also shows the three arm estimates. These additions
-run automatically through `run_all.R` for all selected outcomes/configurations.
-Older LRC-BART and HierAFT files without the new UCMM summary show missing UCMM
-values until their analysis scripts are rerun.
+`summarize.R` prints the selected model summaries, including numeric RMST
+estimates and intervals. It does not write extra summary files. Manuscript
+builders construct this summary in memory directly from the saved model fits.
 
 ## Private-data preparation
 
@@ -111,3 +107,25 @@ The active model sources are loaded directly from:
 /Users/oliviazhang/Desktop/lrcBART/clrcbart.cpp
 /Users/oliviazhang/Desktop/lrcBART/cess.cpp
 ```
+
+## Triplet-only analysis cohort
+
+C2 contains 302 patients after excluding E-Rd/Elo-Rd. Retaining verified
+three-agent treatments gives an analysis cohort of 200 UCMM controls.
+These controls are merged with 30 EloKRd patients in
+`data_cleaned/merged_elokrd_ucmm_n230.RData`, which is the default input for all
+case-study scripts.
+
+Regimen rules are defined directly in `private_data/data_cleaning_ucmm.R`
+and were checked against `induction_abstracted`. Steroids count as treatment
+agents; supportive zoledronic acid does not. The source `dtq` flag is not used.
+Superseded cohort datasets are outside the active merge-file search. Cohort
+counts are checked in memory; no separate configuration or audit files are
+required.
+
+After running the cleaning and merge scripts, regenerate the shared PDF
+chart and HTML codebook with `manuscript/source/scripts/build_cohort_selection.py`
+(using Python with reportlab; cohort counts are read directly from the cleaning
+code without intermediate files), then compile the manuscripts with
+`manuscript/source/scripts/build_pdfs.py`. The chart is embedded in both main
+and appendix PDFs.

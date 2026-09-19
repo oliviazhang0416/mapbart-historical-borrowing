@@ -66,7 +66,7 @@ def table(name, caption, headers, rows, spec, note='', landscape=False, small=Tr
     if landscape: t.append(r'\begin{landscape}')
     intros={
       'tableS4':('Gaussian two-arm results','All 12 settings and 17 configurations are reported. Main Table 2 selects Sc1, Sc2, Sc3 with $\\rho=0$, Sc4 with $\\delta=1$, and Sc5 outside $X_5>2$ with $\\delta=1$.'),
-      'tableS5':('Survival two-arm results','The primary median-survival ratio is followed by the supplementary three-year RMST ratio, using the modified functional in Appendix D.5.'),
+      'tableS5':('Survival two-arm results',"The primary median-survival ratio is followed by the supplementary three-year RMST ratio. Each arm uses its own fitted residual standard deviation, and the control RMST denominator is floored at 0.05 (Appendix D.5)."),
       'tableS6':('Gaussian single-arm results','Sc1 and Sc2 at $n_1=200$ include all five lrcBART priors and all three comparator settings.'),
       'tableS7':('Survival single-arm results','Both trial sizes and both scenarios are reported, first for median-survival ratios and then for five-year RMST ratios with floored control denominators (Appendix D.5).'),
       'tableS10':('Complete application results','All 58 PFS and OS results are included. Similarity among lrcBART estimates does not resolve prior dependence for unobserved trial-control outcomes.')}
@@ -171,7 +171,7 @@ for study,num in [('lrcbart-sim-gaussian',4),('lrcbart-sim-survival',5),('lrcbar
             group=(x['nT'],x['scenario'])
             if group!=prev:
                 if num==4 and x['scenario']=='sc5_X7_d2': rows.append('__PAGE__')
-                rows.append(('Modified RMST ratio: ' if estimand=='RMST' else ('Median-survival ratio: ' if 'survival' in study else 'Mean difference: '))+
+                rows.append(('Denominator-floored RMST ratio: ' if estimand=='RMST' else ('Median-survival ratio: ' if 'survival' in study else 'Mean difference: '))+
                             ('$n_1='+x['nT']+'$, ' if x['nT'] else '')+scen(x['scenario']));prev=group
             rows.append([method(x,True)]+[fmt(x[k])+' ('+fmt(x['se_'+k])+')' for k in ['bias','rmse']]+
                         [fmt(x['sd']),fmt(x['width'])]+[fmt(x[k])+' ('+fmt(x['se_'+k])+')' for k in ['coverage','power']])

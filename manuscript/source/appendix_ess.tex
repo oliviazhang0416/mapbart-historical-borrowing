@@ -308,28 +308,35 @@ with equality only when the positive block variances are equal. Consecutive bloc
 \caption{Illustrative prior ESS curves for Gaussian two-arm Sc1, replicate 1. The lrcBART curve is the block-based central ESS summary over the variance-scale grid; the dotted horizontal line is its full-variance ceiling. The MAP overlay uses its corresponding prior ESS calculation. Because MAP and lrcBART use different prior constructions and ESS implementations, the common horizontal axis denotes each method's supplied variance-scale parameter rather than identical prior distributions. The curves use one dataset and are not averaged over replicates.}
 \end{figure}
 
-\subsection{Pointwise, subgroup and overall means}\label{sec:B.6}
-For one standardization profile $x$, one terminal node in each discrepancy tree has weight one, so
+\subsection{Pointwise and overall means}\label{sec:B.6}
+For one standardization profile $x$, define the scalar current-control target $\mu(x)\coloneqq f(x)+g(x)$ and
+\[
+V_f(x)\coloneqq
+\Var\{f(x)\mid\mathbf Y_2,\mathbf X_2,x\}.
+\]
+One terminal node in each discrepancy tree has weight one, so
 \[
 V_g(w,\tau_0^2;x)
 =H_g\{w\tau_0^2+(1-w)\tau_1^2\}.
 \]
-For a subgroup profile set $\mathbf X_G$, retaining multiplicities, let
-$N_G\coloneqq|\mathbf X_G|$ and define
+Under the all-spike reference, the pointwise ESS is therefore
 \[
-a_{h^g\ell}(G)\coloneqq
-N_G^{-1}\sum_{x\in\mathbf X_G}
-\ind\{x\in\ell\text{ of tree }h^g\}.
+\ESS_{\tau_0}(s_0^2;x)
+=\E_{\tau_0^2}\!\left[
+\frac{\sigma_1^2}{V_f(x)+H_g\tau_0^2}
+\right].
 \]
-$V_f(G)$ is the variance across historical-posterior averages over $\mathbf X_G$, and $V_g(w,\tau_0^2;G)$ follows main-text equation~\ref{T-eq:Vgmain} after replacing $a_{h^g\ell}$ by $a_{h^g\ell}(G)$. The subgroup ESS is obtained from main-text equation~\ref{T-eq:essgeneral}; it is the ESS of the subgroup mean, rather than an average of individual-profile ESS values.
+The matched reference observation has the same target, $Y^{\mathrm{ref}}\mid x\sim N\{\mu(x),\sigma_1^2\}$. Thus the target and reference describe the same conditional mean parameter.
 
-For a partition with weights $p_G$, the overall mean is $\mu=\sum_Gp_G\mu_G$ and
+For standardization profiles $x_1,\ldots,x_n$, the overall target is $\bar\mu=n^{-1}\sum_i\mu(x_i)$ and
 \begin{equation}\label{eq:nonadd}
-\Var(\mu)
-=\sum_Gp_G^2\Var(\mu_G)
-+\sum_{G\ne G'}p_Gp_{G'}\Cov(\mu_G,\mu_{G'}).
+\Var(\bar\mu)
+=\frac1{n^2}\left[
+\sum_i\Var\{\mu(x_i)\}
++\sum_{i\ne i'}\Cov\{\mu(x_i),\mu(x_{i'})\}
+\right].
 \end{equation}
-The same fitted functions inform several groups, so the covariance terms generally do not vanish. Inverse variance is also nonlinear. Subgroup or individual-profile ESS values therefore do not generally sum or average to the overall ESS.
+The same fitted functions inform all profiles, so the covariance terms generally do not vanish. Inverse variance is also nonlinear. Pointwise ESS values therefore do not generally sum or average to the overall ESS; the overall ESS must be calculated from the variance of $\bar\mu$.
 
 \subsection{Reference interpretation and implementation qualifications}\label{sec:B.7}
 The theoretical reference treats $\sigma_1^2$ as fixed. Numerical calibration substitutes a fixed estimate $\widehat\sigma_1^2$; in two-arm analyses this estimate uses randomized controls. A single-arm analysis specifies its standardization profiles separately and uses the RWD-control residual variance as the reference scale under $\sigma_1^2=\sigma_2^2$.

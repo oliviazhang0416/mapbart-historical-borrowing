@@ -61,9 +61,9 @@ cat(sprintf("=== hierAFT.R: OUTCOME = %s ===\n", OUTCOME))
 # 1. LOAD MERGED DATA
 # ============================================================
 # Select the merged cohort by FILE NAME via MERGED_FILE; default is the
-# primary cohort (all regimens; E-Rd excluded). The n<N> token from the file name tags all outputs.
+# triplet-only cohort. The n<N> token from the file name tags all outputs.
 merged_file <- Sys.getenv("MERGED_FILE",
-                          unset = file.path(projDir, "data_cleaned/merged_elokrd_ucmm_n283.RData"))
+                          unset = file.path(projDir, "data_cleaned/merged_elokrd_ucmm_n230.RData"))
 # Allow a bare filename: resolve against data_cleaned/.
 if (!file.exists(merged_file) &&
     file.exists(file.path(projDir, "data_cleaned", basename(merged_file))))
