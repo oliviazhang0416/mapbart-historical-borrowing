@@ -150,7 +150,7 @@ This table puts four prior-ESS approaches into a common notation for a scalar pa
 <td>$\pi_{\mathrm{target}}(\theta_\star)$. <br>where $\theta_\star$ is the current-study parameter and $\pi_{\mathrm{target}}$ is the supplied prior whose ESS is sought; the definition does not prescribe how this prior is constructed.</td>
 <td>Log-prior curvature at $\bar\theta_\star$:<br>$\bar\theta_\star\coloneqq E_{\pi_{\mathrm{target}}}(\theta_\star)$<br>$\displaystyle i\{q(\theta_\star)\}\coloneqq-\frac{d^2}{d\theta_\star^2}\log q(\theta_\star)$. <br>where $q\coloneqq\pi_{\mathrm{target}}$.</td>
 <td>$\mathcal I_{\mathrm{target}}\coloneqq i\{\pi_{\mathrm{target}}(\bar\theta_\star)\}$<br>$\displaystyle =-\left.\frac{d^2}{d\theta_\star^2}\log\pi_{\mathrm{target}}(\theta_\star)\right\rvert_{\theta_\star=\bar\theta_\star}$. <br>where $\mathcal I_{\mathrm{target}}$ is target-prior curvature evaluated at its mean.</td>
-<td>$\pi_{\epsilon,m}(\theta_\star\mid Y_m)$<br>$\displaystyle \propto\pi_\epsilon(\theta_\star)\prod_{j=1}^m f(Y_j\mid\theta_\star)$. <br>where $\pi_\epsilon$ is a same-mean $\epsilon$-information prior and $Y_m$ is a hypothetical sample of size $m$.</td>
+<td>$\pi_{\epsilon,m}(\theta_\star\mid Y_m)$<br>$\displaystyle \propto\pi_\epsilon(\theta_\star)\prod_{j=1}^m p(Y_j\mid\theta_\star)$. <br>where $\pi_\epsilon$ is a same-mean $\epsilon$-information prior and $Y_m$ is a hypothetical sample of size $m$.</td>
 <td>Expected log-posterior curvature at $\bar\theta_\star$:<br>$\displaystyle i\{q(\theta_\star)\}\coloneqq-\frac{d^2}{d\theta_\star^2}\log q(\theta_\star)$. <br>where $q\coloneqq\pi_{\epsilon,m}$ and the curvature is averaged over $Y_m$.</td>
 <td>$\mathcal I_{\mathrm{ref}}(m)\coloneqq i\{\pi_\epsilon(\bar\theta_\star)\}$<br>$\displaystyle {}+E_{Y_m}\{i_F(Y_m;\bar\theta_\star)\}$. <br>where $i_F(Y_m;\theta_\star)$ is observed likelihood information and the expectation uses the target prior-predictive distribution.</td>
 <td>$\mathcal I_{\mathrm{target}}\approx\mathcal I_{\mathrm{ref}}(m)$. <br>where $m$ is varied to obtain the closest information match.</td>
@@ -161,20 +161,20 @@ This table puts four prior-ESS approaches into a common notation for a scalar pa
 <td>$\pi_{\mathrm{target}}(\theta_\star)$. <br>where $\theta_\star$ is the current-study parameter and $\pi_{\mathrm{target}}$ is the prior whose ESS is sought; ELIR does not restrict how this prior is constructed.</td>
 <td>Pointwise log-prior curvature:<br>$\displaystyle i\{\pi(\theta_\star)\}\coloneqq-\frac{d^2}{d\theta_\star^2}\log\pi(\theta_\star)$. <br>where the curvature is evaluated locally at each $\theta_\star$.</td>
 <td>$\mathcal I_{\mathrm{target}}(\theta_\star)\coloneqq i\{\pi_{\mathrm{target}}(\theta_\star)\}$<br>$\displaystyle =-\frac{d^2}{d\theta_\star^2}\log\pi_{\mathrm{target}}(\theta_\star)$. <br>where $\mathcal I_{\mathrm{target}}(\theta_\star)$ is local target-prior information.</td>
-<td>One information unit $Y_1\sim f(\cdot\mid\theta_\star)$; no reference prior. <br>where $Y_1$ is one unit under the current-study sampling model $f$.</td>
-<td>Expected Fisher information from one observation:<br>$\displaystyle i_F(\theta_\star)\coloneqq E_{Y_1\mid\theta_\star}\!\left[-\frac{d^2}{d\theta_\star^2}\log f(Y_1\mid\theta_\star)\right]$. <br>where the expectation is under the current-study sampling model.</td>
-<td>$\mathcal I_{\mathrm{ref}}(\theta_\star)\coloneqq i_F(\theta_\star)$<br>$\displaystyle =E_{Y_1\mid\theta_\star}\!\left[-\frac{d^2}{d\theta_\star^2}\log f(Y_1\mid\theta_\star)\right]$. <br>where $i_F(\theta_\star)$ is expected Fisher information in one unit.</td>
+<td>One information unit $Y_1\sim p(\cdot\mid\theta_\star)$. <br>where $Y_1$ is one unit under the current-study sampling model $p$.</td>
+<td>Expected Fisher information from one observation:<br>$\displaystyle i_F(\theta_\star)\coloneqq E_{Y_1\mid\theta_\star}\!\left[-\frac{d^2}{d\theta_\star^2}\log p(Y_1\mid\theta_\star)\right]$. <br>where the expectation is under the current-study sampling model.</td>
+<td>$\mathcal I_{\mathrm{ref}}(\theta_\star)\coloneqq i_F(\theta_\star)$<br>$\displaystyle =E_{Y_1\mid\theta_\star}\!\left[-\frac{d^2}{d\theta_\star^2}\log p(Y_1\mid\theta_\star)\right]$. <br>where $i_F(\theta_\star)$ is expected Fisher information in one unit.</td>
 <td>$\mathcal I_{\mathrm{target}}(\theta_\star)$<br>$=m(\theta_\star)\mathcal I_{\mathrm{ref}}(\theta_\star)$. <br>where $m(\theta_\star)$ is the local equivalent sample size.</td>
 <td>$\displaystyle ESS_{\mathrm{ELIR}}\coloneqq E_{\pi_{\mathrm{target}}}\{m(\theta_\star)\}$<br>$\displaystyle =E_{\pi_{\mathrm{target}}}\!\left\{\frac{\mathcal I_{\mathrm{target}}(\theta_\star)}{\mathcal I_{\mathrm{ref}}(\theta_\star)}\right\}$. <br>where the expectation averages local ESS over the target prior; the original paper denotes $m(\theta_\star)$ by $r(\theta_\star)$.</td>
 </tr>
 <tr>
 <td>**Proposed conditional variance-matching ESS**</td>
-<td>$\theta_\star\coloneqq\theta_h+\delta_\star$,<br>$\displaystyle \pi_{\mathrm{target}}(\theta_\star\mid w,\tau_0^2)$<br>$\displaystyle \coloneqq\int p_g(\theta_\star-\theta_h\mid w,\tau_0^2)$<br>$\displaystyle {}\times p(\theta_h\mid D_H)\,d\theta_h$. <br>where $\theta_h$ and $\delta_\star$ are the standardized historical-control and discrepancy estimands induced by the posterior of $f$ and prior for $g$, respectively.</td>
+<td>RWD-informed target prior for $\theta_\star\coloneqq\theta_h+\delta_\star$:<br>$\displaystyle \pi_{\mathrm{target}}(\theta_\star\mid w,\tau_0^2)$<br>$\displaystyle \coloneqq\int p_g(\theta_\star-\theta_h\mid w,\tau_0^2)$<br>$\displaystyle {}\times p(\theta_h\mid D_H)\,d\theta_h$. <br>where $\theta_h$ and $\delta_\star$ are the standardized historical-control and discrepancy estimands induced by the posterior of $f$ and prior for $g$, respectively.</td>
 <td>Inverse conditional marginal variance:<br>$V_{\mathrm{target}}(w,\tau_0^2)\coloneqq\operatorname{Var}_{\pi_{\mathrm{target}}}(\theta_\star\mid w,\tau_0^2)$. <br>where $V_{\mathrm{target}}(w,\tau_0^2)$ is the conditional target-prior variance.</td>
 <td>$\displaystyle \mathcal I_{\mathrm{target}}(w,\tau_0^2)\coloneqq1/V_{\mathrm{target}}(w,\tau_0^2)$. <br>where $\mathcal I_{\mathrm{target}}(w,\tau_0^2)$ is the target information conditional on the discrepancy-prior settings.</td>
-<td>One information unit $Y_1\sim f(\cdot\mid\theta_\star)$; no reference prior. <br>where $Y_1$ is one unit under the current-study sampling model $f$.</td>
-<td>Expected Fisher information from one observation:<br>$\displaystyle i_F(\theta_\star)\coloneqq E_{Y_1\mid\theta_\star}\!\left[-\frac{d^2}{d\theta_\star^2}\log f(Y_1\mid\theta_\star)\right]$. <br>where the expectation is under the current-study sampling model.</td>
-<td>$\mathcal I_{\mathrm{ref}}(\theta_\star)\coloneqq i_F(\theta_\star)$<br>$\displaystyle =E_{Y_1\mid\theta_\star}\!\left[-\frac{d^2}{d\theta_\star^2}\log f(Y_1\mid\theta_\star)\right]$. <br>where $i_F(\theta_\star)$ is expected Fisher information in one reference observation.</td>
+<td>One information unit $Y_1\sim p(\cdot\mid\theta_\star)$. <br>where $Y_1$ is one unit under the current-study sampling model $p$.</td>
+<td>Expected Fisher information from one observation:<br>$\displaystyle i_F(\theta_\star)\coloneqq E_{Y_1\mid\theta_\star}\!\left[-\frac{d^2}{d\theta_\star^2}\log p(Y_1\mid\theta_\star)\right]$. <br>where the expectation is under the current-study sampling model.</td>
+<td>$\mathcal I_{\mathrm{ref}}(\theta_\star)\coloneqq i_F(\theta_\star)$<br>$\displaystyle =E_{Y_1\mid\theta_\star}\!\left[-\frac{d^2}{d\theta_\star^2}\log p(Y_1\mid\theta_\star)\right]$. <br>where $i_F(\theta_\star)$ is expected Fisher information in one reference observation.</td>
 <td>$\mathcal I_{\mathrm{target}}(w,\tau_0^2)$<br>$=m(w,\tau_0^2;\theta_\star)\mathcal I_{\mathrm{ref}}(\theta_\star)$. <br>where $m(w,\tau_0^2;\theta_\star)$ is the conditional equivalent reference sample size.</td>
 <td>$\displaystyle m(w,\tau_0^2;\theta_\star)=\frac{\mathcal I_{\mathrm{target}}(w,\tau_0^2)}{i_F(\theta_\star)}$<br>$\displaystyle ESS(w,s_0^2)\coloneqq E_{\tau_0^2}\{m(w,\tau_0^2;\theta_\star)\}$. <br>where the first equality solves the matching equation and the expectation uses the calibration distribution indexed by $s_0^2$; for the normal reference, $i_F$ is constant and the dependence on $\theta_\star$ drops out.</td>
 </tr>
@@ -347,13 +347,13 @@ $$
 \mathcal I_{\mathrm{ref}}(\theta_\star)
 \coloneqq i_F(\theta_\star)
 =E_{Y_1\mid\theta_\star}\!\left[
--\frac{d^2}{d\theta_\star^2}\log f(Y_1\mid\theta_\star)
+-\frac{d^2}{d\theta_\star^2}\log p(Y_1\mid\theta_\star)
 \right]
 =\frac1{\sigma^2}.
 }
 $$
 
-It is constant in \(\theta_\star\). Consequently, \(m\) independent reference observations provide \(m/\sigma^2\) information. ELIR uses no reference prior.
+It is constant in \(\theta_\star\). Consequently, \(m\) independent reference observations provide \(m/\sigma^2\) information.
 
 ### Proposed conditional variance-matching definition
 
@@ -380,7 +380,7 @@ m\,\mathcal I_{\mathrm{ref}}(\theta_\star)
 =\frac{m}{\sigma^2}.
 $$
 
-No reference prior is required. In the manuscript specialization, the table's \(\theta_\star\) is \(\mu\), and the reference variance is \(\sigma_2^2\), so \(i_F(\theta_\star)=1/\sigma_2^2\).
+In the manuscript specialization, the table's \(\theta_\star\) is \(\mu\), and the reference variance is \(\sigma_1^2\), so \(i_F(\theta_\star)=1/\sigma_1^2\).
 
 ## References
 

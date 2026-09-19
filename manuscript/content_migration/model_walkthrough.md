@@ -6,13 +6,13 @@ Purpose: authoritative content reference for the model section of the updated ma
 
 ## 1. Define the two control populations and their outcome surfaces
 
-Use group indices $1$, $2$ and $3$ for trial treatment, trial control and historical control, respectively. For group $a\in\{1,2,3\}$, let $n_a$ denote the sample size, $Y_{a,i}$ the outcome and $x_{a,i}$ the covariate vector for participant $i=1,\ldots,n_a$, and $\sigma_a^2$ the residual variance.
-For $a\in\{1,2,3\}$, write $\mathbf{X}_a\coloneqq (x_{a,1},\ldots,x_{a,n_a})$ and $\mathbf{Y}_a\coloneqq (Y_{a,1},\ldots,Y_{a,n_a})$. The trial size is $N\coloneqq n_1+n_2$. Trial standardization averages over groups 1 and 2, with one contribution per participant. In a single-arm trial, $n_2=0$, so only group 1 contributes. For Gaussian outcomes, conditional independence is assumed under
+Use group labels $\mathrm{trt}$, $1$ and $2$ for randomized treatment, randomized control and RWD control, respectively. For group $a\in\{\mathrm{trt},1,2\}$, let $n_a$ denote the sample size, $Y_{a,i}$ the outcome and $x_{a,i}$ the covariate vector for participant $i=1,\ldots,n_a$, and $\sigma_a^2$ the residual variance.
+For $a\in\{\mathrm{trt},1,2\}$, write $\mathbf{X}_a\coloneqq (x_{a,1},\ldots,x_{a,n_a})$ and $\mathbf{Y}_a\coloneqq (Y_{a,1},\ldots,Y_{a,n_a})$. The trial size is $N\coloneqq n_{\mathrm{trt}}+n_{1}$. Trial standardization averages over groups $\mathrm{trt}$ and $1$, with one contribution per participant. In a single-arm trial, $n_{1}=0$, so only group $\mathrm{trt}$ contributes. For Gaussian outcomes, conditional independence is assumed under
 \[
 \begin{aligned}
-Y_{1,i}\mid x_{1,i}&\sim N\{h(x_{1,i}),\sigma_1^2\},\\
-Y_{2,i}\mid x_{2,i}&\sim N\{f(x_{2,i})+g(x_{2,i}),\sigma_2^2\},\\
-Y_{3,i}\mid x_{3,i}&\sim N\{f(x_{3,i}),\sigma_3^2\}.
+Y_{\mathrm{trt},i}\mid x_{\mathrm{trt},i}&\sim N\{f_{\mathrm{trt}}(x_{\mathrm{trt},i}),\sigma_{\mathrm{trt}}^2\},\\
+Y_{1,i}\mid x_{1,i}&\sim N\{f(x_{1,i})+g(x_{1,i}),\sigma_1^2\},\\
+Y_{2,i}\mid x_{2,i}&\sim N\{f(x_{2,i}),\sigma_2^2\}.
 \end{aligned}
 \]
 
@@ -23,13 +23,13 @@ Here:
 - \(f(x)\) is the RWD-control conditional mean.
 - \(f(x)+g(x)\) is the RCT-control conditional mean.
 - \(g(x)\) is the difference between the two control means at the same covariate profile.
-- \(\sigma_3^2\) and \(\sigma_2^2\) describe individual-outcome variation around the respective means.
+- \(\sigma_{2}^2\) and \(\sigma_{1}^2\) describe individual-outcome variation around the respective means.
 
 Group membership is observed and is shown directly in the subscripts; it is distinct from the latent leaf indicator.
 
 **Both control sources contribute to estimating \(f\) in the final joint model.** RWD outcomes directly inform \(f\), while RCT-control outcomes inform \(f+g\). RWD information therefore also influences estimation of \(g\) through the jointly estimated \(f\).
 
-This final fit differs from the preliminary ESS calculation, whose outcome likelihood for \(f\) uses only \(\mathbf{Y}_3\).
+This final fit differs from the preliminary ESS calculation, whose outcome likelihood for \(f\) uses only \(\mathbf{Y}_{2}\).
 
 ## 2. Represent the outcome surface and discrepancy using separate sums of trees
 
@@ -65,7 +65,7 @@ The current settings are
 
 Thus, the discrepancy sum-of-trees has a stronger prior preference for shallow trees, allowing the source difference to be simpler than the underlying outcome surface.
 
-Candidate splitting variables and cutpoints can be shared while the realized trees remain distinct. The agreed ESS revision calls for a consistent candidate-cutpoint rule based on \(\mathbf{X}_3\) and \(\mathbf{X}_1,\mathbf{X}_2\); implementation alignment is still pending.
+Candidate splitting variables and cutpoints can be shared while the realized trees remain distinct. The agreed ESS revision calls for a consistent candidate-cutpoint rule based on \(\mathbf{X}_{2}\) and \(\mathbf{X}_{\mathrm{trt}},\mathbf{X}_{1}\); implementation alignment is still pending.
 
 ## 3. Specify the leaf priors and explain local borrowing
 
@@ -171,11 +171,11 @@ The separate ESS section retains the distinction between its untruncated calibra
 Fit the treated outcomes separately:
 
 \[
-Y_{1,i}\mid x_{1,i}
-\sim N\!\left(h(x_{1,i}),\sigma_1^2\right),
+Y_{\mathrm{trt},i}\mid x_{\mathrm{trt},i}
+\sim N\!\left(f_{\mathrm{trt}}(x_{\mathrm{trt},i}),\sigma_{\mathrm{trt}}^2\right),
 \]
 
-using a treatment-arm BART model.
+using a treatment-arm BART model for $f_{\mathrm{trt}}$.
 
 For Gaussian outcomes, the trial-standardized mean contrast is
 
@@ -183,9 +183,9 @@ For Gaussian outcomes, the trial-standardized mean contrast is
 \boxed{
 \Delta
 \coloneqq 
-\frac1N\sum_{s=1}^2\sum_{i=1}^{n_s}
+\frac1N\sum_{a\in\{\mathrm{trt},1\}}\sum_{i=1}^{n_a}
 \left[
-h(x_{s,i})-f(x_{s,i})-g(x_{s,i})
+f_{\mathrm{trt}}(x_{a,i})-f(x_{a,i})-g(x_{a,i})
 \right].
 }
 \]
@@ -200,8 +200,8 @@ For survival outcomes, the Gaussian model applies to latent log event time:
 
 \[
 \begin{aligned}
-\log T_{3,i}&=f(x_{3,i})+\epsilon_{3,i},\\
-\log T_{2,i}&=f(x_{2,i})+g(x_{2,i})+\epsilon_{2,i},\quad\text{trial controls}.
+\log T_{2,i}&=f(x_{2,i})+\epsilon_{2,i},\\
+\log T_{1,i}&=f(x_{1,i})+g(x_{1,i})+\epsilon_{1,i},\quad\text{randomized controls}.
 \end{aligned}
 \]
 
@@ -212,27 +212,27 @@ Under conditional noninformative censoring, an uncensored subject contributes it
 For an RCT-control profile,
 
 \[
-S_2(t\mid x)
+S_{1}(t\mid x)
 =
 1-\Phi\!\left(
-\frac{\log t-f(x)-g(x)}{\sigma_2}
+\frac{\log t-f(x)-g(x)}{\sigma_{1}}
 \right).
 \]
 
-The treatment survival function uses \(h(x)\) and \(\sigma_1\). Standardize each arm to the same trial profiles:
+The treatment survival function uses \(f_{\mathrm{trt}}(x)\) and \(\sigma_{\mathrm{trt}}\). Standardize each arm to the same trial profiles:
 
 \[
 \bar S_a(t)
 \coloneqq 
-\frac1N\sum_{s=1}^2\sum_{i=1}^{n_s}S_a(t\mid x_{s,i}),
-\qquad a\in\{1,2\}.
+\frac1N\sum_{s\in\{\mathrm{trt},1\}}\sum_{i=1}^{n_s}S_a(t\mid x_{s,i}),
+\qquad a\in\{\mathrm{trt},1\}.
 \]
 
-The population median survival ratio compares the medians obtained from \(\bar S_1\) and \(\bar S_2\). An RMST ratio compares their integrals up to a prespecified horizon. Both are functionals of standardized survival curves, rather than simply transformations of the average log-time contrast.
+The population median survival ratio compares the medians obtained from \(\bar S_{\mathrm{trt}}\) and \(\bar S_{1}\). An RMST ratio compares their integrals up to a prespecified horizon. Both are functionals of standardized survival curves, rather than simply transformations of the average log-time contrast.
 
 ## 7. State the additional assumptions for a single-arm trial
 
-When \(n_2=0\), there are no observed RCT-control outcomes.
+When \(n_{1}=0\), there are no observed RCT-control outcomes.
 
 The RWD outcomes estimate \(f\), and the trial-control prediction remains
 
@@ -240,14 +240,14 @@ The RWD outcomes estimate \(f\), and the trial-control prediction remains
 f(x)+g(x).
 \]
 
-Conditional on the specified hyperparameters, \(g\) receives no outcome-likelihood update and remains governed by its prior. The separately fitted treated outcomes estimate \(h\); they do not identify the untreated trial discrepancy.
+Conditional on the specified hyperparameters, \(g\) receives no outcome-likelihood update and remains governed by its prior. The separately fitted treated outcomes estimate \(f_{\mathrm{trt}}\); they do not identify the untreated trial discrepancy.
 
 The current primary single-arm configuration fixes \(w=1\), with \(w<1\) used for sensitivity analysis. Even with \(w=1\), the discrepancy remains uncertain because its spike variance is positive.
 
 The single-arm implementation also assumes
 
 \[
-\boxed{\sigma_2^2=\sigma_3^2}
+\boxed{\sigma_{1}^2=\sigma_{2}^2}
 \]
 
 for the unobserved trial-control residual variance. This assumption matters for ESS reference units and counterfactual survival predictions, and cannot be checked using RCT-control outcomes in a single-arm trial.

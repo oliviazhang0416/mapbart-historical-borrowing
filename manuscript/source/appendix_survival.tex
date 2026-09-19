@@ -1,11 +1,11 @@
 \section{Survival outcomes}\label{sec:D}
 \subsection{Observed-data likelihood}\label{sec:D.1}
-For group $a\in\{1,2,3\}$, let $T_{a,i}$ denote event time, $C_{a,i}$ censoring time, $\widetilde T_{a,i}\coloneqq \min(T_{a,i},C_{a,i})$ and $\delta_{a,i}\coloneqq \ind(T_{a,i}\leq C_{a,i})$. Conditional noninformative censoring is assumed given the covariates and source. For a source-specific lognormal model with log-time mean $\eta_{a,i}$ and residual standard deviation $\sigma_a$, the outcome likelihood contribution is
+For group $a\in\{\mathrm{trt},1,2\}$, let $T_{a,i}$ denote event time, $C_{a,i}$ censoring time, $\widetilde T_{a,i}\coloneqq \min(T_{a,i},C_{a,i})$ and $\delta_{a,i}\coloneqq \ind(T_{a,i}\leq C_{a,i})$. Conditional noninformative censoring is assumed given the covariates and source. For a source-specific lognormal model with log-time mean $\eta_{a,i}$ and residual standard deviation $\sigma_a$, the outcome likelihood contribution is
 \begin{equation}
 \left[\frac{1}{\widetilde T_{a,i}}\phi(\log\widetilde T_{a,i};\eta_{a,i},\sigma_a^2)\right]^{\delta_{a,i}}
 \left[1-\Phi\left(\frac{\log\widetilde T_{a,i}-\eta_{a,i}}{\sigma_a}\right)\right]^{1-\delta_{a,i}}.
 \end{equation}
-The mean functions are $\eta_1(x)\coloneqq h(x)$, $\eta_2(x)\coloneqq f(x)+g(x)$ and $\eta_3(x)\coloneqq f(x)$, with $\eta_{a,i}\coloneqq \eta_a(x_{a,i})$. Each group has its residual standard deviation $\sigma_a$. Both events and censored observations contribute to parameter inference.
+The mean functions are $\eta_{\mathrm{trt}}(x)\coloneqq f_{\mathrm{trt}}(x)$, $\eta_{1}(x)\coloneqq f(x)+g(x)$ and $\eta_{2}(x)\coloneqq f(x)$, with $\eta_{a,i}\coloneqq \eta_a(x_{a,i})$. Each group has its residual standard deviation $\sigma_a$. Both events and censored observations contribute to parameter inference.
 
 \subsection{Data augmentation}\label{sec:D.2}
 For an event, the latent response is $Y_{a,i}=\log\widetilde T_{a,i}$. For a censored observation, draw
@@ -16,13 +16,13 @@ Y_{a,i}\mid\text{rest},\delta_{a,i}=0\sim
 Conditional on these latent responses, use the Gaussian leaf and variance updates in Appendix A. The trial and historical censoring indicators are both used. Prior ESS retains the uncensored normal reference described in Appendix B.7.
 
 \subsection{Standardized survival curves and population medians}\label{sec:D.3}
-At each posterior draw, average the individual survival curves over the target trial profiles:
+At each posterior draw, average the individual survival curves over the trial standardization profiles:
 \begin{equation}
-\bar S_a(t)\coloneqq \frac1N\sum_{s=1}^2\sum_{i=1}^{n_s}\Phi\left(\frac{\eta_a(x_{s,i})-\log t}{\sigma_a}\right),\qquad a\in\{1,2\}.
+\bar S_a(t)\coloneqq \frac1N\sum_{s\in\{\mathrm{trt},1\}}\sum_{i=1}^{n_s}\Phi\left(\frac{\eta_a(x_{s,i})-\log t}{\sigma_a}\right),\qquad a\in\{\mathrm{trt},1\}.
 \end{equation}
-Here $\eta_2(x)=f(x)+g(x)$, $\eta_1(x)=h(x)$; in a single-arm analysis, $\sigma_2=\sigma_3$. For horizon $t^\star>0$, define $R_a(t^\star)\coloneqq\int_0^{t^\star}\bar S_a(t)\,dt$. The population median $M_a$ solves $\bar S_a(M_a)=1/2$; the median-survival ratio is $M_1/M_2$. This median of a mixture generally differs from the mean or median of the individual conditional medians. When the true log-time treatment shift is constant and residual distributions are identical between trial arms, the true ratio is $\exp(\mathrm{effect})=1.4$.
+Here $\eta_{1}(x)=f(x)+g(x)$, $\eta_{\mathrm{trt}}(x)=f_{\mathrm{trt}}(x)$; in a single-arm analysis, $\sigma_{1}=\sigma_{2}$. For horizon $t^\star>0$, define $R_a(t^\star)\coloneqq\int_0^{t^\star}\bar S_a(t)\,dt$. The population median $M_a$ solves $\bar S_a(M_a)=1/2$; the median-survival ratio is $M_{\mathrm{trt}}/M_{1}$. This median of a mixture generally differs from the mean or median of the individual conditional medians. When the true log-time treatment shift is constant and residual distributions are identical between trial arms, the true ratio is $\exp(\mathrm{effect})=1.4$.
 
-The simulation analysis uses root-finding with a lower bound 0.05 and an upper cap 30, replacing roots beyond those limits by the relevant bound. These bounds truncate extreme posterior medians. The primary lrcBART median calculations use each arm's own fitted residual standard deviation, with $\sigma_2=\sigma_3$ under the single-arm equal-variance assumption.
+The simulation analysis uses root-finding with a lower bound 0.05 and an upper cap 30, replacing roots beyond those limits by the relevant bound. These bounds truncate extreme posterior medians. The primary lrcBART median calculations use each arm's own fitted residual standard deviation, with $\sigma_{1}=\sigma_{2}$ under the single-arm equal-variance assumption.
 
 \subsection{Restricted mean survival time}\label{sec:D.4}
 For $T\sim\operatorname{lognormal}(\eta,\sigma^2)$,
@@ -34,11 +34,11 @@ For $T\sim\operatorname{lognormal}(\eta,\sigma^2)$,
 +t^\star\Phi\left(\frac{\eta-\log t^\star}{\sigma}\right).
 \end{aligned}
 \end{equation}
-The first term follows by completing the square in the truncated lognormal first moment. Averaging \eqref{eq:rmstanalytic} over target profiles gives population RMST at each draw. The application uses this analytic expression with $t^\star=5$ years and each arm's residual standard deviation; ratio and difference intervals are obtained from their posterior draws.
+The first term follows by completing the square in the truncated lognormal first moment. Averaging \eqref{eq:rmstanalytic} over trial standardization profiles gives population RMST at each draw. The application uses this analytic expression with $t^\star=5$ years and each arm's residual standard deviation; ratio and difference intervals are obtained from their posterior draws.
 
-The additional simulation RMST summaries use a 120-point equally spaced grid from 0.001 to the restriction horizon and multiply the average survival probability over that grid by the horizon. The horizons are 3 years for the two-arm study and 5 years for the single-arm study. The true per-replicate RMST ratio is calculated under the data-generating model at the same target profiles and horizon. Unlike the median ratio under a common log-time shift, this restricted ratio generally varies by dataset.
+The additional simulation RMST summaries use a 120-point equally spaced grid from 0.001 to the restriction horizon and multiply the average survival probability over that grid by the horizon. The horizons are 3 years for the two-arm study and 5 years for the single-arm study. The true per-replicate RMST ratio is calculated under the data-generating model at the same trial standardization profiles and horizon. Unlike the median ratio under a common log-time shift, this restricted ratio generally varies by dataset.
 
 \subsection{Modified supplementary simulation RMST functionals}\label{sec:D.5}
-The two-arm supplementary simulation summaries evaluate a modified control survival curve. Let $\sigma_a^{(d)}$ be the residual standard deviation at posterior draw $d$. The control curve uses $\widetilde\sigma_2^{(d)}=\sigma_1^{(d)}$ if $\operatorname{median}_d\sigma_1^{(d)}\leq\operatorname{median}_d\sigma_2^{(d)}$, and $\widetilde\sigma_2^{(d)}=\sigma_2^{(d)}$ otherwise. The control mean function is unchanged. This substitution defines a different functional from RMST under the fitted source-specific model; it is not solely an integration approximation. Single-arm calculations use $\sigma_2^{(d)}$ directly. The application uses the analytic source-specific RMST functional without this substitution.
+The two-arm supplementary simulation summaries evaluate a modified control survival curve. Let $\sigma_a^{(d)}$ be the residual standard deviation at posterior draw $d$. The control curve uses $\widetilde\sigma_{1}^{(d)}=\sigma_{\mathrm{trt}}^{(d)}$ if $\operatorname{median}_d\sigma_{\mathrm{trt}}^{(d)}\leq\operatorname{median}_d\sigma_{1}^{(d)}$, and $\widetilde\sigma_{1}^{(d)}=\sigma_{1}^{(d)}$ otherwise. The control mean function is unchanged. This substitution defines a different functional from RMST under the fitted source-specific model; it is not solely an integration approximation. Single-arm calculations use $\sigma_{1}^{(d)}$ directly. The application uses the analytic source-specific RMST functional without this substitution.
 
 Simulation ratios further replace each control RMST denominator by its maximum with 0.05, while arm-specific summaries use the unfloored values. Table S5 reports this modified two-arm RMST ratio and Table S7 reports the denominator-floored single-arm ratio. Their errors are evaluated against the data-generating RMST ratio at the same profiles and horizon. These supplementary operating characteristics therefore include the effects of the stated modifications; they are not results for an unmodified model-based RMST ratio.

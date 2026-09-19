@@ -19,7 +19,7 @@ Sc4 adds $\delta\in\{1,2\}$ to every historical Gaussian outcome or latent log e
 \caption{Design-specific data-generating constants.}\label{tab:S2}
 \begin{tabular}{p{1.25in}rrrrp{1.1in}}
 \toprule
-Design & $b_0$: Sc1 & $b_0$: Sc2/3 & $\sigma_2=\sigma_1$ & $\sigma_3$ & Censoring\\\midrule
+Design & $b_0$: Sc1 & $b_0$: Sc2/3 & $\sigma_1=\sigma_{\mathrm{trt}}$ & $\sigma_2$ & Censoring\\\midrule
 Gaussian, two-arm & 0.42 & $-0.08$ & 1.5 & 1.8 & None\\
 Survival, two-arm & $-0.20$ & $-0.70$ & 1.4 & 1.8 & $C_d\sim\mathrm{Exp}(0.02)$; $C_a\sim U(2,3)$\\
 Gaussian, single-arm & 0.40 & $-0.10$ & 1.5 & 1.5 & None\\
@@ -64,7 +64,7 @@ lrcBART, two-arm & $H_f=50$, $H_g=5$, estimated $w$; ESS targets 100 (primary), 
 lrcBART, single-arm & $H_f=50$, $H_g=5$; fixed $w=1$ with targets 100 (primary), f90 or s0min; fixed $w=0.9$ with targets 100 or f90.\\
 \bottomrule
 \end{tabular}
-\caption*{f90, f50 and f25 denote fractions of the dataset-specific calibration ceiling. s0min sets $s_0^2=10^{-6}$ without target selection. The single-arm target 100 is an absolute count at both survival trial sizes, including $n_1=30$.}
+\caption*{f90, f50 and f25 denote fractions of the dataset-specific calibration ceiling. s0min sets $s_0^2=10^{-6}$ without target selection. The single-arm target 100 is an absolute count at both survival trial sizes, including $n_{\mathrm{trt}}=30$.}
 \end{table}
 
 The hierarchical comparator uses source-specific regression coefficients with a common estimated hypermean. Intercept and predictor-specific discrepancy-variance components have $\IG(3/2,3s_\tau^2/2)$ priors, where $s_\tau^2$ is the scale listed in Table S3; it is not a probability or historical sample-size fraction. Hypermeans have diffuse normal priors. This comparator pools regression parameters through their prior rather than specifying a nonlinear discrepancy surface.

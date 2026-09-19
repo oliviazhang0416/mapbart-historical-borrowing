@@ -1,6 +1,6 @@
 \begin{landscape}
 \subsection{Gaussian single-arm results}
-\noindent Sc1 and Sc2 at $n_1=200$ include all five lrcBART priors and all three comparator settings.
+\noindent Sc1 and Sc2 at $n_{\mathrm{trt}}=200$ include all five lrcBART priors and all three comparator settings.
 \begingroup
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.13}
@@ -17,7 +17,7 @@ Method / setting & Bias (MCSE) & RMSE (MCSE) & Post. SD & Width & Coverage (MCSE
 \endhead
 \midrule\multicolumn{7}{r}{Continued on next page}\\\endfoot
 \bottomrule\endlastfoot
-\multicolumn{7}{l}{\strut\textit{Mean difference: $n_1=200$, Sc1}}\\*
+\multicolumn{7}{l}{\strut\textit{Mean difference: $n_{\mathrm{trt}}=200$, Sc1}}\\*
 lrcBART: 100 & -0.015 (0.016) & 0.156 (0.012) & 0.176 & 0.689 & 0.950 (0.022) & 0.890 (0.031) \\
 lrcBART: f90 & -0.012 (0.015) & 0.153 (0.011) & 0.163 & 0.636 & 0.960 (0.020) & 0.920 (0.027) \\
 lrcBART: s0min & -0.015 (0.016) & 0.157 (0.012) & 0.151 & 0.591 & 0.910 (0.029) & 0.920 (0.027) \\
@@ -26,7 +26,7 @@ lrcBART: $w=0.9$, f90 & -0.007 (0.016) & 0.159 (0.010) & 1.292 & 6.067 & 1.000 (
 BART-CP & -0.014 (0.015) & 0.153 (0.011) & 0.150 & 0.588 & 0.940 (0.024) & 0.940 (0.024) \\
 LM-CP & -0.029 (0.027) & 0.270 (0.017) & 0.252 & 0.983 & 0.960 (0.020) & 0.600 (0.049) \\
 hier. LM & -0.025 (0.027) & 0.272 (0.017) & 0.576 & 2.210 & 1.000 (0.000) & 0.090 (0.029) \\
-\multicolumn{7}{l}{\strut\textit{Mean difference: $n_1=200$, Sc2}}\\*
+\multicolumn{7}{l}{\strut\textit{Mean difference: $n_{\mathrm{trt}}=200$, Sc2}}\\*
 lrcBART: 100 & 0.062 (0.017) & 0.177 (0.010) & 0.179 & 0.697 & 0.980 (0.014) & 0.910 (0.029) \\
 lrcBART: f90 & 0.064 (0.017) & 0.183 (0.010) & 0.184 & 0.714 & 0.970 (0.017) & 0.910 (0.029) \\
 lrcBART: s0min & 0.061 (0.017) & 0.177 (0.010) & 0.168 & 0.653 & 0.980 (0.014) & 0.970 (0.017) \\

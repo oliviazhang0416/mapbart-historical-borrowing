@@ -42,7 +42,7 @@ Every group uses the same historical residual-variance reference and scale law. 
 \subsection{Prior ESS calibration and MCMC diagnostics}\label{sec:F.4}
 The preliminary application calibration uses 2,000 warm-up and 4,000 retained draws, 2,000 prior trees, 4,000 scale draws and the 141-value scale grid. Table S11(a) reports requested/capped targets, selected scales, the block-based curve and the full-variance ESS evaluated with the estimated prior-tree weight expectation. The latter uses 100,000 deterministic chi-square quantiles for numerical integration. Differences reflect block averaging and numerical integration error; the reciprocal-variance ordering in Appendix B applies with common scale draws.
 
-Each lrcBART outcome fit uses four chains with 2,000 warm-up and 2,000 retained draws per chain. Table S11(b) reports $\widehat R$, bulk ESS and tail ESS for the log RMST ratio. Prior ESS and MCMC ESS have different meanings: the former concerns equivalent reference information about a target mean, whereas the latter concerns simulation efficiency. These scalar diagnostics do not establish exploration of all tree structures.
+Each lrcBART outcome fit uses four chains with 2,000 warm-up and 2,000 retained draws per chain. Table S11(b) reports $\widehat R$, bulk ESS and tail ESS for the log RMST ratio. Prior ESS and MCMC ESS have different meanings: the former concerns equivalent reference information about a specified current-control mean, whereas the latter concerns simulation efficiency. These scalar diagnostics do not establish exploration of all tree structures.
 \renewcommand{\thetable}{S11(a)}
 \input{generated/tableS11a}
 \clearpage

@@ -1,6 +1,6 @@
 # Handoff: changes from the revision manuscript
 
-17 September 2026
+18 September 2026
 
 This note summarizes the changes from `mapbart-historical-borrowing-pr1/revision/05-writing/main_draft.tex` and its included theory and results sections to the current manuscript in `lrcbart-historical-borrowing/manuscript/`. It distinguishes changes in exposition from changes in the reported analyses. The revision manuscript remains unchanged.
 
@@ -16,39 +16,43 @@ The revision assembled the main article, displays and web appendices into one do
 
 The approved explanatory material is retained in `content_migration/`. These notes are the basis of the redraft, rather than additional sections to insert verbatim. The handoff is a description of manuscript changes, not a study-running guide.
 
+As of 18 September 2026, `main.pdf` is 12 pages and `appendix.pdf` is 55 pages. Both build without undefined references or overfull boxes. The appendix retains one known duplicate PDF-destination warning caused by splitting Table S2 across two `longtable` environments; the visible table is complete. The ESS comparison HTML and the model, computation, ESS and application walkthroughs in `content_migration/` have been synchronized with the manuscript notation.
+
 ## 2. Model specification: clarify the data groups and conditioning
 
-The underlying historical-plus-discrepancy construction is retained. The revision introduced the control model as `y_i = f(x_i) + D_i g(x_i) + error`. The new main text writes the three outcome models explicitly: historical controls have mean `f(x)`, trial controls have mean `f(x)+g(x)`, and trial-treated patients have a separately fitted mean `h(x)`. Individual outcomes, covariate vectors, sample sizes and residual variances use subscripts `1` (trial treatment), `2` (trial control) and `3` (historical control), with separate within-group indices. Trial-standardized estimands average over `\mathbf{X}_1` and `\mathbf{X}_2`, with one contribution per participant. This also makes clear that the control-only equation is not the complete model for all trial participants.
+The underlying historical-plus-discrepancy construction is retained. The revision introduced the control model as `y_i = f(x_i) + D_i g(x_i) + error`. The current main text writes all three outcome models explicitly and uses group labels `trt`, `1` and `2` for randomized treatment, randomized control and RWD control. Their conditional means are `f_trt(x)`, `f(x)+g(x)` and `f(x)`, with residual variances `sigma_trt^2`, `sigma_1^2` and `sigma_2^2`. Trial-standardized estimands average over `\mathbf{X}_{trt}` and `\mathbf{X}_1`, with one contribution per participant; in a single-arm trial, `n_1=0`. This makes clear that the control-only equation is not the complete model for all trial participants.
 
 The revised explanation distinguishes the following:
 
 - Both control sources inform `f` in the final two-arm fit; only trial-control partial residuals directly inform `g`.
 - The preliminary historical fit used for ESS is different: its likelihood contains historical outcomes only.
-- The latent `z_jl` is a terminal-node mixture indicator, not an observed source indicator. The shared `w` is a prior mixture probability, not a historical-patient likelihood weight.
-- The `f` and `g` trees have separate structures. Sharing candidate variables or cutpoints does not make the discrepancy trees inherit the historical trees.
+- The latent `z_{h^g,l}` is a discrepancy terminal-node mixture indicator, not an observed source indicator. The shared `w` is a prior mixture probability, not a historical-patient likelihood weight.
+- Tree indices are `h^trt`, `h^f` and `h^g` for the `f_trt`, `f` and `g` ensembles. Sharing candidate variables or cutpoints does not make the discrepancy trees inherit the prognostic trees.
 
 The single-arm explanation is brief in the main text. Its target control surface remains `f+g`; without trial controls, the discrepancy receives no outcome-likelihood information. This property was already present in the revision. What is now made explicit is the current implementation: the reported single-arm/application fits fix `w` and fix `tau_0^2 = min(s_0^2, tau_1^2/2)`, whereas the revision's description treated the discrepancy scale as a prior draw. Calibration still averages over an untruncated scale law. Those specifications must not be described as identical.
 
 ## 3. ESS: rebuild the argument and distinguish the averaging operations
 
-The ESS section now begins with its reference experiment. Independent normal observations with known residual variance and a flat prior on their mean give a posterior mean variance of `sigma_2^2/m`. Matching that variance to uncertainty about the historical-data-informed target control mean defines an equivalent count `m`; averaging those conditional counts over the calibration scale law then defines ESS. This makes explicit that both sides concern uncertainty about a mean, not individual outcome variability versus mean uncertainty.
+The ESS section now begins with the information-matching principle, using ELIR as motivation. Prior ESS expresses prior information in units of observations from a reference likelihood. For the proposed definition, target-prior information is the inverse conditional marginal variance of the RWD-informed prior for the current-control mean, while one normal randomized-control reference observation supplies Fisher information `1/sigma_1^2`. Equating these quantities defines a conditional equivalent count `m`; averaging those counts over the spike-variance calibration law defines prior ESS.
 
-Definitions now use `\coloneqq`, whereas derived equalities retain `=`. Bold `\mathbf{X}_a` and `\mathbf{Y}_a` distinguish group data collections from scalar simulation predictors. Notation has been simplified: tree structures and terminal-node parameters are written as `\mathcal T_j^f, \theta^f_{jl}` and `\mathcal T_j^g, \theta^g_{jl}`, and the separate treatment surface is `h(x)`. `V_f` replaces `V_mu^f`, `V_g` denotes the specified prior variance of the standardized discrepancy mean, and `ESS_tau0` replaces `ESS_0` to identify the all-spike calibration reference. Conditioning is written using `\mathbf{Y}_3`, `\mathbf{X}_3`, and `\mathbf{X}_1,\mathbf{X}_2`. The derivation explains where the leaf proportions `a_jl` come from and retains covariance among predictions when calculating the variance of a subgroup or overall mean.
+Definitions use `\coloneqq`, whereas derived equalities retain `=`. Bold `\mathbf{X}_a` and `\mathbf{Y}_a` distinguish group data collections from scalar simulation predictors. Tree structures and terminal-node parameters use `\mathcal T_{h^f}^f, \theta^f_{h^f\ell}` and `\mathcal T_{h^g}^g, \theta^g_{h^g\ell}`; the separate treatment surface is `f_trt(x)` with tree index `h^trt`. `V_f` is the posterior variance of the RWD-control mean standardized to `\mathbf{X}_1`, `V_g` is the corresponding discrepancy-prior variance, and `V_pi=V_f+V_g` is the RWD-informed prior variance. The preliminary historical fit conditions on `\mathbf{Y}_2,\mathbf{X}_2` and is evaluated at `\mathbf{X}_1`. The derivation explains the profile weights `a_{h^g\ell}` and retains covariance among predictions when calculating subgroup or overall means.
+
+Appendix B now places the proposed definition beside Neuenschwander's variance calibration, Morita--Thall--M\"uller's curvature match and ELIR. It uses `p(Y\mid\theta_\star)` for a generic sampling density so that generic likelihood notation is not confused with the manuscript's prognostic surface `f`. Neuenschwander's complete-pooling row is presented as a calibration anchor rather than as a hypothetical-likelihood reference. Morita's reference is the expected curvature of a posterior formed from a low-information prior and hypothetical data; ELIR uses one-observation Fisher information. The proposed method uses the same one-observation reference-information concept as ELIR but measures RWD-informed-prior information by inverse conditional marginal variance.
 
 There is an important distinction from the revision's general definition. Its Appendix D first defined a working ESS by averaging reciprocal conditional variances over leaf indicators and tree structures. The new general definition first integrates the indicators and trees **inside the discrepancy variance**, and then averages the matched counts over the spike variance **outside the reciprocal**:
 
 \[
 V_g(w,\tau_0^2)
 =\{w\tau_0^2+(1-w)\tau_1^2\}
- E_{\mathcal T^g}\!\left[\sum_{j,\ell}a_{j\ell}^2\right],
+ E_{\mathcal T^g}\!\left[\sum_{h^g,\ell}a_{h^g\ell}^2\right],
 \qquad
 \mathrm{ESS}(w,s_0^2)
-=E_{\tau_0^2}\!\left[\frac{\sigma_2^2}{V_f+V_g(w,\tau_0^2)}\right].
+=E_{\tau_0^2}\!\left[\frac{\sigma_1^2}{V_f+V_g(w,\tau_0^2)}\right].
 \]
 
 These orders of averaging are generally different. For the all-spike reference, the resulting formula retains the revision's implemented expected-tree-weight coefficient before inversion; that numerical convention is not newly introduced. The new walkthrough derives it through the variance definition rather than leaving the relationship implicit.
 
-The ceiling `sigma_2^2/V_f` is retained and derived as the zero-spike-scale limit. The text also distinguishes all-spike calibration from allowing slab assignments in the final fit. It does not claim a global maximum-borrowing property over an untruncated scale law that can exceed the slab variance.
+The ceiling `sigma_1^2/V_f` is retained and derived as the zero-spike-scale limit. The text also distinguishes all-spike calibration from allowing slab assignments in the final fit. It does not claim a global maximum-borrowing property over an untruncated scale law that can exceed the slab variance.
 
 Several qualifications already appeared in the revision and are retained: this is not exact marginal ELIR; subgroup ESS values are not additive; and survival reference units are uncensored normal log-time observations. The redraft develops their interpretation more directly. It also separates the full-variance mathematical ESS from the saved block-average selector, finite grid and ceiling override. The current numerical selector has not been replaced as part of manuscript drafting.
 
@@ -56,7 +60,7 @@ Several qualifications already appeared in the revision and are retained: this i
 
 The computation walkthrough has been shortened and reorganized around partial residuals, marginal leaf factors, the Metropolis–Hastings ratio, and conditional parameter updates. Both `M_f` and `M_g` now use the same precision-sum notation `A` and `B`. The density-ratio representation for `M_g` and the auxiliary residual-mean variance notation have been removed. This is an algebraic and presentational rewrite, not a change to the tree acceptance calculation.
 
-The text states explicitly that discrepancy tree proposals integrate out both the terminal-node parameter and `z_jl`, conditional on the shared hyperparameters. After a tree is retained, including after rejection of a proposed move, its indicators and node parameters are sampled conditionally. Appendix A provides the normal integral, sampling steps and acceptance probability.
+The text states explicitly that discrepancy tree proposals integrate out both the terminal-node parameter and `z_{h^g\ell}`, conditional on the shared hyperparameters. After a tree is retained, including after rejection of a proposed move, its indicators and node parameters are sampled conditionally. Appendix A provides the normal integral, sampling steps and acceptance probability. The posterior spike probability is denoted `gamma(rbar)` and the additional mixture shrinkage by `Delta_mix(rbar)`, avoiding collisions with the RWD-informed prior `pi` and information notation `I`.
 
 The theoretical presentation is more compact and narrower. Calibration is now Theorem 1; bounded additional shrinkage relative to the slab-only leaf estimate is Theorem 2; conditional learning of a leaf discrepancy is Theorem 3. The revision's extended fixed-partition ensemble results, detailed detection-threshold discussion and block-rule asymptotics have not all been carried into the new theorem statements. This is a reduction in scope, not a new proof of full-model robustness. The revision already qualified its theory; the redraft preserves the distinctions between leaf inference, latent-component selection, and inference with unknown tree structures.
 
@@ -71,7 +75,7 @@ The main differences collaborators should track are:
 | Scenario numbering | Sc4 regional; Sc5 global | Sc4 global; Sc5 regional |
 | Two-arm reporting | Included additional nested-model and tuning comparisons | Primary target 100; targets 75, 50, f90, f50 and f25 in sensitivity results |
 | Extra experiments | CAHB transfer, development/oracle analyses, and `H_g=10`, `w=0`, `w=1` comparisons | Not carried into the current empirical comparison |
-| Single-arm reporting | Single-arm results and sensitivities in the revision study | Gaussian `n_1=200`; survival `n_1=30,200`; Sc1/Sc2; five lrcBART configurations plus three comparators |
+| Single-arm reporting | Single-arm results and sensitivities in the revision study | Gaussian `n_trt=200`; survival `n_trt=30,200`; Sc1/Sc2; five lrcBART configurations plus three comparators |
 | Minimum-scale label | Earlier full-borrowing terminology | `s0min`, explicitly a small-scale prior benchmark |
 | Decision frequency | Described through interval exclusion of the null | Reports the actual saved, uncalibrated decision rules; Gaussian benefit threshold 0.5, survival ratio threshold 1, with method-specific rules documented |
 
@@ -110,10 +114,14 @@ Hierarchical comparator labels are `hier. LM` and `hier. AFT`; discrepancy-varia
 
 Comparator display labels use -NP for trial-only controls, -CP for complete pooling, and -PP for source-indicator-adjusted pooling. In single-arm settings, -CP denotes use of all historical controls without a discrepancy term. These are display changes; fitted methods and numerical results are unchanged.
 
-## 7. Methodological qualifications
+## 7. Remaining limitations
 
-The manuscript has been revised using the current project’s results. The existing analysis code, saved study results and cleaned datasets were not changed during redrafting.
+The implemented prior-scale calibration does not fully coincide with the theoretical prior-ESS definition. The reported selector uses block-specific estimates of historical uncertainty, a finite scale grid and implementation-specific spike-variance and tree-generation rules. Consequently, the reported prior ESS should be interpreted as the information summary under the stated calibration procedure rather than as an exact description of the prior used in every final fit. Full alignment would require a methodological revision and rerunning the affected analyses.
 
-One methodological issue remains: the implemented ESS calibration does not fully match the settled derivation. Differences concern the use of block-specific rather than full-variance variances, the spike-variance distribution, and the tree-generation rules. The present manuscript retains the implementation and describes these differences explicitly. Aligning it with the derivation would require a separate methodological revision and rerunning affected analyses.
+The supplementary simulation RMST summaries retain two numerical conventions inherited from the MAP-BART simulation code: an adaptive residual-standard-deviation choice for the two-arm control curve and a 0.05 lower bound on control RMST denominators. These conventions affect only the supplementary RMST summaries; the primary median-survival analyses and the application's analytic RMST summaries do not use them. Tables S5 and S7 should be regenerated if the conventions are removed.
 
-The editorial review also makes the modified supplementary simulation RMST functionals explicit: the two-arm summaries substitute a residual standard deviation under the stated rule, and simulation ratios floor the control denominator. These are preserved results, not merely integration approximations. The primary median-survival analyses and application analytic RMST summaries are unaffected. Author details, funding, conflicts of interest and the code/data-access statement remain to be supplied.
+The simulations contain 100 replicates per setting and evaluate alternative-hypothesis scenarios only. They therefore provide limited precision for comparisons between methods and do not establish Type I error control or decision-rule calibration. The conditional theoretical results apply within a fixed discrepancy-tree leaf and do not establish robustness or posterior consistency for the full sum-of-trees model. In the single-arm setting, trial outcomes do not identify the untreated-control discrepancy, so conclusions remain dependent on the discrepancy prior, covariate support and equal-residual-variance assumption.
+
+## 8. Outstanding submission items
+
+Author information, funding, conflicts of interest and the code/data-access statement remain to be supplied before submission.

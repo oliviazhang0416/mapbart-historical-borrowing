@@ -1,6 +1,6 @@
 # PFS ESS in the real-data application
 
-Notation: \(1\) denotes trial treatment, \(2\) trial control and \(3\) historical control. Standardization uses \(\mathbf{X}_1\) and \(\mathbf{X}_2\), with \(N\coloneqq n_1+n_2\). Each participant contributes once. In a single-arm trial, \(n_2=0\), so standardization uses only \(\mathbf{X}_1\).
+Notation: \(\mathrm{trt}\), \(1\), and \(2\) denote randomized treatment, randomized control, and RWD control. Standardization uses \(\mathbf{X}_{\mathrm{trt}}\) and \(\mathbf{X}_1\), with \(N\coloneqq n_{\mathrm{trt}}+n_1\). Each participant contributes once. In a single-arm trial, \(n_1=0\), so standardization uses only \(\mathbf{X}_{\mathrm{trt}}\).
 
 Status: settled with the user, including interpretation and nonadditivity. The latest display decision replaces Figure 2 entirely with Table 7: the 22 joint covariate combinations observed in EloKRd, separate EloKRd and UCMM counts, and numerical PFS ESS for the 22 combinations represented in EloKRd. Every displayed combination has a defined empirical trial-subgroup target and numerical ESS. This supersedes the earlier dot-plot, pointwise-row and separate-panel designs.
 
@@ -15,7 +15,7 @@ Approved style: a table of joint covariates, EloKRd and UCMM counts, and numeric
    The saved overall target is the trial-standardized mean control outcome,
 
    \[
-   \mu\coloneqq \frac1N\sum_{i=1}^{N}\{f(x_{1,i})+g(x_{1,i})\},
+   \mu\coloneqq \frac1N\sum_{i=1}^{N}\{f(x_{\mathrm{trt},i})+g(x_{\mathrm{trt},i})\},
    \]
 
    with the general ESS definition
@@ -23,18 +23,18 @@ Approved style: a table of joint covariates, EloKRd and UCMM counts, and numeric
    \[
    \mathrm{ESS}(w,s_0^2)
    =E_{\tau_0^2}\left[
-   \frac{\sigma_2^2}
+   \frac{\sigma_{1}^2}
    {\operatorname{Var}(\mu\mid
-   \mathbf{Y}_3,\mathbf{X}_3,\mathbf{X}_1,\mathbf{X}_2,w,\tau_0^2)}
+   \mathbf{Y}_{2},\mathbf{X}_{2},\mathbf{X}_{\mathrm{trt}},\mathbf{X}_{1},w,\tau_0^2)}
    \right].
    \]
 
-   For PFS, the surfaces describe mean log event time. The historical outcome records \(\mathbf{Y}_3\) include the observed PFS times and censoring indicators, handled through the survival likelihood.
+   For PFS, the surfaces describe mean log event time. The historical outcome records \(\mathbf{Y}_{2}\) include the observed PFS times and censoring indicators, handled through the survival likelihood.
 
    A pointwise display changes the scalar target to
 
    \[
-   \mu(x_{1,i})\coloneqq f(x_{1,i})+g(x_{1,i}),
+   \mu(x_{\mathrm{trt},i})\coloneqq f(x_{\mathrm{trt},i})+g(x_{\mathrm{trt},i}),
    \]
 
    the mean log-PFS time under control at trial patient \(i\)'s complete covariate profile. It retains the same preliminary historical fit, covariate conditioning, fixed reference variance, and globally calibrated PFS prior settings. Trial profiles are used because the question concerns information about control outcomes for the trial population.
@@ -45,11 +45,11 @@ Approved style: a table of joint covariates, EloKRd and UCMM counts, and numeric
 
    \[
    \boxed{
-   \mathrm{ESS}(w,s_0^2;x_{1,i})
+   \mathrm{ESS}(w,s_0^2;x_{\mathrm{trt},i})
    =E_{\tau_0^2}\left[
-   \frac{\sigma_2^2}
-   {\operatorname{Var}(\mu(x_{1,i})\mid
-   \mathbf{Y}_3,\mathbf{X}_3,\mathbf{X}_1,\mathbf{X}_2,w,\tau_0^2)}
+   \frac{\sigma_{1}^2}
+   {\operatorname{Var}(\mu(x_{\mathrm{trt},i})\mid
+   \mathbf{Y}_{2},\mathbf{X}_{2},\mathbf{X}_{\mathrm{trt}},\mathbf{X}_{1},w,\tau_0^2)}
    \right].
    }
    \]
@@ -59,60 +59,60 @@ Approved style: a table of joint covariates, EloKRd and UCMM counts, and numeric
    Define
 
    \[
-   V_f(x_{1,i})\coloneqq \operatorname{Var}\{f(x_{1,i})\mid
-   \mathbf{Y}_3,\mathbf{X}_3,\mathbf{X}_1,\mathbf{X}_2\},
+   V_f(x_{\mathrm{trt},i})\coloneqq \operatorname{Var}\{f(x_{\mathrm{trt},i})\mid
+   \mathbf{Y}_{2},\mathbf{X}_{2},\mathbf{X}_{\mathrm{trt}},\mathbf{X}_{1}\},
    \]
 
    \[
-   V_g(w,\tau_0^2;x_{1,i})
-   \coloneqq \operatorname{Var}\{g(x_{1,i})\mid
-   \mathbf{X}_3,\mathbf{X}_1,\mathbf{X}_2,w,\tau_0^2\}.
+   V_g(w,\tau_0^2;x_{\mathrm{trt},i})
+   \coloneqq \operatorname{Var}\{g(x_{\mathrm{trt},i})\mid
+   \mathbf{X}_{2},\mathbf{X}_{\mathrm{trt}},\mathbf{X}_{1},w,\tau_0^2\}.
    \]
 
    The variance defining \(V_g\) is taken under the discrepancy prior. Their sum is the variance in the denominator. At a single profile, exactly one leaf contributes from each of the \(H_g\) discrepancy trees. The contributing leaf has weight one, and all other leaves have weight zero. Thus the sum of squared weights is \(H_g\) for every tree configuration. Integrating the mixture indicators and trees gives
 
    \[
-   V_g(w,\tau_0^2;x_{1,i})
+   V_g(w,\tau_0^2;x_{\mathrm{trt},i})
    =H_g\{w\tau_0^2+(1-w)\tau_1^2\}.
    \]
 
    For the saved all-spike calibration reference, set \(w=1\), retaining the specified tree prior. Consequently,
 
    \[
-   V_g(1,\tau_0^2;x_{1,i})=H_g\tau_0^2,
+   V_g(1,\tau_0^2;x_{\mathrm{trt},i})=H_g\tau_0^2,
    \]
 
    and
 
    \[
    \boxed{
-   \mathrm{ESS}_{\tau_0}(s_0^2;x_{1,i})
+   \mathrm{ESS}_{\tau_0}(s_0^2;x_{\mathrm{trt},i})
    =E_{\tau_0^2}\left[
-   \frac{\sigma_2^2}{V_f(x_{1,i})+V_g(1,\tau_0^2;x_{1,i})}
+   \frac{\sigma_{1}^2}{V_f(x_{\mathrm{trt},i})+V_g(1,\tau_0^2;x_{\mathrm{trt},i})}
    \right]
    =E_{\tau_0^2}\left[
-   \frac{\sigma_2^2}{V_f(x_{1,i})+H_g\tau_0^2}
+   \frac{\sigma_{1}^2}{V_f(x_{\mathrm{trt},i})+H_g\tau_0^2}
    \right].
    }
    \]
 
-   The expectation uses the same untruncated scaled-inverse-chi-squared calibration law with parameters \(\nu_0,s_0^2\) as the saved overall ESS. Use the same globally calibrated PFS \(s_0^2\) for every profile; do not recalibrate it separately for each patient or subgroup. Estimate \(V_f(x_{1,i})\) from the variance of the preliminary posterior predictions at that profile, and average the displayed ratio over draws from the calibration scale law.
+   The expectation uses the same untruncated scaled-inverse-chi-squared calibration law with parameters \(\nu_0,s_0^2\) as the saved overall ESS. Use the same globally calibrated PFS \(s_0^2\) for every profile; do not recalibrate it separately for each patient or subgroup. Estimate \(V_f(x_{\mathrm{trt},i})\) from the variance of the preliminary posterior predictions at that profile, and average the displayed ratio over draws from the calibration scale law.
 
 3. **Interpret one point.**
 
    Suppose
 
    \[
-   \mathrm{ESS}_{\tau_0}(s_0^2;x_{1,i})=20.
+   \mathrm{ESS}_{\tau_0}(s_0^2;x_{\mathrm{trt},i})=20.
    \]
 
    The RWD-informed prior information about the mean log-PFS time under control at this complete covariate profile is worth approximately 20 reference control observations, under the all-spike calibration reference.
 
-   More precisely, at each fixed \(\tau_0^2\), find the number of independent normal-reference observations whose flat-prior posterior variance for the mean equals the RWD-informed prior variance of \(f(x_{1,i})+g(x_{1,i})\). Average those matched counts over the calibration distribution of \(\tau_0^2\). A value of 20 is that average; it does not assert that the fully scale-marginalized prior has variance \(\sigma_2^2/20\).
+   More precisely, at each fixed \(\tau_0^2\), find the number of independent normal-reference observations whose flat-prior posterior variance for the mean equals the RWD-informed prior variance of \(f(x_{\mathrm{trt},i})+g(x_{\mathrm{trt},i})\). Average those matched counts over the calibration distribution of \(\tau_0^2\). A value of 20 is that average; it does not assert that the fully scale-marginalized prior has variance \(\sigma_{1}^2/20\).
 
-   The information comes from the full RWD dataset through the fitted model. It is not restricted to historical patients with exactly the same covariates or membership in the displayed subgroup. The units are uncensored log-PFS reference observations, not actual trial patients with the trial's censoring pattern. In this single-arm application, the reference residual variance uses the assumption \(\sigma_2^2=\sigma_3^2\).
+   The information comes from the full RWD dataset through the fitted model. It is not restricted to historical patients with exactly the same covariates or membership in the displayed subgroup. The units are uncensored log-PFS reference observations, not actual trial patients with the trial's censoring pattern. In this single-arm application, the reference residual variance uses the assumption \(\sigma_{1}^2=\sigma_{2}^2\).
 
-   Higher values indicate more precise RWD-informed prior estimates of the control mean at those profiles. With the same \(H_g\), reference variance, and scale law across profiles, this variation comes through \(V_f(x_{1,i})\). It does not establish outcome compatibility between the RWD and unobserved trial controls, or quantify a realized posterior gain from borrowing.
+   Higher values indicate more precise RWD-informed prior estimates of the control mean at those profiles. With the same \(H_g\), reference variance, and scale law across profiles, this variation comes through \(V_f(x_{\mathrm{trt},i})\). It does not establish outcome compatibility between the RWD and unobserved trial controls, or quantify a realized posterior gain from borrowing.
 
 4. **Explain the pointwise display considered earlier.**
 
@@ -127,7 +127,7 @@ Approved style: a table of joint covariates, EloKRd and UCMM counts, and numeric
    For a subgroup \(G\) with \(N_G\) trial patients, its mean control log-PFS target is
 
    \[
-   \mu_G\coloneqq \frac1{N_G}\sum_{i\in G}\{f(x_{1,i})+g(x_{1,i})\}.
+   \mu_G\coloneqq \frac1{N_G}\sum_{i\in G}\{f(x_{\mathrm{trt},i})+g(x_{\mathrm{trt},i})\}.
    \]
 
    Its ESS must be calculated by substituting \(\mu_G\) into the saved variance-matching definition, retaining the same reference settings and scale law. Adding the patient-profile ESS values within \(G\) does not generally give the ESS of \(\mu_G\).
@@ -166,9 +166,9 @@ Approved style: a table of joint covariates, EloKRd and UCMM counts, and numeric
    \boxed{
    \mathrm{ESS}_{\tau_0}(s_0^2;G)
    =E_{\tau_0^2}\left[
-   \frac{\sigma_2^2}
+   \frac{\sigma_{1}^2}
    {\operatorname{Var}(\mu_G\mid
-   \mathbf{Y}_3,\mathbf{X}_3,\mathbf{X}_1,\mathbf{X}_2,w=1,\tau_0^2)}
+   \mathbf{Y}_{2},\mathbf{X}_{2},\mathbf{X}_{\mathrm{trt}},\mathbf{X}_{1},w=1,\tau_0^2)}
    \right].
    }
    \]
@@ -195,8 +195,8 @@ Approved style: a table of joint covariates, EloKRd and UCMM counts, and numeric
 The existing revision figure computes the pointwise quantity
 
 \[
-\frac{\widehat\sigma_2^2}
-{\widehat V_f(x_{1,i})+H_g\,\overline{\tau_0^2}},
+\frac{\widehat\sigma_{1}^2}
+{\widehat V_f(x_{\mathrm{trt},i})+H_g\,\overline{\tau_0^2}},
 \]
 
 where the scale samples supplied to the map come from the fitted control model. This puts the mean scale inside the denominator and does not implement the settled expectation of conditional ratios under the calibration scale law. The relevant source is `revision/01-code/lrcbart/R/lrcbart.R`, function `lrc_ess_map`, called by `revision/04-application/code/run_lrcbart.R`; `make_figures.R` currently displays both PFS and OS.

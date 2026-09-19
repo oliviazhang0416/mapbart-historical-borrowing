@@ -1,22 +1,22 @@
 \section{Conditional robustness and discrepancy learning}\label{sec:C}
 \subsection{Posterior component odds}\label{sec:C.1}
-Fix a discrepancy leaf, the other tree contributions, $n\geq1$, $\sigma_2^2>0$, $0<w<1$ and ordered positive variances $\tau_0^2<\tau_1^2$. Let $\bar r$ be its trial-control partial-residual mean. Bayes' rule applied to the two normal marginal densities gives the posterior spike odds
+Fix a discrepancy leaf, the other tree contributions, $n\geq1$, $\sigma_1^2>0$, $0<w<1$ and ordered positive variances $\tau_0^2<\tau_1^2$. Let $\bar r$ be its trial-control partial-residual mean. Bayes' rule applied to the two normal marginal densities gives the posterior spike odds
 \begin{equation}\label{eq:odds}
 \frac{P(z=1\mid\mathbf r)}{P(z=0\mid\mathbf r)}
-=\frac{w}{1-w}\sqrt{\frac{\tau_1^2+\sigma_2^2/n}{\tau_0^2+\sigma_2^2/n}}
+=\frac{w}{1-w}\sqrt{\frac{\tau_1^2+\sigma_1^2/n}{\tau_0^2+\sigma_1^2/n}}
 \exp\left[-\frac{\bar r^2}{2}
-\left\{\frac{1}{\tau_0^2+\sigma_2^2/n}-\frac{1}{\tau_1^2+\sigma_2^2/n}\right\}\right].
+\left\{\frac{1}{\tau_0^2+\sigma_1^2/n}-\frac{1}{\tau_1^2+\sigma_1^2/n}\right\}\right].
 \end{equation}
-For this proof only, denote the positive leading coefficient by $C$ and the positive coefficient of $\bar r^2$ in the exponent by $\kappa$. Then the spike probability is $\pi(\bar r)\coloneqq P(z=1\mid\mathbf r)=C e^{-\kappa\bar r^2}/(1+C e^{-\kappa\bar r^2})$. 
+For this proof only, denote the positive leading coefficient by $C$ and the positive coefficient of $\bar r^2$ in the exponent by $\kappa$. Then the spike probability is $\gamma(\bar r)\coloneqq P(z=1\mid\mathbf r)=C e^{-\kappa\bar r^2}/(1+C e^{-\kappa\bar r^2})$. 
 
 \subsection{Proof of main-text Theorem 2}\label{sec:C.2}
-The posterior mean under component $k$ is $\omega_k\bar r$, where $\omega_k\coloneqq \tau_k^2/(\tau_k^2+\sigma_2^2/n)$. Because $\omega_1>\omega_0$, the difference between the mixture posterior mean and the slab-only posterior mean is
+The posterior mean under component $k$ is $\omega_k\bar r$, where $\omega_k\coloneqq \tau_k^2/(\tau_k^2+\sigma_1^2/n)$. Because $\omega_1>\omega_0$, the difference between the mixture posterior mean and the slab-only posterior mean is
 \begin{equation}
-I(\bar r)\coloneqq -\pi(\bar r)(\omega_1-\omega_0)\bar r.
+\Delta_{\mathrm{mix}}(\bar r)\coloneqq -\gamma(\bar r)(\omega_1-\omega_0)\bar r.
 \end{equation}
-Using $\pi(\bar r)\leq C e^{-\kappa\bar r^2}$,
+Using $\gamma(\bar r)\leq C e^{-\kappa\bar r^2}$,
 \begin{equation}
-|I(\bar r)|\leq(\omega_1-\omega_0)C|\bar r|e^{-\kappa\bar r^2}
+|\Delta_{\mathrm{mix}}(\bar r)|\leq(\omega_1-\omega_0)C|\bar r|e^{-\kappa\bar r^2}
 \leq\frac{(\omega_1-\omega_0)C}{\sqrt{2e\kappa}}.
 \end{equation}
 The first upper bound tends to zero in both tails, proving boundedness and tail attenuation. This is the extra shrinkage attributable to the spike relative to the slab-only mean. Relative to the unshrunk likelihood mean $\bar r$, the remaining slab shrinkage is $(\omega_1-1)\bar r$, which is unbounded for fixed $n$ and finite $\tau_1^2$. The result bounds additional mixture shrinkage relative to the slab, not total shrinkage relative to the likelihood mean.
@@ -24,7 +24,7 @@ The first upper bound tends to zero in both tails, proving boundedness and tail 
 \subsection{Proof of main-text Theorem 3}\label{sec:C.3}
 Equation \eqref{eq:odds} is strictly decreasing in $|\bar r|>0$. If $C>1$, the posterior spike probability exceeds one half exactly when $|\bar r|<\sqrt{\log(C)/\kappa}$; if $C\leq1$, it never exceeds one half. There is no universal threshold independent of $w$, sample size and scales.
 
-Now suppose the partial residuals are independent $\N(d,\sigma_2^2)$ observations. Almost surely $\bar r\to d$. For both $k=0,1$, the conditional posterior mean $\omega_k\bar r\to d$ and variance $(n/\sigma_2^2+\tau_k^{-2})^{-1}\to0$. Each normal component therefore concentrates at $d$, and so does every convex mixture of them. If $|d|\ne c$, its posterior probability of $(-c,c)$ converges to $\ind\{|d|<c\}$.
+Now suppose the partial residuals are independent $\N(d,\sigma_1^2)$ observations. Almost surely $\bar r\to d$. For both $k=0,1$, the conditional posterior mean $\omega_k\bar r\to d$ and variance $(n/\sigma_1^2+\tau_k^{-2})^{-1}\to0$. Each normal component therefore concentrates at $d$, and so does every convex mixture of them. If $|d|\ne c$, its posterior probability of $(-c,c)$ converges to $\ind\{|d|<c\}$.
 
 Nevertheless, the posterior spike probability converges to
 \begin{equation}
