@@ -1,0 +1,6 @@
+# Primary-source verification, 20 September 2026
+
+- Zhou and Ji (2021): publisher https://onlinelibrary.wiley.com/doi/abs/10.1002/sim.9191 and author paper https://arxiv.org/pdf/2103.08754. Correct bibliography: Statistics in Medicine 40(28), 6421–6442, DOI 10.1002/sim.9191. The upstream bibliography has incorrect issue, pages and DOI. Equation (2) fits treatment separately from source-dependent controls; source enters the control tree split space. Scope: explain this comparator accurately without claiming source-BART cannot represent regional differences.
+- Hahn, Murray and Carvalho (2020): author paper https://arxiv.org/pdf/1706.09523; publisher DOI https://doi.org/10.1214/19-BA1195; author-maintained bcf citation https://mirror.clarkson.edu/cran/web/packages/bcf/citation.html. Bayesian Analysis 15(3), 965–1056. Separate regularization of prognosis and treatment-effect heterogeneity predates this paper. Our primary distinction is an explicitly regularized source discrepancy, within a joint trial likelihood, with a control-mean prior-information reference; neither two forests nor joint treatment adjustment alone establishes novelty.
+
+These limited checks support the introduction revision; they are not an exhaustive novelty search. New contemporary papers found during search are not inserted without a complete relevance and source check.

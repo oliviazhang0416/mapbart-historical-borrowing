@@ -1,0 +1,2 @@
+"n_replicates","rmse_ratio","mse_difference","mse_boot_lower","mse_boot_upper"
+40,0.953557001607527,-0.00397893983245804,-0.0110891889693879,0.00281715256142968

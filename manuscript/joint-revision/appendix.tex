@@ -1,0 +1,34 @@
+\documentclass[11pt]{article}
+\input{source/preamble}
+\externaldocument[T-]{source/generated/main_refs}[main_draft.pdf]
+\externaldocument[M-]{source/generated/tables_refs}[main_tables_figures.pdf]
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\fancyhead[R]{\small Supplementary appendix}
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\begin{document}
+\begin{center}
+{\Large\bfseries Supplementary appendix}\par\medskip
+{Joint treatment and source-discrepancy modeling with locally robust commensurate Bayesian additive regression trees}\par
+{}
+\end{center}
+\noindent This appendix provides the joint posterior calculations, control-mean information derivation, fixed-region theoretical results, complete joint-model study, and the separate-treatment survival, simulation and application analyses. Main-text equation and theorem references are identified explicitly. The prior ESS reference and the implemented prior-scale selection procedure are described separately.
+\tableofcontents
+\clearpage
+\appendix
+\numberwithin{equation}{section}
+\numberwithin{theorem}{section}
+\input{source/appendix_computation}
+\input{source/appendix_ess}
+\input{source/appendix_theory}
+\input{source/appendix_survival}
+\input{source/appendix_simulation}
+\input{source/appendix_application}
+\clearpage
+\input{source/appendix_joint_study}
+\clearpage
+\input{source/appendix_separate_displays}
+\bibliographystyle{abbrvnat}
+\bibliography{source/references}
+\end{document}

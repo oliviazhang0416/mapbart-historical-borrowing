@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "candidate": "JOINT-SOURCE-01",
+  "baseline": "SEPARATED-SOURCE-01",
+  "comparison_role": "secondary",
+  "primary_candidate_id": "JOINT-LRC-01",
+  "primary_baseline_id": "SEPARATED-SOURCE-01",
+  "preselection_utc": "2026-09-19T22:32:14Z",
+  "batch_started_utc": "2026-09-19T22:56:08Z",
+  "state_path": "/Users/yuanj/Dropbox (Personal)/YuanJi/research/Yunxuan-Zhang/MAP-BART/revision/09-method-exploration/state.json",
+  "reserved_seed_ranges": {
+    "constant": "92026001:92026040",
+    "heterogeneous": "92126001:92126040",
+    "null": "92226001:92226040"
+  },
+  "numerical_screen_only": true
+}

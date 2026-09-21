@@ -1,0 +1,1054 @@
+--- Yunxuan/appendix.tex
++++ Joint-revision/appendix.tex
+@@ -28,7 +28,7 @@
+ \newcommand{\N}{\mathrm{N}}
+ \newcommand{\IG}{\operatorname{IG}}
+ \newcommand{\ind}{\mathbf{1}}
+-\newcommand{\lrc}{lrcBART}
++\newcommand{\lrc}{LRC-BART}
+ \newtheorem{theorem}{Theorem}
+ \newtheorem{lemma}{Lemma}[section]
+ \theoremstyle{remark}\newtheorem{remark}{Remark}[section]
+@@ -37,70 +37,75 @@
+ \def\input@path{{source/}}
+ \makeatother
+ \hypersetup{pdfauthor={},pdfsubject={Statistical methods manuscript draft}}
+- \externaldocument[T-]{source/generated/main_refs}[main.pdf]
++ \externaldocument[T-]{source/generated/main_refs}[main_draft.pdf]
++\externaldocument[M-]{source/generated/tables_refs}[main_tables_figures.pdf]
++\usepackage{tikz}
++\usetikzlibrary{arrows.meta}
+ \fancyhead[R]{\small Supplementary appendix}
+ \renewcommand{\thetable}{S\arabic{table}}
+ \renewcommand{\thefigure}{S\arabic{figure}}
+ \begin{document}
+ \begin{center}
+ {\Large\bfseries Supplementary appendix}\par\medskip
+-{Locally robust commensurate Bayesian additive regression trees for historical information borrowing}\par
++{Joint treatment and source-discrepancy modeling with locally robust commensurate Bayesian additive regression trees}\par
+ {}
+ \end{center}
+-\noindent This appendix provides the posterior calculations, ESS derivation, regional theoretical results and supporting leaf calculations, survival formulation, full simulation results and application sensitivities. Main-text equation and theorem references are identified explicitly. The prior ESS reference and the implemented prior-scale selection procedure are described separately.
++\noindent This appendix provides the joint posterior calculations, control-mean information derivation, fixed-region theoretical results, complete joint-model study, and the separate-treatment survival, simulation and application analyses. Main-text equation and theorem references are identified explicitly. The prior ESS reference and the implemented prior-scale selection procedure are described separately.
+ \tableofcontents
+ \clearpage
+ \appendix
+ \numberwithin{equation}{section}
++\numberwithin{theorem}{section}
+ \section{Posterior computation}\label{sec:A}
+-\subsection{Priors, conditioning and numerical settings}\label{sec:A.1}
+-Historical and trial-control observations retain their source labels from the main model. Their means are $f(x_{2,i})$ and $f(x_{1,i})+g(x_{1,i})$, with residual variances $\sigma_{2}^2$ and $\sigma_{1}^2$, respectively. Fixed centering constants are suppressed below and restored for predictions. The tree priors are independent across trees; conditional on trees and shared hyperparameters, terminal-node parameters follow the component-specific priors in the main model. Posterior dependence is retained by Bayesian backfitting.
+-
+-For control group $s\in\{1,2\}$, the residual prior is
+-\begin{equation}
+-\sigma_{s}^2\sim\IG\left(\frac{\nu_\sigma}{2},\frac{\nu_\sigma\lambda_{\sigma,s}}{2}\right),\qquad\nu_\sigma=3,
+-\end{equation}
+-where the second argument is a scale and $p(u)\propto u^{-a-1}\exp(-b/u)$. If $R_y$ is the range of the relevant centered fitting outcomes, the standard terminal-node rules are $\lambda_f^2=R_y^2/(16H_f)$ and $\tau_1^2=R_y^2/(16H_g)$. A positive fallback is used when an empirical range or preliminary residual estimate is degenerate. Each $\lambda_{\sigma,s}$ is a preliminary residual-variance estimate times $\chi^2_{3,0.10}/3$. Gaussian preliminary estimates use linear regression; survival estimates use lognormal AFT regression, with the script's dispersion fallback. These are data-dependent prior scale choices and are held fixed within sampling.
++\subsection{Joint priors, tree support and conditioning}\label{sec:A.1}
++The primary likelihood includes every trial and external observation, with $S_i$ and $A_i$ as defined in the main text. The outcome centering constant is the sample mean across all three groups and is restored for predictions. The joint range rule uses their outcome range $R_y$. The tree priors are independent across trees, and the leaf priors are independent given tree structures and shared hyperparameters.
++
++For source $s\in\{1,2\}$, use
++\[
++\sigma_s^2\sim\IG(\nu_\sigma/2,\nu_\sigma\lambda_{\sigma,s}/2),\qquad \nu_\sigma=3,
++\]
++where $p(u)\propto u^{-a-1}\exp(-b/u)$. The scale is $\lambda_{\sigma,s}=\widehat\sigma_s^2\chi^2_{3,0.10}/3$. The joint Gaussian wrapper estimates $\widehat\sigma_s$ by regressing centered outcomes on covariates within source; its trial fit includes both randomized arms. This empirical-Bayes preliminary fit omits the treatment indicator. When the treatment effect is nonzero, its residuals therefore contain treatment variation as well as residual outcome variation, and the resulting scale depends on the effect and allocation. We retain this choice in the reported experiment; no treatment-adjusted prior-scale sensitivity has been fitted. The resulting scales, centering and cutpoint grid are held fixed in posterior sampling. The forest scales are $\lambda_f^2=R_y^2/(16H_f)$ and $\tau_1^2=R_y^2/(16H_g)$.
++
++The joint implementation assigns the following normalized weight over admissible trees. If $I(T)$ and $L(T)$ are internal and terminal nodes, $d(v)$ is node depth, $V(v)$ counts ancestor-admissible variables, and $C(v,s_v)$ counts available cuts for the selected variable, then
++\begin{equation}\label{eq:treeweight}
++\pi_k(T)\ \propto\
++\prod_{v\in I(T)}\frac{p_k\{d(v)\}}{V(v)C(v,s_v)}
++\prod_{\ell\in L(T)}[1-p_k\{d(\ell)\}]
++\ind\{T\text{ is admissible}\}.
++\end{equation}
++Admissibility requires ancestor-consistent cuts and at least five fitting observations per leaf: all sources for $f$, and all trial participants for $g$. Normalization is over the resulting finite tree support. Even a terminal node with no remaining cut retains its factor $1-p_k(d)$. Its normalized marginal tree law is not the usual recursively normalized Galton--Watson law. This globally restricted weight differs from a recursive prior that assigns forced termination probability one at such nodes. The calibration tree simulator uses the latter recursion, another reason its ESS is a prior-setting reference rather than an exact characterization of the fitted tree prior.
+ 
+ \begin{table}[htbp]
+ \centering\small
+-\caption{lrcBART prior and computation settings.}\label{tab:S1}
+-\begin{tabular}{p{2.1in}p{3.8in}}
+-\toprule
+-Quantity & Setting\\\midrule
+-Historical and discrepancy trees & Simulations: $H_f=50$, $H_g=5$; application: $H_f=10$ or 50, $H_g=5$\\
+-Treatment trees & $H_{\mathrm{trt}}=50$ in all studies, including application settings with $H_f=10$\\
+-Depth prior & $(\alpha_f,\beta_f)=(\alpha_{\mathrm{trt}},\beta_{\mathrm{trt}})=(0.95,2)$; $(\alpha_g,\beta_g)=(0.5,3)$\\
+-Terminal-node scale & $\lambda_f^2=R_y^2/(16H_f)$; $\tau_1^2=R_y^2/(16H_g)$; $\lambda_{\mathrm{trt}}^2=R_{y,\mathrm{trt}}^2/(16H_{\mathrm{trt}})$\\
+-Residual variance & Inverse-gamma, $\nu_\sigma=3$; scale from preliminary residual estimate\\
+-Spike variance, two-arm fit & Scaled inverse-chi-square with $\nu_0=3$, restricted below $\tau_1^2$; updated\\
+-Spike variance, single-arm fit & Fixed at $\min(s_0^2,\tau_1^2/2)$\\
+-Mixture probability & Two-arm: Beta$(1,1)$, updated; single-arm: fixed 1 or 0.9\\
+-Tree proposals & Grow, prune, change with probabilities 0.3, 0.3, 0.4\\
+-Minimum fitting leaf size & $f$: 5 controls in total; $g$: 5 trial controls in two-arm fits, 0 in single-arm fits\\
+-Simulation lrcBART sampling & 1,000 warm-up; 1,000 retained draws; thinning 1\\
+-Application lrcBART sampling & Four chains; 2,000 warm-up and 2,000 retained per chain\\
+-Preliminary historical fit & Simulations: 1,000 warm-up and 1,000 retained; application: 2,000 warm-up and 4,000 retained\\
+-Prior ESS Monte Carlo & 2,000 prior trees, 4,000 scale draws, 20 variance blocks\\
+-Scale grid and selector & 141 log-spaced values from $10^{-6}$ to 10; block acceptance fraction 0.95\\
++\caption{Primary joint LRC-BART specification.}\label{tab:S1}
++\begin{tabular}{p{2.0in}p{3.9in}}
++\toprule
++Quantity & Specification\\\midrule
++Mean & $f(x)+Sg(x)+A\psi$\\
++Residual variances & One shared trial variance; one external variance\\
++Forests & $H_f=50$, $H_g=5$; independent tree structures\\
++Depth factors & $(\alpha_f,\beta_f)=(0.95,2)$; $(\alpha_g,\beta_g)=(0.5,3)$\\
++Treatment prior & $\psi\sim\N(0,100)$, with variance 100\\
++Mixture & $w\sim\operatorname{Beta}(1,1)$, updated; $\nu_0=3$ spike prior truncated below $\tau_1^2$\\
++Tree moves & Grow/prune/change probabilities 0.3/0.3/0.4; a stump proposes grow\\
++Posterior sampling & Three chains; 30,000 warm-up and 12,000 retained iterations; five $g$ sweeps per iteration\\
++Scale calibration & Control outcomes only; requested control-mean count 100; 20 blocks; 141-point scale grid\\
+ \bottomrule
+ \end{tabular}
+-\caption*{The sampler overrides the discrepancy minimum leaf size to zero when no trial controls are present. The calibration prior-tree simulation has its own admissibility and maximum-depth rule, discussed in Appendix B.7. Historical and treatment priors use their respective outcome ranges.}
+ \end{table}
+ 
+ \subsection{Partial residuals}\label{sec:A.2}
+-For the current prognostic tree $h^f$ or discrepancy tree $h^g$, remove its contribution from the respective sum. Conditional on every other tree and current variance values, form
++For a prognostic tree $h$ and discrepancy tree $h$, respectively, define
+ \begin{equation}\label{eq:partial}
+ \begin{aligned}
+-r_{2,i}^f&\coloneqq Y_{2,i}-f^{(-h^f)}(x_{2,i}),\\
+-r_{1,i}^f&\coloneqq Y_{1,i}-f^{(-h^f)}(x_{1,i})-g(x_{1,i}),\\
+-r_{1,i}^g&\coloneqq Y_{1,i}-f(x_{1,i})-g^{(-h^g)}(x_{1,i}).
++r_i^f&=Y_i-f^{(-h)}(x_i)-S_i g(x_i)-A_i\psi,&&\text{all observations},\\
++r_i^g&=Y_i-f(x_i)-g^{(-h)}(x_i)-A_i\psi,&&S_i=1.
+ \end{aligned}
+ \end{equation}
+-The residuals with subscript $1$ use trial controls only. $f^{(-h^f)}$ and $g^{(-h^g)}$ denote the respective sums with the current tree omitted; the tree index is suppressed on the residuals. These residuals remain fixed when comparing current and proposed structures. For survival data, $Y_{2,i}$ and $Y_{1,i}$ in these calculations are the current observed or augmented log event time.
++The current tree is omitted from the indicated sum. For an $f$ update both trial arms have precision $1/\sigma_1^2$ and external observations have precision $1/\sigma_2^2$. All trial participants contribute to a $g$ update. These partial responses are held fixed during the structure proposal. In the separate-treatment variant, only the two control groups enter these calculations, with $A_i=0$.
+ 
+ \subsection{Marginal leaf likelihoods}\label{sec:A.3}
+-Within a specified leaf, write $r_i$ for the relevant partial residuals, suppressing their source labels only in the generic normal integral. For an $f$ leaf these include both $r_{2,i}^f$ and $r_{1,i}^f$, with their respective residual variances; for a $g$ leaf they include only $r_{1,i}^g$.
++Within a specified leaf, write $r_i$ for the relevant partial residuals, suppressing their source labels only in the generic normal integral. For an $f$ leaf these include all $r_i^f$, with their respective residual variances; for a $g$ leaf they include $r_i^g$ for $S_i=1$.
+ \begin{lemma}[Normal leaf integral]\label{lem:leaf}
+ Suppose $r_i\mid\theta\sim\N(\theta,\sigma_i^2)$ independently in a leaf and $\theta\sim\N(0,q^2)$, with $q^2>0$. Let $A\coloneqq \sum_i\sigma_i^{-2}$ and $B\coloneqq \sum_i r_i\sigma_i^{-2}$. The marginal leaf density is
+ \begin{equation}\label{eq:leafdensity}
+@@ -118,7 +123,7 @@
+ Completing the square gives mean $B/(A+q^{-2})$ and precision $A+q^{-2}$. Its normalizing integral is $\{q^2(A+q^{-2})\}^{-1/2}\exp\{B^2/[2(A+q^{-2})]\}$, which is the stated factor.
+ \end{proof}
+ 
+-For an $f$ leaf, let $n_{s,\ell},S_{s,\ell}$ be the count and sum of its partial residuals from source $s$. Write $A$ and $B$ for the leaf precision and precision-weighted residual sum. The marginal likelihood factor is
++For an $f$ leaf, let $n_{s,\ell},S_{s,\ell}$ be the count and sum of its partial residuals from source $s$. In the joint model, source-1 counts include both randomized arms, unlike the main-text sample size $n_1$ that counts concurrent controls only. Write $A$ and $B$ for the leaf precision and precision-weighted residual sum. The marginal likelihood factor is
+ \begin{equation}\label{eq:Mf}
+ \begin{gathered}
+ A\coloneqq \frac{n_{1,\ell}}{\sigma_1^2}+\frac{n_{2,\ell}}{\sigma_2^2},\qquad
+@@ -127,7 +132,7 @@
+ \exp\!\left\{\frac{\lambda_f^2B^2}{2(1+\lambda_f^2A)}\right\}.
+ \end{gathered}
+ \end{equation}
+-For a $g$ leaf, redefine $A$ and $B$ using only its trial-control count and partial-residual sum. Integrate its parameter under each component, then sum over its indicator:
++For a $g$ leaf, redefine $A$ and $B$ using only its trial-participant count and partial-residual sum. Integrate its parameter under each component, then sum over its indicator:
+ \begin{equation}\label{eq:Mg}
+ \begin{aligned}
+ A&\coloneqq \frac{n_{1,\ell}}{\sigma_1^2},\qquad B\coloneqq \frac{S_{1,\ell}}{\sigma_1^2},\\
+@@ -137,7 +142,7 @@
+ \exp\!\left\{\frac{\tau_1^2B^2}{2(1+\tau_1^2A)}\right\}.
+ \end{aligned}
+ \end{equation}
+-Thus both $\theta^g_{h^g\ell}$ and $z_{h^g\ell}$ are marginalized for a discrepancy-tree proposal. The quantities $w,\tau_0^2,\tau_1^2$ are held fixed, not integrated out in this step. For an empty trial-control leaf, $M_g=w+(1-w)=1$.
++Thus both $\theta^g_{h^g\ell}$ and $z_{h^g\ell}$ are marginalized for a discrepancy-tree proposal. The quantities $w,\tau_0^2,\tau_1^2$ are held fixed, not integrated out in this step. For an empty trial leaf, $M_g=w+(1-w)=1$.
+ 
+ \subsection{Metropolis--Hastings tree updates}\label{sec:A.4}
+ The marginal tree likelihood is the observation-level density product times the product of its leaf factors. The observation product is identical under both partitions, so it cancels from the Metropolis--Hastings ratio. Suppressing the tree index and component label, a proposal $\mathcal T\to \mathcal T^*$ is accepted with probability
+@@ -146,7 +151,7 @@
+ \frac{p(\mathcal T^*)}{p(\mathcal T)}\frac{q(\mathcal T\mid \mathcal T^*)}{q(\mathcal T^*\mid \mathcal T)}
+ \frac{\prod_{\ell\in \mathcal T^*}M_\ell}{\prod_{\ell\in \mathcal T}M_\ell}\right\}.
+ \end{equation}
+-The tree prior includes split/no-split probabilities and admissible variable/cutpoint rules; the proposal ratio accounts for the choice of move, node and rule. For a grow move replacing parent $P$ with children $L,R$, the likelihood contribution reduces to $M_LM_R/M_P$. The current implementation uses grow, prune and change proposals; an inadmissible proposal is rejected.
++The tree prior uses the restricted weights in \eqref{eq:treeweight}; the proposal ratio accounts for the choice of move, node and rule. For a grow move replacing parent $P$ with children $L,R$, the likelihood contribution reduces to $M_LM_R/M_P$. The current implementation uses grow, prune and change proposals; an inadmissible proposal is rejected.
+ 
+ \subsection{Conditional parameter distributions}\label{sec:A.5}
+ After accepting or rejecting a structure, sample node parameters for the retained tree. For an $f$ leaf,
+@@ -154,7 +159,7 @@
+ \theta^f_{h^f\ell}\mid\text{rest}\sim
+ \N\!\left(\frac{B}{A+\lambda_f^{-2}},\frac{1}{A+\lambda_f^{-2}}\right).
+ \end{equation}
+-For a nonempty $g$ leaf, its spike probability is
++For a nonempty $g$ leaf, let $\bar r=S_{1,\ell}/n_{1,\ell}$. Its spike probability is
+ \begin{equation}\label{eq:spikeposterior}
+ P(z_{h^g\ell}=1\mid\text{rest})=
+ \frac{w\,\phi(\bar r;0,\tau_0^2+\sigma_1^2/n_{1,\ell})}
+@@ -178,26 +183,33 @@
+ \nu_0+K_0,\frac{\nu_0s_0^2+S_0}{\nu_0+K_0}\right)
+ \text{ restricted to }(0,\tau_1^2).
+ \end{equation}
+-For each observed control source, let $n_{s}$ denote its total sample size and define its residual sum of squares using the full current mean, $\mathrm{RSS}_{s}$. Then
++For each source, write $n_s^{\mathrm{fit}}$ for its fitting sample size, equal to $N$ for source 1 and $n_2$ for source 2 in the joint model. Define its residual sum of squares using the full current mean, $\mathrm{RSS}_{s}$. Then
+ \begin{equation}
+ \sigma_{s}^2\mid\text{rest}\sim
+-\IG\left(\frac{\nu_\sigma+n_{s}}{2},\frac{\nu_\sigma\lambda_{\sigma,s}+\mathrm{RSS}_{s}}{2}\right).
+-\end{equation}
++\IG\left(\frac{\nu_\sigma+n_s^{\mathrm{fit}}}{2},\frac{\nu_\sigma\lambda_{\sigma,s}+\mathrm{RSS}_{s}}{2}\right).
++\end{equation}
++The residual sums of squares use $Y_i-f(x_i)-S_i g(x_i)-A_i\psi$. The coefficient $\psi$ is drawn from main-text equation~\eqref{T-eq:psi_update}; this is a full conditional, with $f,g$ held at their current values.
++
++\subsection{Joint sampling cycle}\label{sec:A.6}
++\begin{enumerate}
++\item Initialize both forests, their leaf parameters and indicators, $\psi$, the mixture parameters and the two residual variances.
++\item Update each $f$ tree using all treatment-adjusted partial responses, the marginal factor $M_f$, and the conditional leaf distribution.
++\item Update the $g$ trees using all trial participants' treatment-adjusted partial responses and $M_g$; draw each retained tree's indicators and leaf parameters. The reported joint fits repeat this discrepancy sweep five times.
++\item Update $\tau_0^2$ and $w$ from their conditional distributions.
++\item Draw $\psi$ from its Gaussian full conditional, then update the two residual variances.
++\item Repeat and retain the joint draws after warm-up. Prediction and interval summaries average over the retained states; conditional update variances are not substituted for marginal posterior uncertainty.
++\end{enumerate}
++The ordering above describes a composition of conditionally invariant updates. The implementation updates the treatment coefficient before the residual variances, and updates leaf parameters after every accepted or rejected tree proposal. The tree move integrates leaf parameters and discrepancy indicators while holding shared scales and $w$ fixed. Immediate conditional draws for the retained tree restore those marginalized variables before another block uses them. Five discrepancy sweeps repeat valid updates and do not change the target distribution. These facts concern the specified transition kernel, not its mixing rate.
++
++\subsection{Separate-treatment and single-arm computation}\label{sec:A.7}
++The supplementary Gaussian/survival experiments and application use a different implementation that fits the treatment surface separately and applies the two-source model only to controls. For that variant, source-1 counts in the formulas above count concurrent controls, and no treatment term enters a control-tree residual. The prognostic forest has $H_f=50$ in simulations and $H_f=10$ or 50 in the application, with $H_g=5$ throughout. Outcome ranges are calculated separately for pooled controls and treated participants.
++
+ The treatment sum of trees is fitted separately under the normal or augmented-normal likelihood. It uses $H_{\mathrm{trt}}=50$, $(\alpha_{\mathrm{trt}},\beta_{\mathrm{trt}})=(0.95,2)$, independent $\theta^{\mathrm{trt}}_{h^{\mathrm{trt}}\ell}\sim\N(0,\lambda_{\mathrm{trt}}^2)$ with $\lambda_{\mathrm{trt}}^2=R_{y,\mathrm{trt}}^2/(16H_{\mathrm{trt}})$, and $\sigma_{\mathrm{trt}}^2\sim\IG(\nu_\sigma/2,\nu_\sigma\lambda_{\sigma,\mathrm{trt}}/2)$. The treatment-specific $\lambda_{\sigma,\mathrm{trt}}$ follows the preliminary residual rule in Section A.1.
+ 
+-\subsection{Sampling cycle and the single-arm specialization}\label{sec:A.6}
+-\noindent\textbf{Algorithm A1: Bayesian backfitting for the control model.}
+-\begin{enumerate}
+-\item Initialize tree structures, terminal-node parameters, scales and, for censored outcomes, latent log event times.
+-\item For each $f$ tree, form the partial residuals in \eqref{eq:partial}, propose a structure using $M_f$, and sample the retained tree's node parameters.
+-\item For each $g$ tree, form trial-control partial residuals, propose a structure using $M_g$, and sample indicators and node parameters for the retained tree.
+-\item Update $\tau_0^2$ and $w$ when estimated, and update source-specific residual variances.
+-\item For survival outcomes, redraw censored latent log times above their observed log censoring bounds.
+-\item Repeat; discard warm-up draws and retain predictions and scalar summaries at the stated thinning interval.
+-\end{enumerate}
+-Node draws occur even if a structure proposal is rejected. Logarithmic evaluation and a log-sum-exp calculation for the mixture factor avoid numerical overflow.
+-
+-When there are no trial controls, every $g$ leaf has $M_g=1$. Tree structures and leaf parameters for $g$ are then sampled from their specified prior, with no outcome-likelihood update. The sampler permits such prior-only trees by setting their minimum trial-control leaf size to zero. It also sets $\sigma_{1}^2=\sigma_{2}^2$ at each draw. The shared cutpoint specification and any fixed empirical prior scales are treated as conditioned-on quantities. Consequently the single-arm control prediction is $f+g$, with a prior-driven discrepancy.
++
++These separate-treatment simulations use 1,000 warm-up and 1,000 retained draws per fit. Application fits use four chains with 2,000 warm-up and 2,000 retained draws per chain. Their prior-scale calibration uses 1,000 warm-up and 1,000 retained historical draws in simulation and 2,000 warm-up and 4,000 retained draws in the application.
++
++When there are no concurrent controls, every discrepancy leaf has $M_g=1$. In this separate-treatment variant, $g$ is sampled from its specified prior and $\sigma_1^2$ is set equal to $\sigma_2^2$. The reported single-arm fits fix $w$ and $\tau_0^2=\min(s_0^2,\tau_1^2/2)$ and permit discrepancy trees with no concurrent-control observations. The shared cutpoint specification and empirical scales are conditioned on. These prior-driven control predictions are distinct from the joint randomized-trial coefficient in main-text equation~\eqref{T-eq:model}.
+  \section{Prior effective sample size: comparison, derivation and computation}\label{sec:B}
+ 
+ \subsection{Comparison with established prior-ESS definitions}\label{sec:B.1}
+@@ -295,6 +307,7 @@
+ \newpage
+ 
+ \addtocounter{table}{-1}
++\renewcommand{\theHtable}{ESScomparisonB.\arabic{table}}
+ \begin{longtable}{L{1.05in}L{1.55in}L{1.40in}L{1.55in}L{1.45in}L{1.55in}}
+ \multicolumn{6}{l}{\textbf{Table \thetable\ (continued): Panel B, reference and ESS}}\\
+ \toprule
+@@ -400,25 +413,25 @@
+ Neuenschwander's complete-pooling prior supplies a known ESS anchor. Morita matches the target-prior curvature to the expected curvature of a posterior constructed from a low-information prior and hypothetical data. ELIR averages local ratios of prior curvature to one-observation Fisher information over the target prior. For the proposed method, this target prior is the RWD-informed prior; the ESS averages conditional inverse-variance matches over the calibration distribution of $\tau_0^2$.
+ 
+ \subsection{Calculation of historical uncertainty}\label{sec:B.2}
+-For the main-text historical component $\mu_f=n_{1}^{-1}\sum_{i=1}^{n_{1}}f(x_{1,i})$,
++For the main-text historical component $\mu_f=N^{-1}\sum_{i=1}^{N}f(x_i^*)$,
+ \begin{equation}\label{eq:Vf}
+ V_f
+-=\frac1{n_{1}^2}
+-\sum_{i=1}^{n_{1}}\sum_{i'=1}^{n_{1}}
+-\Cov\{f(x_{1,i}),f(x_{1,i'})
+-\mid\mathbf Y_{2},\mathbf X_{2},\mathbf X_{1}\}.
++=\frac1{N^2}
++\sum_{i=1}^{N}\sum_{i'=1}^{N}
++\Cov\{f(x_i^*),f(x_{i'}^*)
++\mid\mathbf Y_{2},\mathbf X_{2},\mathbf X_*\}.
+ \end{equation}
+ Given preliminary posterior draws $f^{(b)}$, form
+-$\mu_f^{(b)}\coloneqq n_{1}^{-1}\sum_i f^{(b)}(x_{1,i})$ and estimate $V_f$ by their sample variance. This calculation integrates tree and leaf uncertainty and retains cross-profile covariance. Averaging the pointwise posterior variances would omit the covariance terms.
++$\mu_f^{(b)}\coloneqq N^{-1}\sum_i f^{(b)}(x_i^*)$ and estimate $V_f$ by their sample variance. This calculation integrates tree and leaf uncertainty and retains cross-profile covariance. Averaging the pointwise posterior variances would omit the covariance terms.
+ 
+ \subsection{Derivation of discrepancy uncertainty}\label{sec:B.3}
+ Let $\mathcal T^g\coloneqq(\mathcal T_{h^g}^g)_{h^g=1}^{H_g}$ and define
+ \begin{equation}\label{eq:weights}
+ a_{h^g\ell}\coloneqq
+-\frac1{n_{1}}\sum_{i=1}^{n_{1}}
+-\ind\{x_{1,i}\in\ell\text{ of tree }h^g\}.
+-\end{equation}
+-Regrouping the randomized-control-profile average of the discrepancy trees gives
++\frac1{N}\sum_{i=1}^{N}
++\ind\{x_i^*\in\ell\text{ of tree }h^g\}.
++\end{equation}
++Regrouping the trial-profile average of the discrepancy trees gives
+ \begin{equation}
+ \mu_g=\sum_{h^g,\ell}a_{h^g\ell}\theta^g_{h^g\ell}.
+ \end{equation}
+@@ -500,12 +513,12 @@
+ \frac{\widehat\sigma_1^2}{\widehat V_{f,k}}
+ \geq\frac{\widehat\sigma_1^2}{\widehat V_f},
+ \]
+-with equality only when the positive block variances are equal. Consecutive blocks of an autocorrelated Markov chain also do not supply a formal 95\% posterior or repeated-sampling guarantee. Figure S1 illustrates the curves for one Gaussian two-arm dataset; Table S11 evaluates the full-variance expression in the application.
++with equality only when the positive block variances are equal. Consecutive blocks of an autocorrelated Markov chain also do not supply a formal 95\% posterior or repeated-sampling guarantee. The following figure illustrates the curves for one separate-treatment Gaussian two-arm dataset; Table~\ref{tab:tableS11a} evaluates the full-variance expression in the application.
+ 
+ \begin{figure}[!htbp]
+ \centering
+ \includegraphics[width=.82\linewidth,keepaspectratio]{figureS1.pdf}
+-\caption{Illustrative prior ESS curves for Gaussian two-arm Sc1, replicate 1. The lrcBART curve is the block-based central ESS summary over the variance-scale grid; the dotted horizontal line is its full-variance ceiling. The MAP overlay uses its corresponding prior ESS calculation. Because MAP and lrcBART use different prior constructions and ESS implementations, the common horizontal axis denotes each method's supplied variance-scale parameter rather than identical prior distributions. The curves use one dataset and are not averaged over replicates.}
++\caption{Illustrative prior ESS curves for the separate-treatment Gaussian two-arm Sc1, replicate 1. The lrcBART curve is the block-based central ESS summary over the variance-scale grid; the dotted horizontal line is its full-variance ceiling. The MAP overlay uses its corresponding prior ESS calculation. Because MAP and lrcBART use different prior constructions and ESS implementations, the common horizontal axis denotes each method's supplied variance-scale parameter rather than identical prior distributions. The curves use one dataset and are not averaged over replicates.}
+ \end{figure}
+ 
+ \subsection{Pointwise and overall means}\label{sec:B.6}
+@@ -539,25 +552,156 @@
+ The same fitted functions inform all profiles, so the covariance terms generally do not vanish. Inverse variance is also nonlinear. Pointwise ESS values therefore do not generally sum or average to the overall ESS; the overall ESS must be calculated from the variance of $\bar\mu$.
+ 
+ \subsection{Reference interpretation and implementation qualifications}\label{sec:B.7}
+-The theoretical reference treats $\sigma_1^2$ as fixed. Numerical calibration substitutes a fixed estimate $\widehat\sigma_1^2$; in two-arm analyses this estimate uses randomized controls. A single-arm analysis specifies its standardization profiles separately and uses the RWD-control residual variance as the reference scale under $\sigma_1^2=\sigma_2^2$.
++The theoretical reference treats $\sigma_1^2$ as fixed. Numerical calibration substitutes a fixed estimate $\widehat\sigma_1^2$; in two-arm analyses this estimate uses randomized controls. All reported analyses use all trial profiles, including the treated profiles in a single-arm analysis, and a single-arm analysis uses the RWD-control residual variance as the reference scale under $\sigma_1^2=\sigma_2^2$.
+ 
+ For survival outcomes, censoring enters the preliminary historical likelihood and therefore affects $V_f$. The reference information unit remains one uncensored normal observation on the log-time scale.
+ 
+-The preliminary historical fit, calibration tree simulation and final joint fit use different admissible split rules. The current calibration simulator limits depth to 12, while the final two-arm fit also requires at least five randomized controls per discrepancy leaf. Prior ESS calibration uses an untruncated spike-variance distribution; the two-arm sampler uses its upper-truncated counterpart, and single-arm fits fix the spike variance at $\min(s_0^2,\tau_1^2/2)$. Accordingly, the reported prior ESS corresponds to the stated calibration specification.
+- \section{Local agreement and regional borrowing properties}\label{sec:C}
+-\subsection{Regional model and scope}\label{sec:C.1}
+-The main-text results address two questions: whether the posterior learns practical agreement between control sources, and how borrowing changes estimation of the current-control mean. They concern a joint Gaussian model on fixed regions. The historical and current-control means are both estimated; neither is treated as a known prediction from another tree update. These results are benchmarks for the borrowing construction, rather than guarantees for the fitted sum-of-trees model.
+-
+-For main-text Theorem~\ref{T-thm:regional_learning}, let $R_1,\ldots,R_J$ be a fixed finite partition. Within region $j$, independent observations follow
+-\[
+-Y_{2,ji}\sim\N(f_j^*,\sigma_2^2),\qquad
+-Y_{1,ji}\sim\N(f_j^*+g_j^*,\sigma_1^2),
+-\]
+-with known positive residual variances. The fitted model uses independent priors across regions, with $f_j\sim\N(0,\lambda_j^2)$ independent of $g_j\sim w\N(0,\tau_0^2)+(1-w)\N(0,\tau_1^2)$. All prior parameters are fixed, with $0<\lambda_j^2<\infty$, $0<w<1$, and $0<\tau_0^2<\tau_1^2<\infty$. Each source's sample size tends to infinity in every region. No relative growth-rate restriction is needed for this finite-region result.
+-
+-Main-text Theorem~\ref{T-thm:borrowing_risk} instead uses the flat prior $p(f)\propto1$ for the historical mean in one region, retaining the proper discrepancy mixture and fixed known variances. This change removes baseline shrinkage from the exact risk comparison. Its posterior is proper when both source sample sizes are positive, as the normal integral in Section~\ref{sec:C.3} shows. The flat-baseline risk guarantee must not be transferred to the normal baseline prior without a separate argument.
+-
+-\subsection{Proof of main-text Theorem 2}\label{sec:C.2}
++The preliminary historical fit, calibration tree simulation and final joint fit use different admissible split rules. The current calibration simulator limits depth to 12, while the separate-treatment two-arm fit requires at least five randomized controls per discrepancy leaf; the primary joint fit instead uses all trial participants for that restriction. Prior ESS calibration uses an untruncated spike-variance distribution; the two-arm sampler uses its upper-truncated counterpart, and single-arm fits fix the spike variance at $\min(s_0^2,\tau_1^2/2)$. The joint fitting tree weight is specified in \eqref{eq:treeweight}, whereas its prior-tree calibration uses a locally forced-terminal recursion. Accordingly, the reported prior ESS corresponds to the stated calibration specification. Aligning the full-variance rule, scale law and tree prior with the final fit would require a new calibration and evaluation of the affected analyses.
++
++\subsection{Treatment information in the joint likelihood}\label{sec:B.8}
++The control-mean target and the treatment coefficient have different uncertainty. For fixed forests, indicators and scales, collect all $f$ and $g$ leaf parameters in $\beta_0$, with prior covariance $\Lambda_0$. Write $Z_0=[Z_f,\operatorname{diag}(S)Z_g]$ for their observation-level design: an $f$ row reaches one leaf per $f$ tree, and a $g$ row is zero for an external observation. Let $A$ be the treatment column and $W$ the diagonal matrix of source precisions. Normal updating gives joint precision
++\[
++Q=\begin{pmatrix}
++\Lambda_0^{-1}+Z_0^\top WZ_0&Z_0^\top WA\\
++A^\top WZ_0&v_\psi^{-1}+A^\top WA
++\end{pmatrix}.
++\]
++Integrating the forest coefficients yields
++\begin{equation}\label{eq:schur}
++\Var(\psi\mid\text{trees, indicators, scales},\mathcal D)
++=\left[v_\psi^{-1}+A^\top WA
++-A^\top WZ_0(\Lambda_0^{-1}+Z_0^\top WZ_0)^{-1}Z_0^\top WA\right]^{-1}.
++\end{equation}
++This is the inverse Schur complement of the forest block. The subtracted quadratic form is nonnegative, so the variance is at least the full-conditional variance $(v_\psi^{-1}+A^\top WA)^{-1}$ used to draw $\psi$. Integrating tree and scale states requires averaging the conditional variances and adding the variance of their conditional means. A control-mean precision ratio neither supplies these covariance terms nor defines an incremental ESS for treatment. Equation~\eqref{eq:schur} is a Gaussian identity, not a new treatment-ESS definition.
++
++\subsection{Marginal ELIR for the sum of tree contributions}\label{sec:B.9}
++For a differentiable scalar prior density $p_\mu$ and normal reference variance $\sigma_1^2$, marginal ELIR is
++\[
++\ESS_{\mathrm{ELIR}}(p_\mu)
++=\sigma_1^2\int\frac{\{p_\mu'(u)\}^2}{p_\mu(u)}\,du,
++\]
++when the location information is finite and the boundary terms required for integration by parts vanish. This is the expected prior-curvature definition of \citet{neuenschwander2020}. It uses the density of the total mean, not separate leaf conditional distributions from backfitting. For independent normal leaf contributions $u_j$ with variances $v_j$ and fixed target weights $r_j$, the weighted sum has
++\[
++\ESS_{\mathrm{ELIR}}\left(\sum_j r_j u_j\right)
++=\left(\sum_j\frac{r_j^2}{e_j}\right)^{-1},\qquad e_j=\sigma_1^2/v_j.
++\]
++The weights are target-profile proportions within a tree; at one profile each reached leaf has weight one. The inverse sum arises because the tree contributions add to the mean and their variances add under independence. Fitted contributions from different trees are generally dependent.
++
++For a historical Gaussian fit conditional on its forest structures and scales, let $Z_f$ be the historical leaf-incidence matrix, $\Lambda_f=\lambda_f^2 I$, and $y_2$ the centered historical responses. The joint posterior of the historical leaf coefficients has covariance and mean
++\[
++\Sigma_f=(\Lambda_f^{-1}+Z_f^\top Z_f/\sigma_2^2)^{-1},\qquad
++m_f=\Sigma_f Z_f^\top y_2/\sigma_2^2.
++\]
++Let $c_f$ and $a_g$ contain the target proportions in the historical and discrepancy leaves, and let $D_z$ be the diagonal matrix of discrepancy component variances. Conditional on the joint state $\eta$, independence of the external posterior and discrepancy prior gives
++\[
++\mu\mid\eta,\mathcal D_2\sim\N(M_\eta,V_\eta),\qquad
++M_\eta=m_0+c_f^\top m_f,\qquad
++V_\eta=c_f^\top\Sigma_f c_f+a_g^\top D_z a_g,
++\]
++where $m_0$ restores centering. A finite approximation to the mixing distribution is $p_B(u)=\sum_{b=1}^B\omega_b\phi(u;M_b,V_b)$ with positive weights summing to one. Historical forest states must be sampled jointly from their historical-data posterior, while discrepancy states come from the specified prior. They cannot be assembled by independently resampling fitted trees. In an AFT fit, the state also includes the augmented historical log times.
++
++For this finite normal mixture, let $s_b(u)=(M_b-u)/V_b$. Its marginal score is the conditional mean of the component score given $u$. Total variance of the scores and integration by parts give
++\[
++\frac{\sigma_1^2}{\Var_{p_B}(\mu)}
++\leq\ESS_{\mathrm{ELIR}}(p_B)
++\leq\sigma_1^2\sum_b\frac{\omega_b}{V_b}.
++\]
++These bounds refer to the same mixture. The implemented calibration instead integrates tree and indicator uncertainty inside $V_g$, substitutes the historical marginal variance, and averages over an untruncated scale distribution. The bounds therefore do not order that calibration against the ELIR of the fitted model. The reported studies use the variance reference, not a marginal-ELIR replacement.
++ \section{Fixed-region theory and control-source benchmarks}\label{sec:C}
++\subsection{Joint treatment and discrepancy learning}\label{sec:C.joint}
++We prove main-text Theorem~\ref{T-thm:joint_learning}. Condition on a fixed finite partition, the group design and known, fixed positive residual variances. Collect parameters in
++$\vartheta=(f_1,\ldots,f_J,g_1,\ldots,g_J,\psi)^\top$.
++The design has, within each region $j$, rows $e_{f_j}^\top$, $(e_{f_j}+e_{g_j})^\top$ and $(e_{f_j}+e_{g_j}+e_\psi)^\top$ for external controls, concurrent controls and treated participants. Here $e_k$ denotes a coordinate vector in $\mathbb R^{2J+1}$.
++
++If all three row types have positive counts, the design has full column rank. Indeed, a vector orthogonal to every external row has each $f$ coordinate zero; orthogonality to concurrent-control rows then makes each $g$ coordinate zero, and treated rows determine the remaining treatment coordinate. Let $X_0$ contain one of each row type and let $q_n$ be the smallest group-by-region observation precision, $n_{a,j}/\sigma_a^2$, where $\sigma_{\mathrm{trt}}^2=\sigma_1^2$. As all counts increase, $q_n\to\infty$ and
++\[
++G_n=X^\top WX\succeq q_nX_0^\top X_0,
++\]
++so $\lambda_{\min}(G_n)\to\infty$ without a relative growth-rate restriction.
++
++Conditional on a discrepancy allocation $z\in\{0,1\}^J$, let $Q_z$ be the prior precision of $\vartheta$. It is fixed and positive definite. The Gaussian posterior has
++\[
++V_z=(Q_z+G_n)^{-1},\qquad m_z=V_zX^\top WY.
++\]
++At the fixed true parameter $\vartheta^*$,
++\[
++\E_{\vartheta^*}(m_z)-\vartheta^*=-V_zQ_z\vartheta^*,\qquad
++\operatorname{Cov}_{\vartheta^*}(m_z)=V_zG_nV_z\preceq V_z.
++\]
++The operator norm of $V_z$ is at most $1/\lambda_{\min}(G_n)$, so both the squared bias and sampling variance tend to zero. It follows that
++\[
++\E_{\vartheta^*}\!\left[\int\|\vartheta-\vartheta^*\|^2
++\,d\Pi_z(\vartheta\mid Y)\right]
++=\operatorname{tr}(V_z)+\E_{\vartheta^*}\|m_z-\vartheta^*\|^2\longrightarrow0.
++\]
++Markov's inequality yields posterior concentration in probability for each component. There are only $2^J$ components, and the mixture probability outside a neighborhood is bounded by the largest component probability, whatever their posterior weights. Norm equivalence in the fixed-dimensional parameter space gives the theorem's displayed concentration statement.
++
++For a region with $|g_j^*|\ne c$, a draw that is on the opposite side of the tolerance boundary must satisfy $|g_j-g_j^*|\geq\bigl||g_j^*|-c\bigr|>0$. Concentration makes this probability vanish. A finite union establishes the simultaneous practical-agreement limits. This proof does not require consistent recovery of the spike/slab labels.
++
++Removing all concurrent-control rows leaves the nonzero null direction $(0_J,1_J,-1)$. It changes every $g_j$ by the same constant and the treatment coefficient by its negative. Thus the single-arm likelihood does not identify them separately. The all-three-groups-per-region assumption is a sufficient condition for the theorem; it is not claimed to be a minimal design condition.
++
++\subsection{Control-source benchmarks}\label{sec:C.1}
++We study two properties: learning practical agreement and characterizing the estimation benefit and error induced by borrowing. The following separate control-source results use a Gaussian model on a fixed finite partition $R_1,\ldots,R_J$ of the target covariate domain. Within region $j$, independent historical and trial controls have means $f_j$ and $f_j+g_j$, with known positive residual variances $\sigma_2^2$ and $\sigma_1^2$. Here $g_j$ is the total regional source difference. Both source means are unknown and estimated jointly. Use independent priors across regions, with $f_j\sim\N(0,\lambda_j^2)$ independent of
++\[
++g_j\sim w\N(0,\tau_0^2)+(1-w)\N(0,\tau_1^2),
++\qquad 0<w<1,\quad 0<\tau_0^2<\tau_1^2<\infty.
++\]
++All prior parameters are fixed, with $0<\lambda_j^2<\infty$.
++
++\begin{theorem}[Learning local practical agreement]\label{thm:regional_learning}
++Suppose the regional model is correctly specified, with true parameters $f_j^*,g_j^*$. As the numbers $n_{1,j}$ and $n_{2,j}$ of controls from both sources tend to infinity in every region, for every $\epsilon>0$,
++\[
++\Pi\left\{\max_{1\leq j\leq J}
++\bigl(|f_j-f_j^*|+|g_j-g_j^*|\bigr)>\epsilon\mid\mathcal D\right\}\longrightarrow0
++\]
++almost surely under the true sampling law, where $\mathcal D$ denotes the observed control data. Thus the current-control means $f_j+g_j$ are also consistently learned. If $|g_j^*|\ne c$ in every region, the following limits hold simultaneously:
++\begin{equation}\label{eq:regional_agreement}
++B_{c,j}\coloneqq\Pi(|g_j|<c\mid\mathcal D)
++\longrightarrow
++\begin{cases}
++1,& |g_j^*|<c,\\
++0,& |g_j^*|>c,
++\end{cases}
++\quad\text{almost surely}.
++\end{equation}
++\end{theorem}
++For this control-source benchmark, $B_{c,j}$ is the probability based only on the two control groups. For $x\in R_j$, it is constant within the region. The posterior increasingly supports practical agreement where the true difference is small and rules it out where the difference exceeds the tolerance. This interpretation uses posterior probabilities directly, without a labeling rule.
++
++\noindent\textbf{Estimation benefit and conflict risk.}
++For an exact risk calculation in one region, retain the discrepancy mixture but replace the normal prior on the historical mean $f$ by the flat prior $p(f)\propto1$. This is a separate benchmark assumption. Write $\mu_1=f+g$, $d=\mu_1-f$ for the true discrepancy, $v_s=\sigma_s^2/n_s>0$, $V=v_1+v_2$, and $D=\bar Y_1-\bar Y_2$. Let
++\begin{equation}\label{eq:regional_weight}
++\begin{aligned}
++\gamma(D)&=\frac{w\phi(D;0,V+\tau_0^2)}
++{w\phi(D;0,V+\tau_0^2)+(1-w)\phi(D;0,V+\tau_1^2)},\\
++a_k&=\frac{v_1}{V+\tau_k^2},\qquad
++a(D)=\gamma(D)a_0+\{1-\gamma(D)\}a_1,
++\end{aligned}
++\end{equation}
++where $\phi(\cdot;m,v)$ is a normal density with mean $m$ and variance $v$.
++
++\begin{theorem}[Regional borrowing benefit and conflict risk]\label{thm:borrowing_risk}
++Under the flat-baseline regional benchmark, the posterior mean of the current-control mean is
++\begin{equation}\label{eq:regional_estimator}
++\widehat\mu_1=\{1-a(D)\}\bar Y_1+a(D)\bar Y_2.
++\end{equation}
++The coefficient $a(D)$ decreases strictly with $|D|>0$ and tends to $a_1>0$ as $|D|\to\infty$. Put $a_*=v_1/V$. Its repeated-sampling bias and mean squared error are
++\begin{equation}\label{eq:regional_risk}
++\begin{aligned}
++\operatorname{Bias}_d(\widehat\mu_1)&=-\E_d\{a(D)D\},\\
++R(d)\coloneqq\E_d(\widehat\mu_1-\mu_1)^2
++&=\frac{v_1v_2}{V}
+++\E_d\!\left[\{(a_*-a(D))D-a_*d\}^2\right],
++\end{aligned}
++\end{equation}
++where the expectations on the right are over $D\sim\N(d,V)$. Under exact agreement, $d=0$, the estimator is unbiased and $R(0)<v_1$, the mean squared error of the trial-only mean. For fixed sample sizes and prior parameters, as $|d|\to\infty$,
++\[
++\frac{\operatorname{Bias}_d(\widehat\mu_1)}{d}\longrightarrow-a_1,
++\qquad \frac{R(d)}{d^2}\longrightarrow a_1^2.
++\]
++\end{theorem}
++Theorem~\ref{thm:borrowing_risk} establishes an estimation benefit under agreement and quantifies the remaining error under conflict. The finite normal slab leaves residual shrinkage, so the benchmark does not have uniformly bounded borrowing bias over arbitrarily large discrepancies. The mean squared error result does not imply that every realized posterior interval is shorter.
++
++\subsection{Proof of the control-source learning theorem}\label{sec:C.2}
+ Fix region $j$, suppress its index on $v_s\coloneqq\sigma_s^2/n_{s,j}$, and let $\beta_j=(f_j,g_j)^\top$. The sufficient statistic
+ \begin{equation}\label{eq:regional_sufficient}
+ \widehat\beta_j=
+@@ -585,14 +729,14 @@
+ \]
+ proves learning of the current-control means. Finally, if $|g_j^*|\ne c$, put $\delta_j=\bigl||g_j^*|-c\bigr|>0$. A posterior draw for which $|g_j|$ and $|g_j^*|$ are on opposite sides of $c$ must satisfy $|g_j-g_j^*|\geq\delta_j$. Posterior concentration makes this event's probability vanish. There are finitely many regions, so the practical-agreement limits hold almost surely in all of them simultaneously. This conclusion concerns posterior probabilities directly and introduces no decision cutoff for $B_{c,j}$.
+ 
+-\subsection{Proof of main-text Theorem 3}\label{sec:C.3}
++\subsection{Proof of the flat-baseline control-risk theorem}\label{sec:C.3}
+ \noindent\textbf{Joint posterior and borrowing coefficient.}
+ Suppress the region index and write $\mu_1=f+g$, $v_s=\sigma_s^2/n_s$, $V=v_1+v_2$, and $D=\bar Y_1-\bar Y_2$. Integrating the flat-baseline likelihood over $f$ gives
+ \begin{equation}\label{eq:regional_flat_integral}
+ \int_{\mathbb R}\phi(\bar Y_1;f+g,v_1)\phi(\bar Y_2;f,v_2)\,df
+ =\phi(D;g,V).
+ \end{equation}
+-Integrating this expression against the two proper discrepancy components gives the positive finite mixture $w\phi(D;0,V+\tau_0^2)+(1-w)\phi(D;0,V+\tau_1^2)$. Thus the joint posterior is proper, and its spike probability is $\gamma(D)$ in main-text equation~\eqref{T-eq:regional_weight}. Under component $k$,
++Integrating this expression against the two proper discrepancy components gives the positive finite mixture $w\phi(D;0,V+\tau_0^2)+(1-w)\phi(D;0,V+\tau_1^2)$. Thus the joint posterior is proper, and its spike probability is $\gamma(D)$ in equation~\eqref{eq:regional_weight}. Under component $k$,
+ \[
+ g\mid D,k\sim\N\!\left(\frac{\tau_k^2}{V+\tau_k^2}D,
+ \frac{V\tau_k^2}{V+\tau_k^2}\right).
+@@ -601,7 +745,7 @@
+ \begin{equation}\label{eq:regional_T}
+ T\coloneqq\frac{v_2\bar Y_1+v_1\bar Y_2}{V},\qquad a_*\coloneqq\frac{v_1}{V}.
+ \end{equation}
+-Conditional on $g$ and the observations, the posterior mean of $\mu_1$ is $T+a_*g$. Hence its component-specific posterior mean is $\bar Y_1-a_kD$, where $a_k=v_1/(V+\tau_k^2)$. Averaging over the components proves main-text equation~\eqref{T-eq:regional_estimator}.
++Conditional on $g$ and the observations, the posterior mean of $\mu_1$ is $T+a_*g$. Hence its component-specific posterior mean is $\bar Y_1-a_kD$, where $a_k=v_1/(V+\tau_k^2)$. Averaging over the components proves equation~\eqref{eq:regional_estimator}.
+ 
+ The posterior spike odds are
+ \begin{equation}\label{eq:regional_odds}
+@@ -618,7 +762,7 @@
+ \E_d(T)=\mu_1-a_*d,\qquad
+ \Var_d(T)=\frac{v_1v_2}{V},\qquad D\sim\N(d,V).
+ \end{equation}
+-The posterior-mean estimator can be written as $\widehat\mu_1=T+\{a_*-a(D)\}D$. Taking its expectation or squared error proves the bias and risk expressions in main-text equation~\eqref{T-eq:regional_risk}.
++The posterior-mean estimator can be written as $\widehat\mu_1=T+\{a_*-a(D)\}D$. Taking its expectation or squared error proves the bias and risk expressions in equation~\eqref{eq:regional_risk}.
+ 
+ At $d=0$, $a(D)$ is even and $D$ is symmetrically distributed, so $\E_0\{a(D)D\}=0$. The estimator is therefore unbiased. Since $0<a(D)<a_*$ and $P(D\ne0)=1$,
+ \begin{equation}\label{eq:agreement_risk_gain}
+@@ -665,7 +809,7 @@
+ \end{equation}
+ This limit does not permit the spike variance to shrink arbitrarily with the sample size.
+ 
+-\subsection{Implications for standardized treatment contrasts}\label{sec:C.4}
++\subsection{Separate-treatment contrast benchmark}\label{sec:C.4}
+ Let $p_j\geq0$, $\sum_jp_j=1$, be fixed target-region weights. Write $e_j=\widehat\mu_{1,j}-\mu_{1,j}$ and $b_j=\E(e_j)$. The mean squared error of the standardized control estimate is
+ \begin{equation}\label{eq:regional_aggregate_risk}
+ \E\!\left(\sum_jp_je_j\right)^2
+@@ -674,17 +818,17 @@
+ \end{equation}
+ Under independent regional data and fixed independent regional priors in the flat-baseline benchmark, the off-diagonal covariance terms vanish. If all regions have exact agreement, the regional estimators are unbiased and their aggregate risk is $\sum_jp_j^2R_j(0)<\sum_jp_j^2v_{1,j}$, the risk of the standardized trial-only control mean.
+ 
+-For the treatment contrast, write the error of the same independent treatment estimator as $e_{\mathrm{trt}}$, with bias $b_{\mathrm{trt}}$. The contrast error is $e_{\mathrm{trt}}-\sum_jp_je_j$, so its mean squared error is
++For this separate-treatment contrast benchmark, write the error of the same independent treatment estimator as $e_{\mathrm{trt}}$, with bias $b_{\mathrm{trt}}$. The contrast error is $e_{\mathrm{trt}}-\sum_jp_je_j$, so its mean squared error is
+ \[
+ \Var(e_{\mathrm{trt}})+\sum_{j,k}p_jp_k\Cov(e_j,e_k)
+ +\left(b_{\mathrm{trt}}-\sum_jp_jb_j\right)^2.
+ \]
+ Under exact agreement in all regions, the strict control-risk improvement therefore also improves contrast estimation relative to the same treatment estimator with trial-only controls. Under conflict, the weighted control biases must be retained; if the treatment estimator is unbiased, the contrast bias is $-\sum_jp_jb_j$.
+ 
+-These formulas condition on the regional weights and design. Shared estimated mixture parameters and overlapping trees can induce regional dependence, so covariance terms cannot be discarded for the fitted ensemble. Under the learning model of Theorem~\ref{T-thm:regional_learning}, posterior consistency of all regional control means also implies consistency of their fixed weighted mean. Adding a consistently learned treatment mean yields consistency of the corresponding contrast. An extension from fixed regions and weights to a learned ensemble standardized over empirical trial covariates requires its own design and posterior-concentration argument.
++These formulas condition on the regional weights and design. Shared estimated mixture parameters and overlapping trees can induce regional dependence, so covariance terms cannot be discarded for the fitted ensemble. Under the learning model of Theorem~\ref{thm:regional_learning}, posterior consistency of all regional control means also implies consistency of their fixed weighted mean. Adding a consistently learned treatment mean yields consistency of the corresponding contrast. An extension from fixed regions and weights to a learned ensemble standardized over empirical trial covariates requires its own design and posterior-concentration argument.
+ 
+ \subsection{Supporting properties of a conditional discrepancy leaf}\label{sec:C.5}
+-The following two lemmas retain the original leaf-level calculations as supporting results. Fix a discrepancy-tree partition, every other tree contribution, $n\geq1$ trial-control partial residuals $\mathbf r$ in a leaf, $\sigma_1^2>0$, $0<w<1$, and $0<\tau_0^2<\tau_1^2<\infty$. Let $\bar r$ be their mean, and let $z=1$ denote the spike component. Normal marginalization gives
++The following two lemmas retain the original leaf-level calculations as supporting results. Fix a discrepancy-tree partition, every other tree contribution, $n\geq1$ trial partial residuals after treatment adjustment $\mathbf r$ in a leaf, $\sigma_1^2>0$, $0<w<1$, and $0<\tau_0^2<\tau_1^2<\infty$. Let $\bar r$ be their mean, and let $z=1$ denote the spike component. Normal marginalization gives
+ \begin{equation}\label{eq:odds}
+ \frac{P(z=1\mid\mathbf r)}{P(z=0\mid\mathbf r)}
+ =\frac{w}{1-w}\sqrt{\frac{\tau_1^2+\sigma_1^2/n}{\tau_0^2+\sigma_1^2/n}}
+@@ -722,8 +866,8 @@
+ 
+ A full-model learning result would require joint posterior concentration of the historical and current-control functions over the target covariate distribution, with adequate support from both sources. Subject to separation from the tolerance boundary, such concentration could justify convergence of posterior practical-agreement probabilities averaged over that population. It would not by itself imply uniform convergence at every profile, exact recovery of tree boundaries, or an estimation-risk improvement.
+ 
+-Without trial controls, the separate treatment likelihood supplies no information about $g$. Neither a regional theorem nor an ESS calculation supplies that missing information. The regional-discrepancy figure reports finite-sample empirical behavior; Table 7 reports patient-profile prior information and is not evidence that the discrepancy is consistently learned in the single-arm application. Censored-outcome extensions likewise require additional arguments rather than treating imputed log times as fully observed independent data in these proofs.
+- \section{Survival outcomes}\label{sec:D}
++Without trial controls, the separate treatment likelihood supplies no information about $g$. Neither a regional theorem nor an ESS calculation supplies that missing information. The regional-discrepancy figure reports finite-sample empirical behavior; Table~\ref{M-tab:table7} reports patient-profile prior information and is not evidence that the discrepancy is consistently learned in the single-arm application. Censored-outcome extensions likewise require additional arguments rather than treating imputed log times as fully observed independent data in these proofs.
++ \section{Survival outcomes under separate treatment modeling}\label{sec:D}
+ \subsection{Observed-data likelihood}\label{sec:D.1}
+ For group $a\in\{\mathrm{trt},1,2\}$, let $T_{a,i}$ denote event time, $C_{a,i}$ censoring time, $\widetilde T_{a,i}\coloneqq \min(T_{a,i},C_{a,i})$ and $\delta_{a,i}\coloneqq \ind(T_{a,i}\leq C_{a,i})$. Conditional noninformative censoring is assumed given the covariates and source. For a source-specific lognormal model with log-time mean $\eta_{a,i}$ and residual standard deviation $\sigma_a$, the outcome likelihood contribution is
+ \begin{equation}
+@@ -738,7 +882,7 @@
+ Y_{a,i}\mid\text{rest},\delta_{a,i}=0\sim
+ \N(\eta_{a,i},\sigma_a^2)\text{ restricted to }(\log\widetilde T_{a,i},\infty).
+ \end{equation}
+-Conditional on these latent responses, use the Gaussian leaf and variance updates in Appendix A. The trial and historical censoring indicators are both used. Prior ESS retains the uncensored normal reference described in Appendix B.7.
++Conditional on these latent responses, use the Gaussian leaf and variance updates under the separate-treatment specification in Appendix~\ref{sec:A.7}. The trial and historical censoring indicators are both used. Prior ESS retains the uncensored normal reference described in Appendix B.7.
+ 
+ \subsection{Standardized survival curves and population medians}\label{sec:D.3}
+ At each posterior draw, average the individual survival curves over the trial standardization profiles:
+@@ -767,7 +911,9 @@
+ For both the two-arm and single-arm simulation summaries, each arm's RMST is calculated using that arm's own fitted residual standard deviation. Thus the control curve at posterior draw $d$ uses $\sigma_{1}^{(d)}$, while the treatment curve uses $\sigma_{\mathrm{trt}}^{(d)}$; no residual-scale substitution is applied.
+ 
+ Simulation ratios replace each control RMST denominator by its maximum with 0.05, while arm-specific summaries use the unfloored values. Tables S5 and S7 report these denominator-floored ratios. Their errors are evaluated against the data-generating RMST ratio at the same profiles and horizon. These supplementary operating characteristics therefore include the effect of the denominator floor.
+- \section{Simulation design and complete results}\label{sec:E}
++ \section{Separate-treatment simulation design and results}\label{sec:E}
++All experiments in this appendix use independently fitted treatment and control models. They are distinct from the primary joint-model experiment in Appendix~\ref{sec:G}, with different implementations and replicate counts. In the source labels used here, group 1 includes concurrent controls only in the control likelihood. Sc4 denotes a global shift and Sc5 a regional shift throughout this appendix.
++
+ \subsection{Covariates, selection and scenario definitions}\label{sec:E.1}
+ Each setting has ten observed covariates. Here $X_j$ denotes scalar predictor $j$, whereas the bold $\mathbf{X}_a$ in the model denotes the covariate collection for group $a$. For a profile $x$, $x_j$ denotes coordinate $j$. Before source selection, the ordinary covariates are independent normals with unit variance and mean vector
+ \begin{equation}
+@@ -777,7 +923,7 @@
+ \begin{equation}\label{eq:select}
+ \operatorname{logit}^{-1}\left\{\frac{b_D(X_5+X_6)-q}{t_D}\right\},
+ \end{equation}
+-where $q$ is the empirical quantile of the pool's selection score at the intended trial fraction. Two-arm studies use $b_D=-1.20,t_D=0.5$; single-arm studies use $b_D=-0.55,t_D=1$. Thus the single-arm and two-arm selection strengths differ. Exact numbers of eligible trial and historical observations are then sampled from their respective pools. In two-arm trials, treatment is assigned independently with the probability in main Table 1.
++where $q$ is the empirical quantile of the pool's selection score at the intended trial fraction. Two-arm studies use $b_D=-1.20,t_D=0.5$; single-arm studies use $b_D=-0.55,t_D=1$. Thus the single-arm and two-arm selection strengths differ. Exact numbers of eligible trial and historical observations are then sampled from their respective pools. In two-arm trials, treatment is assigned independently with probability $2/3$ for Gaussian outcomes and $3/4$ for survival outcomes.
+ 
+ Sc3 is included only in the two-arm studies. Latent $U_5,U_6$ replace $X_5,X_6$ in both the outcome function and selection score. They are generated from the corresponding normal distributions. The observed proxies are $X_j=\rho U_j^{\mathrm{std}}+\sqrt{1-\rho^2}\,e_j$, where $U_j^{\mathrm{std}}$ is standardized within its candidate pool and $e_j\sim\N(0,1)$ independently. We use $\rho=-0.5,0,0.5$. Conditioning on these proxies generally does not remove source differences induced by latent-variable selection.
+ 
+@@ -836,14 +982,14 @@
+ \caption*{f90, f50 and f25 denote fractions of the dataset-specific calibration ceiling. s0min sets $s_0^2=10^{-6}$ without target selection. The single-arm target 100 is an absolute count at both survival trial sizes, including $n_{\mathrm{trt}}=30$.}
+ \end{table}
+ 
+-The hierarchical comparator uses source-specific regression coefficients with a common estimated hypermean. Intercept and predictor-specific discrepancy-variance components have $\IG(3/2,3s_\tau^2/2)$ priors, where $s_\tau^2$ is the scale listed in Table S3; it is not a probability or historical sample-size fraction. Hypermeans have diffuse normal priors. This comparator pools regression parameters through their prior rather than specifying a nonlinear discrepancy surface.
++The hierarchical comparator uses source-specific regression coefficients with a common estimated hypermean. Intercept and predictor-specific discrepancy-variance components have $\IG(3/2,3s_\tau^2/2)$ priors, where $s_\tau^2$ is the scale listed in Table~\ref{tab:S3}; it is not a probability or historical sample-size fraction. Hypermeans have diffuse normal priors. This comparator pools regression parameters through their prior rather than specifying a nonlinear discrepancy surface.
+ 
+ The MAP comparator uses the historical sample mean and its standard error in a study-level normal model, a normal location prior with standard deviation 10, and an inverse-gamma prior $\IG(3/2,3a/2)$ for its heterogeneity parameter, with $a$ selected by the MAP prior ESS procedure. Its predictive prior is approximated by a normal mixture and updated using the trial-control sample mean and standard error. This study-level comparator does not use a BART outcome model. Its prior ESS procedure is distinct from the lrcBART definition. PSCL follows the propensity-score-integrated construction described by \citet{Chen2020PSCL}.
+ 
+ There are 17 method/configuration combinations per Gaussian two-arm setting and 13 per survival two-arm setting. Each reported single-arm setting has eight combinations. All reported configurations have 100 completed replicates.
+ 
+ \subsection{Performance measures and Monte Carlo uncertainty}\label{sec:E.5}
+-Let $\psi$ denote the estimand being evaluated: the Gaussian mean contrast, survival median ratio or RMST ratio. For point estimates $\widehat\psi_r$ and dataset-specific truths $\psi_r$, write $e_r\coloneqq \widehat\psi_r-\psi_r$ over $R=100$ replicates. We calculate
++Let $\zeta$ denote the estimand being evaluated: the Gaussian mean contrast, survival median ratio or RMST ratio. For point estimates $\widehat\zeta_r$ and dataset-specific truths $\zeta_r$, write $e_r\coloneqq \widehat\zeta_r-\zeta_r$ over $R=100$ replicates. We calculate
+ \begin{equation}
+ \widehat{\mathrm{Bias}}\coloneqq R^{-1}\sum_r e_r,\qquad
+ \widehat{\mathrm{RMSE}}\coloneqq \sqrt{R^{-1}\sum_r e_r^2}.
+@@ -870,10 +1016,10 @@
+ \input{generated/tableS7}
+ \clearpage
+ \subsection{Prior ESS sensitivity and regional summaries}\label{sec:E.6}
+-Table S8 distinguishes the requested target, the target after ceiling capping, the block-based curve value and the selected prior scale. These summarize per-dataset prior ESS calibration. The regional-discrepancy figure summarizes the posterior probability of a small discrepancy and posterior mean discrepancy are averaged over trial-control profiles in half-unit bins on $X_5$. It uses the first 40 Gaussian replicates for three regional shifts of 0.5, 1 and 2 (Sc5). For each bin, profile-specific posterior summaries are pooled across replicates and averaged; replicates contribute in proportion to their trial-control counts within that bin. The figure shows binned means, not credible intervals or replicate-variability intervals.
++Table~\ref{tab:tableS8} distinguishes the requested target, the target after ceiling capping, the block-based curve value and the selected prior scale. These summarize per-dataset prior ESS calibration. The regional-discrepancy figure summarizes posterior probabilities of a small discrepancy and posterior mean discrepancies averaged over trial-control profiles in half-unit bins on $X_5$. It uses the first 40 Gaussian replicates for three regional shifts of 0.5, 1 and 2 (Sc5). For each bin, profile-specific posterior summaries are pooled across replicates and averaged; replicates contribute in proportion to their trial-control counts within that bin. The figure shows binned means, not credible intervals or replicate-variability intervals.
+ \input{generated/tableS8}
+ \clearpage
+- \section{Application details and supplementary results}\label{sec:F}
++ \section{Separate-treatment application details and results}\label{sec:F}
+ \subsection{Analysis extract and harmonized variables}\label{sec:F.1}
+ The available merged analysis extract has 30 EloKRd and 200 triplet-treated UCMM observations. Starting from 797 UCMM records, the preparation code excludes negative OS/PFS times (790 remain), requires a recorded induction start (303), excludes E-Rd/Elo-Rd (302), and retains verified three-agent regimens (200). The EloKRd analysis uses the available subset of the published study \citep{Derman2022}.
+ 
+@@ -898,7 +1044,7 @@
+ \begin{tabular}{p{1.3in}p{4.6in}}
+ \toprule
+ Dimension & Numeric model representation and coding\\\midrule
+-Age & Continuous age in years: enrollment age for EloKRd; age at the identification date for UCMM, with diagnosis-age fallback. Table 7 groups rows into $<50$, $[50,60)$, $[60,70)$ and $\geq70$ years for display, shows age to one decimal year, and uses exact age in every calculation.\\
++Age & Continuous age in years: enrollment age for EloKRd; age at the identification date for UCMM, with diagnosis-age fallback. Table~\ref{M-tab:table7} groups rows into $<50$, $[50,60)$, $[60,70)$ and $\geq70$ years for display, shows age to one decimal year, and uses exact age in every calculation.\\
+ Sex & Male indicator: 1 for male, 0 for female; source strings beginning with M or F are harmonized.\\
+ Race & Black and Other indicators, with White as reference. White/Caucasian and Black/African labels are combined. Other comprises remaining harmonized categories, including Other/Unknown; it is not an imputation of a known race.\\
+ Hispanic/Latino & 1 for ``Hispanic or Latino''; 0 for the non-Hispanic labels in the extract. Ethnicity remains a separate dimension from race.\\
+@@ -911,7 +1057,7 @@
+ \end{table}
+ 
+ \subsection{Analysis and sensitivity configurations}\label{sec:F.2}
+-All adjusted methods use the same harmonized predictors and standardize control and treated predictions to the 30 EloKRd profiles. KM remains unadjusted. Table S10 reports the hypothetical EloKRd control for adjusted methods and the observed UCMM cohort RMST for KM. Ratios and differences use those respective controls. The primary lrcBART analysis uses $H_f=10$, $H_g=5$, fixed $w=1$ and requested ESS 30. Sensitivities cross $H_f\in\{10,50\}$ with fixed $w\in\{1,0.9\}$. Each of those four settings uses six requested targets: 30, 22.5, 15 and fractions 0.90, 0.50, 0.25 of its calibration ceiling. The target labels 100, 75 and 50 correspond to percentages of the 30-patient trial here; in simulations those labels are absolute counts.
++All adjusted methods use the same harmonized predictors and standardize control and treated predictions to the 30 EloKRd profiles. KM remains unadjusted. Table~\ref{tab:tableS10} reports the hypothetical EloKRd control for adjusted methods and the observed UCMM cohort RMST for KM. Ratios and differences use those respective controls. The primary lrcBART analysis uses $H_f=10$, $H_g=5$, fixed $w=1$ and requested ESS 30. Sensitivities cross $H_f\in\{10,50\}$ with fixed $w\in\{1,0.9\}$. Each of those four settings uses six requested targets: 30, 22.5, 15 and fractions 0.90, 0.50, 0.25 of its calibration ceiling. The target labels 100, 75 and 50 correspond to percentages of the 30-patient trial here; in simulations those labels are absolute counts.
+ 
+ The five comparator settings are KM, AFT-CP, BART-CP and hierarchical AFT at discrepancy-variance prior scales $s_\tau^2=0.05$ and $s_\tau^2=0.5$. Together with 24 lrcBART settings this gives 29 rows per endpoint. The main table reports $s_\tau^2=0.05$; both hierarchical settings remain in the complete appendix table. RMST contrasts use the draw-by-draw calculations in Appendix D, with posterior medians and equal-tailed 95\% intervals.
+ 
+@@ -919,16 +1065,16 @@
+ \clearpage
+ 
+ \subsection{Construction of the patient-profile PFS table}\label{sec:F.3}
+-Table 7 contains one row for each of the 30 EloKRd patients. Rows are ordered by age group ($<50$, 50--59, 60--69 and $\geq70$ years) and exact age. The age group and UCMM count are displayed separately on every row. A row retains that patient's complete model profile: exact age, sex, race, Hispanic/Latino status, cytogenetic risk and ASCT. Age is rounded to one decimal year in the display, while all calculations use its exact value. The other predictors are not set to common reference values.
++Table~\ref{M-tab:table7} contains one row for each of the 30 EloKRd patients. Rows are ordered by age group ($<50$, 50--59, 60--69 and $\geq70$ years) and exact age. The age group and UCMM count are displayed separately on every row. A row retains that patient's complete model profile: exact age, sex, race, Hispanic/Latino status, cytogenetic risk and ASCT. Age is rounded to one decimal year in the display, while all calculations use its exact value. The other predictors are not set to common reference values.
+ 
+ The preliminary historical model is the primary PFS specification with $H_f=10$. Its 4,000 retained posterior predictions at the EloKRd profiles give $V_f(x_i)$ directly as the sample variance across draws for each patient. For a single profile, one leaf from each discrepancy tree has weight one, so the all-spike discrepancy variance is $H_g\tau_0^2$. The expectation uses 100,000 chi-square draws with $\nu_0=3$ and the globally selected $s_0^2=0.00398107$.
+ 
+-For each row, the UCMM cohort count is obtained by matching historical patients on age group, sex, race, Hispanic/Latino status, cytogenetic risk and ASCT. Counts repeat when EloKRd rows share a displayed combination and should not be summed down the table. A count is descriptive and does not restrict the historical fit used for that row's ESS. Every profile uses the same historical residual-variance reference and scale law. Table 7 evaluates the full-variance expectation-of-ratios definition using the preliminary historical fit. ESS is reported to one decimal place, ranges from 3.8 to 24.5, and is expressed in uncensored normal-reference observations for the conditional mean log-PFS at the same profile. Only PFS appears in this table; OS remains in the outcome tables.
++For each row, the UCMM cohort count is obtained by matching historical patients on age group, sex, race, Hispanic/Latino status, cytogenetic risk and ASCT. Counts repeat when EloKRd rows share a displayed combination and should not be summed down the table. A count is descriptive and does not restrict the historical fit used for that row's ESS. Every profile uses the same historical residual-variance reference and scale law. Table~\ref{M-tab:table7} evaluates the full-variance expectation-of-ratios definition using the preliminary historical fit. ESS is reported to one decimal place, ranges from 3.8 to 24.5, and is expressed in uncensored normal-reference observations for the conditional mean log-PFS at the same profile. Only PFS appears in this table; OS remains in the outcome tables.
+ 
+ \subsection{Prior ESS calibration and MCMC diagnostics}\label{sec:F.4}
+-The preliminary application calibration uses 2,000 warm-up and 4,000 retained draws, 2,000 prior trees, 4,000 scale draws and the 141-value scale grid. Table S11(a) reports requested/capped targets, selected scales, the block-based curve and the full-variance ESS evaluated with the estimated prior-tree weight expectation. The latter uses 100,000 deterministic chi-square quantiles for numerical integration. Differences reflect block averaging and numerical integration error; the reciprocal-variance ordering in Appendix B applies with common scale draws.
+-
+-Each lrcBART outcome fit uses four chains with 2,000 warm-up and 2,000 retained draws per chain. Table S11(b) reports $\widehat R$, bulk ESS and tail ESS for the log RMST ratio. Prior ESS and MCMC ESS have different meanings: the former concerns equivalent reference information about a specified current-control mean, whereas the latter concerns simulation efficiency. These scalar diagnostics do not establish exploration of all tree structures.
++The preliminary application calibration uses 2,000 warm-up and 4,000 retained draws, 2,000 prior trees, 4,000 scale draws and the 141-value scale grid. Table~\ref{tab:tableS11a} reports requested/capped targets, selected scales, the block-based curve and the full-variance ESS evaluated with the estimated prior-tree weight expectation. The latter uses 100,000 deterministic chi-square quantiles for numerical integration. Differences reflect block averaging and numerical integration error; the reciprocal-variance ordering in Appendix B applies with common scale draws.
++
++Each lrcBART outcome fit uses four chains with 2,000 warm-up and 2,000 retained draws per chain. Table~\ref{tab:tableS11b} reports $\widehat R$, bulk ESS and tail ESS for the log RMST ratio. Prior ESS and MCMC ESS have different meanings: the former concerns equivalent reference information about a specified current-control mean, whereas the latter concerns simulation efficiency. These scalar diagnostics do not establish exploration of all tree structures.
+ \renewcommand{\thetable}{S11(a)}
+ \input{generated/tableS11a}
+ \clearpage
+@@ -936,6 +1082,427 @@
+ \input{generated/tableS11b}
+ \renewcommand{\thetable}{S\arabic{table}}
+ \clearpage
++ \clearpage
++\section{Joint treatment and control validation}
++\label{sec:G}
++
++This appendix documents the Gaussian validation for the joint primary model. The model is
++\begin{equation}
++\begin{aligned}
++ y_i&=f(x_i)+S_i g(x_i)+A_i\psi+\varepsilon_i,\\
++ v_i&=\begin{cases}
++ \sigma_1^2,&S_i=1,\\
++ \sigma_2^2,&S_i=0,
++ \end{cases}
++ \qquad \varepsilon_i\sim N(0,v_i),\\
++ \psi&\sim N(0,v_\psi),\qquad v_\psi=100.
++\end{aligned}
++ \label{eq:joint_app_model}
++\end{equation}
++where $S_i=1$ for both randomized-trial arms and $S_i=0$ for external controls. The treatment indicator is $A_i=1$ for treated trial subjects and zero otherwise. Thus the randomized-control mean is $f+g$, the treated mean is $f+g+\psi$, and the external-control mean is $f$. The standardized trial contrast is the average of the treated and control potential-mean difference over the trial profiles, and equals $\psi$ under the common-effect model. The Heterogeneous condition deliberately violates that restriction and is scored against its realized trial-profile ATE.
++
++\subsection{Posterior computation}
++
++The prognostic function $f$ is a sum of $H_f=50$ trees and the discrepancy function $g$ is a sum of $H_g=5$ trees. Let
++\[
++ p_k(d)=\alpha_k(1+d)^{-\beta_k},\qquad
++ (\alpha_f,\beta_f)=(0.95,2),\quad (\alpha_g,\beta_g)=(0.5,3).
++\]
++The primary tree prior uses these depth weights in a globally restricted admissible-tree distribution. For a valid tree $T$,
++\begin{equation}
++ \widetilde\pi_k(T)\propto
++ \prod_{v\in I(T)}\frac{p_k(d(v))}{V(v)C(v,s_v)}
++ \prod_{\ell\in L(T)}\{1-p_k(d(\ell))\}
++ \;1\{T\text{ is admissible}\},
++ \label{eq:joint_treeweight}
++\end{equation}
++where $I(T)$ and $L(T)$ are its internal nodes and leaves, $V(v)$ is the number of ancestor-admissible splitting variables at $v$, and $C(v,s_v)$ is the number of available cutpoints for the selected variable. The normalizing constant is over the finite valid-tree support. Admissibility requires ancestor-consistent cuts and at least five fitting observations per leaf: all sources for $f$ and randomized-trial observations for $g$. A terminal node with no remaining cut retains the factor $1-p_k(d)$ under this globally restricted target. This is a depth-weighted restricted tree prior with a single normalizing constant over valid trees.
++
++The minimum leaf size is five and the grow, prune and change move probabilities are 0.3, 0.3 and 0.4. The $f$ terminal parameters have a normal prior with variance
++\[
++ \lambda_f^2=\left\{\frac{R_y}{2k\sqrt{H_f}}\right\}^2,
++ \qquad k=2,
++\]
++where $R_y$ is the range of the centered observed outcome passed to the final fit. The discrepancy terminal parameters use
++\[
++ z_{h\ell}\mid w\sim\operatorname{Bernoulli}(w),\qquad
++ \theta^g_{h\ell}\mid z_{h\ell}=1\sim N(0,\tau_0^2),\qquad
++ \theta^g_{h\ell}\mid z_{h\ell}=0\sim N(0,\tau_1^2).
++\]
++Here $w\sim\operatorname{Beta}(1,1)$, $\nu_0=3$, $\tau_0^2$ has a scaled inverse-chi-square prior with scale $s_0^2$ truncated to $(0,\tau_1^2)$, and $\tau_1^2=R_y^2/(4k^2H_g)$ is fixed. The discrepancy scale is updated through the spike indicators; the slab scale is not updated. The source-specific residual variance priors have three degrees of freedom and scales obtained from source-specific residual-scale estimates and the factor $\chi^2_{3,0.1}/3$. The randomized-trial variance $\sigma_1^2$ is shared by treated and control trial observations; the external-control variance is $\sigma_2^2$.
++
++After centering the observed outcomes, the treatment-adjusted partial residual is
++\[
++ r_i=y_i-f_{-h}(x_i)-S_i g(x_i)-A_i\psi.
++\]
++An $f$-tree update uses both sources with their respective precisions. A $g$-tree update uses randomized observations, including treated observations after subtracting $A_i\psi$, and the spike/slab leaf indicator is integrated out for structure proposals. Conditional on the forests and variances, the treatment update is
++\begin{equation}
++\begin{aligned}
++ V_\psi&=\left(v_\psi^{-1}+\sum_{i:A_i=1}1/v_i\right)^{-1},\\
++ m_\psi&=V_\psi\sum_{i:A_i=1}\frac{y_i-f(x_i)-S_i g(x_i)}{v_i},\\
++ \psi\mid-&\sim N(m_\psi,V_\psi).
++\end{aligned}
++\label{eq:joint_app_psi}
++\end{equation}
++The same $A_i\psi$ term is removed before each forest update and is included in residual-variance updates. Each iteration updates the 50 $f$ trees once, performs five sweeps over the five $g$ trees, then updates the discrepancy hyperparameters, $\psi$ and the two residual variances.
++
++\subsection{Training-only calibration and data-dependent scales}
++
++The calibration selects $s_0^2$ for the discrepancy prior; it is not an ESS calculation for the joint treatment coefficient. Stage 1 fits plain BART to the 300 external-control outcomes and evaluates its posterior mean surface at the 300 trial profiles. A separate plain BART fit to randomized-control outcomes supplies the variance estimate used as $\sigma_1^2$ in calibration. The calibration uses 20 consecutive posterior blocks, $q=0.95$, $H_g=5$, $\nu_0=3$, $\alpha_g=0.5$, $\beta_g=3$, 4,000 inverse-chi-square draws, 2,000 prior-tree draws and requested target $N_{\mathrm{target}}=100$. It uses 1,000 burn-in iterations and 1,000 draws for each calibration fit. The tree-grid calculation uses the combined external and trial profile covariates. Treated outcomes are excluded from this scale-selection stage.
++
++The final joint fit independently calculates its outcome range and source residual-scale priors from the 600 outcomes supplied to that fit, including treated and control trial outcomes and external controls. This distinction is part of the fitted formulation: calibration is training-only, while the final range and variance rules are fit-specific. The selected scale is not described as supplying 100 effective observations to the treatment effect. The existing ESS quantity remains a control-mean prior reference.
++
++\begin{table}[p]
++\centering
++\scriptsize
++\setlength{\tabcolsep}{2pt}
++\caption{Comparator specifications. The methods differ in mean model, variance treatment, range inputs and calibration as well as in borrowing structure.}
++\label{tab:joint_comparators}
++\begin{tabular}{@{}p{0.80in}p{1.35in}p{1.20in}p{1.20in}p{1.10in}@{}}
++\toprule
++Method & Mean model & Trial variance & Range inputs & Calibration \\
++\midrule
++Joint LRC & $f(x)+Sg(x)+A\psi$; 50 $f$ trees and 5 $g$ trees & One $\sigma_1^2$ for both trial arms; $\sigma_2^2$ external & All 600 outcomes for $R_y$; combined trial and external profiles for tree grid & Training-only control fits; $N_{\mathrm{target}}=100$, selected $s_0^2$ \\
++Joint source-BART & Source-indicator mean with common $A\psi$; no separate $g$ ensemble & One trial variance and one external variance & All 600 outcomes; same profile inputs & None: $H_g=0$, so the supplied discrepancy scale is unused \\
++Separated source-BART & Separate treated mean; source-indicator model for controls & Separate treated fit; source-specific control variances & Treated fit and pooled-control fit use their own outcomes & None: $H_g=0$; no common $\psi$ \\
++\bottomrule
++\end{tabular}
++\end{table}
++
++\subsection{Data-generating conditions and reproducibility}
++
++The study has five conditions, 40 datasets per condition, 300 trial subjects, 300 external controls and 10 covariates. Covariates and the baseline outcome surface $F$ follow the constructions in Appendix~\ref{sec:E.1}--\ref{sec:E.2}. The outcome intercept is $b_0=0.42$. A common candidate pool receives independent source indicators with probability $1/2$; exactly 300 trial and 300 external observations are then sampled from their respective source groups. Within the trial, $P(A_i=1\mid S_i=1)=2/3$, giving the expected 2:1 treatment-to-control allocation. Gaussian trial and external residual standard deviations are 1.5 and 1.8.
++
++The Compatible condition has no external shift. One-variable adds a shift of two outside $X_5>2$. Two-variable adds a shift of two outside the checkerboard agreement region
++\[
++ \{X_5>2,\ X_7>2\}\;\cup\;\{X_5\leq 2,\ X_7\leq 2\}.
++\]
++Thus the shift is applied when exactly one of the two covariates exceeds 2. Heterogeneous uses the Two-variable source shift and treatment effect
++\[
++ \tau_i=1+0.5(X_{5i}-\bar X_{5,\mathrm{trial}}),
++\]
++whose trial-profile mean is one. Null uses the same source shift and constant treatment effect $\psi=0$. The condition names distinguish this 40-replicate study from the separate Sc1--Sc5 simulation record.
++
++Compatible, One-variable and Two-variable share dataset seeds 92026001--92026040 and share trial data, treatment assignments and noise within each replicate. Heterogeneous uses 92126001--92126040 and Null uses 92226001--92226040. For a dataset seed $s$, calibration seeds are $s+100001$ for the randomized-control stage, $s+200001$ for the external-control stage and $s+300001$ for the calibration calculation. Validation fit seeds are recorded in \texttt{09-method-exploration/}\allowbreak\texttt{validation/jobs.csv}; the long-chain run used 30,000 burn-in iterations, 12,000 retained draws and three chains for every method-condition-replicate combination.
++
++The reproducibility package retains the relative validation directory \texttt{09-method-exploration/}\allowbreak\texttt{validation/} and its files \texttt{validation\_core.R}, \texttt{run\_validation.R} and \texttt{summarize\_validation.R}, together with the joint-package R and C++ sources. Their SHA-256 values and the output manifest are retained in the package. The original validation archive contains the raw chain files. The accompanying source package contains pooled method--dataset rows, seed and configuration fields, and checksums; it does not redistribute the raw chains.
++
++\subsection{Complete numerical results}
++
++Table~\ref{tab:joint_full_metrics} gives the pooled ATE bias, mean interval width, RMSE, Monte Carlo standard error of the RMSE, 95\% coverage count and ATE convergence flags. The RMSE standard errors quantify finite-replicate uncertainty in the displayed RMSE; the flags report method--dataset groups and are separate from posterior uncertainty. ATE flags use $\widehat R>1.05$ or bulk effective sample size below 400. The paired block-bootstrap comparison uses only Compatible, One-variable and Two-variable, with shared replicate seeds and common trial data; it does not resample Heterogeneous or Null. Its interval is a sampling-uncertainty statement for the paired empirical comparison, not a posterior interval and not a correction for failed chains.
++
++\begin{table}[p]
++\centering
++\caption{Complete joint validation metrics. Bias, interval width and RMSE are pooled over the 40 datasets in each condition. Coverage is the number of central 95\% intervals containing the truth out of 40. RMSE SE is the Monte Carlo standard error of the RMSE. ATE flags count method--dataset groups with $\widehat R>1.05$ or bulk effective sample size below 400.}
++\label{tab:joint_full_metrics}
++\setlength{\tabcolsep}{2.6pt}
++\scriptsize
++\begin{tabular}{llrrrrrr}
++\toprule
++Condition & Method & Bias & Width & RMSE & RMSE SE & Coverage & Flags\\
++\midrule
++Compatible & Joint LRC & -0.057 & 0.683 & 0.175 & 0.017 & 38/40 & 0\\
++Compatible & Joint source-BART & -0.047 & 0.775 & 0.213 & 0.020 & 39/40 & 1\\
++Compatible & Separated source-BART & -0.037 & 0.744 & 0.206 & 0.021 & 37/40 & 1\\
++One-variable & Joint LRC & -0.055 & 0.762 & 0.207 & 0.018 & 38/40 & 3\\
++One-variable & Joint source-BART & -0.052 & 0.782 & 0.216 & 0.020 & 38/40 & 2\\
++One-variable & Separated source-BART & -0.045 & 0.747 & 0.211 & 0.021 & 37/40 & 0\\
++Two-variable & Joint LRC & -0.046 & 0.803 & 0.215 & 0.018 & 38/40 & 3\\
++Two-variable & Joint source-BART & -0.052 & 0.784 & 0.215 & 0.020 & 38/40 & 2\\
++Two-variable & Separated source-BART & -0.040 & 0.761 & 0.211 & 0.021 & 37/40 & 7\\
++Heterogeneous & Joint LRC & -0.047 & 0.811 & 0.209 & 0.021 & 38/40 & 8\\
++Heterogeneous & Joint source-BART & -0.039 & 0.789 & 0.211 & 0.021 & 38/40 & 4\\
++Heterogeneous & Separated source-BART & -0.034 & 0.763 & 0.192 & 0.020 & 39/40 & 5\\
++Null & Joint LRC & -0.024 & 0.810 & 0.230 & 0.029 & 36/40 & 4\\
++Null & Joint source-BART & -0.015 & 0.789 & 0.215 & 0.025 & 38/40 & 3\\
++Null & Separated source-BART & -0.018 & 0.769 & 0.210 & 0.022 & 38/40 & 8\\
++\bottomrule
++\end{tabular}
++\end{table}
++
++Across the 200 method-condition groups, the ATE convergence summary for Joint LRC has median/max $\widehat R=1.004/1.058$ and minimum/median bulk ESS $35.2/1289.5$. The corresponding Joint source-BART values are $1.004/1.057$ and $36.8/1438.5$, and the separated values are $1.003/1.059$ and $31.9/2464.0$. Discrepancy-contrast diagnostics are materially worse: the maximum $\widehat R$ values are 2.004, 2.164 and 1.987, and the minimum bulk ESS values are 4.1, 3.8 and 4.1 for Joint LRC, Joint source-BART and Separated source-BART, respectively. These diagnostics support a qualified treatment-effect comparison and do not support a claim of reliable regional discrepancy recovery.
++
++Across Compatible, One-variable and Two-variable, pooled Joint LRC RMSE is 0.199690, compared with 0.209416 for Separated source-BART and 0.214491 for Joint source-BART. The paired MSE differences (Joint LRC minus comparator) are -0.003979 (95\% block-bootstrap CI $[-0.011089,0.002817]$) and -0.006130 (CI $[-0.010451,-0.002245]$). The corresponding RMSE reductions are 4.64\% and 6.9\%, below the prespecified 10\% improvement criterion. The validation therefore records a modest, comparator-specific empirical pattern. It does not establish general superiority, recovery of regional discrepancies or transfer to survival or single-arm analyses.
++
++
++\subsection{Saved-chain sensitivity}
++Each chain-index summary retains all 120 datasets in Compatible, One-variable and Two-variable. Table~\ref{tab:joint_chain_sensitivity} computes RMSE from the posterior mean within each saved chain, using the same datasets for every method. The percentage reduction is $100(1-\mathrm{RMSE}_{\mathrm{LRC}}/\mathrm{RMSE}_{\mathrm{comparator}})$. No diagnostic-based exclusions are applied. The pooled direction is similar across chain indices, but this descriptive check does not establish adequate mixing or replace the three-chain diagnostics.
++\begin{table}[htbp]
++\centering\small
++\caption{Saved-chain sensitivity across 120 datasets per chain index.}
++\label{tab:joint_chain_sensitivity}
++\begin{tabular}{crrrrr}
++\toprule
++&\multicolumn{3}{c}{RMSE}&\multicolumn{2}{c}{LRC reduction (\%)}\\
++\cmidrule(lr){2-4}\cmidrule(lr){5-6}
++Chain & Joint LRC & Joint source & Separated source & vs separated & vs joint source\\
++\midrule
++1 & 0.199403 & 0.214421 & 0.209069 & 4.623 & 7.004\\
++2 & 0.199121 & 0.214920 & 0.209618 & 5.008 & 7.351\\
++3 & 0.201897 & 0.215474 & 0.210701 & 4.178 & 6.301\\
++\bottomrule
++\end{tabular}
++\end{table}
++ \clearpage
++\section{Selected displays for the separate-treatment variant}\label{sec:H}
++These displays summarize the separate-treatment experiments in Appendix~\ref{sec:E}. They do not report the joint treatment model. All numerical entries and regional curves use the same 100-replicate simulation record described there; the regional display uses its first 40 replicates.
++
++\begin{table}[h!]
++\centering\small
++\caption{Separate-treatment simulation study designs.}\label{tab:design}
++\begin{tabular}{p{1.35in}rrrrp{1.05in}}
++\toprule
++Design & Trial $N$ & Historical $n_2$ & $P(Z=1)$ & Replicates & Settings\\
++\midrule
++Gaussian, two-arm & 300 & 300 & $2/3$ & 100 & Sc1--Sc5; 12 settings\\
++Survival, two-arm & 300 & 300 & $3/4$ & 100 & Sc1--Sc5; 12 settings\\
++Gaussian, single-arm & 200 & 300 & 1 & 100 & Sc1--Sc2\\
++Survival, single-arm & 200 & 300 & 1 & 100 & Sc1--Sc2\\
++\bottomrule
++\end{tabular}
++\caption*{Ten predictors are generated in each design. $Z=1$ denotes trial treatment; two-arm allocation is Bernoulli, so realized arm sizes vary. Historical controls are regenerated for each replicate. Sc1: common covariate distributions; Sc2: selection on observed prognostic variables; Sc3: latent-variable selection with proxy correlations $-0.5,0,0.5$; Sc4: global historical shift of 1 or 2; Sc5: regional shifts outside $X_5>2$ (0.5, 1, 2) or $X_7\leq2$ (1, 2). Gaussian treatment effects are 1; survival effects are $\log(1.4)$ on the log-time scale.}
++\end{table}
++\clearpage
++\begingroup
++\setlength{\tabcolsep}{4pt}
++\renewcommand{\arraystretch}{1.13}
++\renewcommand{\arraystretch}{1.04}
++\fontsize{10}{11.5}\selectfont
++\begin{longtable}{lrrrr}
++\caption{Gaussian mean-difference performance in representative two-arm scenarios.}\label{tab:table2}\\
++\toprule
++Method & Bias & RMSE & Coverage & Power \\ \midrule
++\endfirsthead
++\multicolumn{5}{l}{\tablename\ \thetable\ (continued)}\\
++\toprule
++Method & Bias & RMSE & Coverage & Power \\ \midrule
++\endhead
++\midrule\multicolumn{5}{r}{Continued on next page}\\\endfoot
++\bottomrule\endlastfoot
++\multicolumn{5}{l}{\strut\textit{Sc1}}\\*
++lrcBART & 0.003 & 0.174 & 0.950 & 0.890 \\
++BART-NP & -0.010 & 0.209 & 0.970 & 0.730 \\
++BART-CP & 0.009 & 0.153 & 0.950 & 0.980 \\
++BART-PP & -0.001 & 0.197 & 0.950 & 0.800 \\
++LM-NP & -0.019 & 0.348 & 0.930 & 0.390 \\
++LM-CP & 0.015 & 0.262 & 0.940 & 0.710 \\
++LM-PP & -0.005 & 0.349 & 0.950 & 0.390 \\
++hier. LM & -0.002 & 0.329 & 0.940 & 0.450 \\
++PSCL & 0.019 & 0.290 & 0.920 & 0.480 \\
++MAP & 0.023 & 0.302 & 0.940 & 0.530 \\
++\multicolumn{5}{l}{\strut\textit{Sc2}}\\*
++lrcBART & 0.003 & 0.186 & 0.940 & 0.860 \\
++BART-NP & -0.032 & 0.211 & 0.940 & 0.750 \\
++BART-CP & 0.048 & 0.188 & 0.930 & 0.950 \\
++BART-PP & -0.004 & 0.200 & 0.970 & 0.740 \\
++LM-NP & -0.062 & 0.358 & 0.900 & 0.440 \\
++LM-CP & 0.343 & 0.463 & 0.730 & 0.920 \\
++LM-PP & 0.007 & 0.355 & 0.950 & 0.450 \\
++hier. LM & 0.052 & 0.363 & 0.930 & 0.510 \\
++PSCL & 0.007 & 0.317 & 0.910 & 0.390 \\
++MAP & 0.186 & 0.458 & 0.870 & 0.550 \\
++\multicolumn{5}{l}{\strut\textit{Sc3, $\rho=0$}}\\*
++lrcBART & 0.009 & 0.315 & 0.930 & 0.560 \\
++BART-NP & -0.046 & 0.328 & 0.950 & 0.520 \\
++BART-CP & 0.957 & 0.985 & 0.010 & 1.000 \\
++BART-PP & 0.004 & 0.309 & 0.940 & 0.550 \\
++LM-NP & -0.057 & 0.367 & 0.930 & 0.340 \\
++LM-CP & 0.989 & 1.027 & 0.050 & 1.000 \\
++LM-PP & 0.047 & 0.350 & 0.940 & 0.500 \\
++hier. LM & 0.085 & 0.373 & 0.930 & 0.510 \\
++PSCL & 0.667 & 0.721 & 0.290 & 0.980 \\
++MAP & 0.202 & 0.434 & 0.910 & 0.610 \\
++\newpage
++\multicolumn{5}{l}{\strut\textit{Sc4, $\delta=1$}}\\*
++lrcBART & -0.007 & 0.201 & 0.940 & 0.810 \\
++BART-NP & -0.010 & 0.209 & 0.970 & 0.730 \\
++BART-CP & -0.689 & 0.706 & 0.000 & 0.000 \\
++BART-PP & -0.012 & 0.197 & 0.970 & 0.770 \\
++LM-NP & -0.019 & 0.348 & 0.930 & 0.390 \\
++LM-CP & -0.726 & 0.772 & 0.180 & 0.010 \\
++LM-PP & -0.054 & 0.352 & 0.960 & 0.350 \\
++hier. LM & -0.104 & 0.358 & 0.930 & 0.290 \\
++PSCL & -0.483 & 0.563 & 0.530 & 0.060 \\
++MAP & -0.230 & 0.467 & 0.860 & 0.170 \\
++\multicolumn{5}{l}{\strut\textit{Sc5, $X_5$, $\delta=1$}}\\*
++lrcBART & -0.050 & 0.214 & 0.930 & 0.690 \\
++BART-NP & -0.010 & 0.209 & 0.970 & 0.730 \\
++BART-CP & -0.334 & 0.366 & 0.370 & 0.350 \\
++BART-PP & -0.014 & 0.195 & 0.970 & 0.760 \\
++LM-NP & -0.019 & 0.348 & 0.930 & 0.390 \\
++LM-CP & -0.353 & 0.439 & 0.660 & 0.190 \\
++LM-PP & -0.030 & 0.348 & 0.970 & 0.370 \\
++hier. LM & -0.063 & 0.338 & 0.920 & 0.360 \\
++PSCL & -0.230 & 0.370 & 0.850 & 0.210 \\
++MAP & -0.160 & 0.378 & 0.920 & 0.270 \\
++\end{longtable}
++\noindent\begin{minipage}{\linewidth}\footnotesize Each row summarizes 100 alternative-hypothesis replicates. Coverage is for a 95\% interval. Empirical power is the frequency of posterior probability of benefit exceeding 0.95 (PSCL: lower 95\% confidence limit above the threshold). Gaussian decisions use a threshold of 0.5 and survival decisions use a ratio threshold of 1. RMSE is the square root of the mean squared error. NP denotes no historical pooling (trial controls only); CP denotes complete pooling; PP denotes source-adjusted pooling using a source indicator. PP is distinct from the hierarchical comparator. lrcBART requests ESS 100; the MAP comparator in Table 2 also requests 100. Full configurations and Monte Carlo standard errors appear in the appendix. The hierarchical comparator uses discrepancy-variance prior scale $s_\tau^2=0.25$.\end{minipage}
++\endgroup
++ \clearpage
++\begingroup
++\setlength{\tabcolsep}{4pt}
++\renewcommand{\arraystretch}{1.13}
++\renewcommand{\arraystretch}{1.04}
++\fontsize{10}{11.5}\selectfont
++\begin{longtable}{lrrrr}
++\caption{Median-survival-ratio performance in representative two-arm scenarios.}\label{tab:table3}\\
++\toprule
++Method & Bias & RMSE & Coverage & Power \\ \midrule
++\endfirsthead
++\multicolumn{5}{l}{\tablename\ \thetable\ (continued)}\\
++\toprule
++Method & Bias & RMSE & Coverage & Power \\ \midrule
++\endhead
++\midrule\multicolumn{5}{r}{Continued on next page}\\\endfoot
++\bottomrule\endlastfoot
++\multicolumn{5}{l}{\strut\textit{Sc1}}\\*
++lrcBART & 0.014 & 0.290 & 0.970 & 0.420 \\
++BART-NP & 0.048 & 0.392 & 0.980 & 0.330 \\
++BART-CP & 0.010 & 0.218 & 0.950 & 0.660 \\
++BART-PP & -0.034 & 0.316 & 0.980 & 0.300 \\
++AFT-NP & -0.105 & 0.455 & 0.970 & 0.070 \\
++AFT-CP & 0.027 & 0.307 & 1.000 & 0.330 \\
++AFT-PP & 0.022 & 0.415 & 0.990 & 0.100 \\
++hier. AFT & 0.050 & 0.443 & 0.990 & 0.140 \\
++\multicolumn{5}{l}{\strut\textit{Sc2}}\\*
++lrcBART & 0.058 & 0.341 & 0.960 & 0.480 \\
++BART-NP & 0.117 & 0.440 & 0.960 & 0.320 \\
++BART-CP & 0.130 & 0.310 & 0.970 & 0.630 \\
++BART-PP & -0.019 & 0.349 & 0.970 & 0.280 \\
++AFT-NP & 0.018 & 0.529 & 0.960 & 0.160 \\
++AFT-CP & 1.202 & 1.435 & 0.570 & 0.920 \\
++AFT-PP & 0.403 & 0.817 & 0.920 & 0.300 \\
++hier. AFT & 0.417 & 0.815 & 0.930 & 0.390 \\
++\multicolumn{5}{l}{\strut\textit{Sc3, $\rho=0$}}\\*
++lrcBART & 0.076 & 0.472 & 0.970 & 0.290 \\
++BART-NP & 0.014 & 0.502 & 0.960 & 0.180 \\
++BART-CP & 2.642 & 2.802 & 0.000 & 1.000 \\
++BART-PP & 0.075 & 0.446 & 0.960 & 0.300 \\
++AFT-NP & -0.090 & 0.531 & 0.970 & 0.110 \\
++AFT-CP & 3.187 & 3.429 & 0.010 & 1.000 \\
++AFT-PP & 0.477 & 0.839 & 0.930 & 0.470 \\
++hier. AFT & 0.415 & 0.836 & 0.920 & 0.350 \\
++\newpage
++\multicolumn{5}{l}{\strut\textit{Sc4, $\delta=1$}}\\*
++lrcBART & -0.007 & 0.332 & 0.940 & 0.370 \\
++BART-NP & 0.048 & 0.392 & 0.980 & 0.330 \\
++BART-CP & -0.729 & 0.736 & 0.000 & 0.000 \\
++BART-PP & -0.080 & 0.311 & 0.960 & 0.230 \\
++AFT-NP & -0.105 & 0.455 & 0.970 & 0.070 \\
++AFT-CP & -0.768 & 0.780 & 0.080 & 0.000 \\
++AFT-PP & -0.212 & 0.405 & 0.960 & 0.030 \\
++hier. AFT & -0.159 & 0.459 & 0.970 & 0.060 \\
++\multicolumn{5}{l}{\strut\textit{Sc5, $X_5$, $\delta=1$}}\\*
++lrcBART & -0.054 & 0.331 & 0.930 & 0.330 \\
++BART-NP & 0.048 & 0.392 & 0.980 & 0.330 \\
++BART-CP & -0.391 & 0.422 & 0.420 & 0.070 \\
++BART-PP & -0.067 & 0.316 & 0.960 & 0.240 \\
++AFT-NP & -0.105 & 0.455 & 0.970 & 0.070 \\
++AFT-CP & -0.441 & 0.484 & 0.700 & 0.000 \\
++AFT-PP & -0.116 & 0.385 & 1.000 & 0.060 \\
++hier. AFT & -0.074 & 0.433 & 0.980 & 0.080 \\
++\end{longtable}
++\noindent\begin{minipage}{\linewidth}\footnotesize Each row summarizes 100 alternative-hypothesis replicates. Coverage is for a 95\% interval. Empirical power is the frequency of posterior probability of benefit exceeding 0.95 (PSCL: lower 95\% confidence limit above the threshold). Gaussian decisions use a threshold of 0.5 and survival decisions use a ratio threshold of 1. RMSE is the square root of the mean squared error. NP denotes no historical pooling (trial controls only); CP denotes complete pooling; PP denotes source-adjusted pooling using a source indicator. PP is distinct from the hierarchical comparator. lrcBART requests ESS 100; the MAP comparator in Table 2 also requests 100. Full configurations and Monte Carlo standard errors appear in the appendix. The hierarchical comparator uses discrepancy-variance prior scale $s_\tau^2=0.25$.\end{minipage}
++\endgroup
++ \clearpage
++\begingroup
++\setlength{\tabcolsep}{4pt}
++\renewcommand{\arraystretch}{1.13}
++\renewcommand{\arraystretch}{1.04}
++\fontsize{10}{11.5}\selectfont
++\begin{longtable}{lrrrr}
++\caption{Single-arm performance for Gaussian mean differences and median-survival ratios.}\label{tab:table4}\\
++\toprule
++Method & Bias & RMSE & Coverage & Power \\ \midrule
++\endfirsthead
++\multicolumn{5}{l}{\tablename\ \thetable\ (continued)}\\
++\toprule
++Method & Bias & RMSE & Coverage & Power \\ \midrule
++\endhead
++\midrule\multicolumn{5}{r}{Continued on next page}\\\endfoot
++\bottomrule\endlastfoot
++\multicolumn{5}{l}{\strut\textit{Gaussian, Sc1}}\\*
++lrcBART & -0.015 & 0.156 & 0.950 & 0.890 \\
++BART-CP & -0.014 & 0.153 & 0.940 & 0.940 \\
++LM-CP & -0.029 & 0.270 & 0.960 & 0.600 \\
++hier. LM & -0.025 & 0.272 & 1.000 & 0.090 \\
++\multicolumn{5}{l}{\strut\textit{Gaussian, Sc2}}\\*
++lrcBART & 0.062 & 0.177 & 0.980 & 0.910 \\
++BART-CP & 0.056 & 0.176 & 0.930 & 0.950 \\
++LM-CP & 0.290 & 0.395 & 0.850 & 0.910 \\
++hier. LM & 0.357 & 0.444 & 1.000 & 0.500 \\
++\multicolumn{5}{l}{\strut\textit{Survival, Sc1}}\\*
++lrcBART & -0.020 & 0.178 & 0.990 & 0.590 \\
++BART-CP & -0.011 & 0.180 & 0.970 & 0.730 \\
++AFT-CP & 0.055 & 0.373 & 0.970 & 0.370 \\
++hier. AFT & 0.097 & 0.388 & 1.000 & 0.020 \\
++\multicolumn{5}{l}{\strut\textit{Survival, Sc2}}\\*
++lrcBART & 0.070 & 0.216 & 0.980 & 0.730 \\
++BART-CP & 0.069 & 0.216 & 0.990 & 0.770 \\
++AFT-CP & 0.676 & 0.859 & 0.820 & 0.810 \\
++hier. AFT & 0.872 & 1.042 & 1.000 & 0.370 \\
++\end{longtable}
++\noindent\begin{minipage}{\linewidth}\footnotesize Each row summarizes 100 alternative-hypothesis replicates. Coverage is for a 95\% interval; empirical power is the frequency of posterior probability of benefit exceeding 0.95, using a threshold of 0.5 for Gaussian mean differences and 1 for survival ratios. All single-arm lrcBART primary rows use fixed $w=1$, $H_f=50$, $H_g=5$ and requested ESS 100. The hierarchical discrepancy variance has prior $\operatorname{IG}(3/2,3s_\tau^2/2)$. In single-arm studies, CP uses all historical controls with full likelihood weight and no source discrepancy; there are no observed trial controls to pool. Full configurations and Monte Carlo standard errors appear in the appendix. The single-arm hierarchical comparator uses discrepancy-variance prior scale $s_\tau^2=0.05$.\end{minipage}
++\endgroup
++ \clearpage
++\begin{figure}[p]
++\centering
++\resizebox{\textwidth}{!}{\begin{tikzpicture}[>=Stealth, yscale=1.5,
++  v/.style={draw, circle, minimum size=9mm, inner sep=0pt, font=\normalsize},
++  uv/.style={v, dashed},
++  lbl/.style={font=\small},
++  ed/.style={->, >=Stealth, shorten >=2pt, shorten <=2pt},
++  ttl/.style={font=\small\bfseries}]
++
++\begin{scope}
++  \node[v, label={[lbl]below:treatment}]   (Z1) at (0,0)      {$Z$};
++  \node[v, label={[lbl]below:outcome}]      (Y1) at (2.7,0)    {$Y$};
++  \node[v, label={[lbl]left:data source}]   (D1) at (0,1.3)    {$D$};
++  \node[v, label={[lbl]above:covariates}]   (X1) at (1.35,2.6) {$X$};
++  \draw[ed] (D1) -- (Z1);
++  \draw[ed] (Z1) -- (Y1);
++  \draw[ed] (X1) -- (Y1);
++  \node[ttl] at (1.35,3.5) {(1) No confounding};
++\end{scope}
++
++\begin{scope}[xshift=5.4cm]
++  \node[v, label={[lbl]below:treatment}]   (Z2) at (0,0)      {$Z$};
++  \node[v, label={[lbl]below:outcome}]      (Y2) at (2.7,0)    {$Y$};
++  \node[v, label={[lbl]left:data source}]   (D2) at (0,1.3)    {$D$};
++  \node[v, label={[lbl]above:covariates}]   (X2) at (1.35,2.6) {$X$};
++  \draw[ed] (D2) -- (Z2);
++  \draw[ed] (Z2) -- (Y2);
++  \draw[ed] (X2) -- (Y2);
++  \draw[ed] (X2) -- (D2);
++  \node[ttl] at (1.35,3.5) {(2) Measured confounding};
++\end{scope}
++
++\begin{scope}[xshift=10.8cm]
++  \node[v, label={[lbl]below:treatment}]    (Z3) at (0,0)      {$Z$};
++  \node[v, label={[lbl]below:outcome}]       (Y3) at (2.7,0)    {$Y$};
++  \node[v, label={[lbl]left:data source}]    (D3) at (0,1.3)    {$D$};
++  \node[uv, label={[lbl]right:unmeasured}]   (U3) at (1.6,1.3)  {$U$};
++  \node[v, label={[lbl]above:proxy}]         (X3) at (1.6,2.6)  {$X$};
++  \draw[ed] (D3) -- (Z3);
++  \draw[ed] (Z3) -- (Y3);
++  \draw[ed] (U3) -- (D3);
++  \draw[ed] (U3) -- (Y3);
++  \draw[ed] (U3) -- (X3) node[midway, right, font=\small] {$\rho$};
++  \node[ttl] at (1.35,3.5) {(3) Unmeasured confounding};
++\end{scope}
++
++\end{tikzpicture}}
++\caption{Directed acyclic graphs (DAGs) for the source-selection mechanisms in Sc1--Sc3. In this schematic, $D$ denotes data source (trial or historical), $Z$ treatment assignment, $Y$ an individual outcome, $X$ the measured predictors relevant to the depicted paths and $U$ unmeasured prognostic variables; participant and group indices are suppressed. Sc1: measured covariates predict the outcome but do not influence source selection. Sc2: measured covariates influence both source selection and outcome. Sc3: unmeasured variables influence source selection and outcome, and generate observed proxies through $U\to X$, with proxy association indexed by $\rho$. Other measured predictors are omitted from the schematic. The $D\to Z$ edge reflects that historical observations are controls, whereas treatment is assigned within the trial. These diagrams illustrate the simulation mechanisms, not an established causal structure for the clinical application.}
++\label{fig:dag_scenarios}
++\end{figure}
++ \clearpage
++\begin{figure}[p]
++\centering
++\includegraphics[width=\linewidth]{figure1.pdf}
++\caption{Separate-treatment model: regional historical shifts for Gaussian outcomes (Sc5). Historical outcomes are shifted upward by $\delta=0.5,1,2$ where $X_5\leq2$, and are unshifted otherwise. (a) Posterior probability of a small discrepancy, $P\{|g(x)|<0.5\mid\text{data}\}$. (b) Posterior mean discrepancy; dashed lines show the true trial-minus-historical discrepancy, $-\delta$ in the shifted region and zero elsewhere. Solid curves summarize pooled trial-control profiles within $X_5$ bins of width 0.5 across 40 replicates; they are not uncertainty intervals. The dotted line marks the shift boundary. Primary lrcBART uses $H_f=50$, $H_g=5$, $w\sim\operatorname{Beta}(1,1)$ and requested prior ESS 100.}
++\label{fig:regional}
++\end{figure}
++\clearpage
+  \bibliographystyle{abbrvnat}
+ \bibliography{source/references}
+ \end{document}

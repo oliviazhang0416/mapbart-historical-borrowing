@@ -1,0 +1,12 @@
+Frozen validation queue; this file is generated before filtering.
+mode=validation; output=/Users/yuanj/Dropbox (Personal)/YuanJi/research/Yunxuan-Zhang/MAP-BART/revision/09-method-exploration/validation/results
+n_burn=30000; n_draw=12000; workers=6
+batch_started_utc=2026-09-19T22:56:08Z
+preselection_utc=2026-09-19T22:32:14Z
+primary_candidate_id=JOINT-LRC-01; primary_baseline_id=SEPARATED-SOURCE-01
+methods: JOINT-LRC-01, JOINT-SOURCE-01, SEPARATED-SOURCE-01
+conditions: compatible, one (ONE50 d2), two (XOR50 d2), heterogeneous (XOR50 d2), null (XOR50 d2)
+constant seeds 92026001:92026040; heterogeneous 92126001:92126040; null 92226001:92226040
+calibration: original training-only routine, H_f=50, H_g=5, N_target=100, 1000 burn/1000 draws
+joint treatment prior: tau ~ N(0,100); no ESS=100 interpretation is claimed for joint models
+This file records the numerical run; scientific review follows completion.

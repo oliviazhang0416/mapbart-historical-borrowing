@@ -1,0 +1,36 @@
+[
+  {
+    "cohort": "EloKRd",
+    "n": 30,
+    "age_median": 62.800821355236,
+    "age_q1": 57.390143737166,
+    "age_q3": 70.216290212183,
+    "male": 21,
+    "race_Black": 4,
+    "race_Other": 3,
+    "hispanic": 1,
+    "high_risk_cyto": 15,
+    "asct": 9,
+    "pfs_status": 13,
+    "os_status": 10,
+    "race_White": 23,
+    "missing_model": 0
+  },
+  {
+    "cohort": "UCMM",
+    "n": 200,
+    "age_median": 60.6,
+    "age_q1": 53.95,
+    "age_q3": 66.9,
+    "male": 109,
+    "race_Black": 58,
+    "race_Other": 11,
+    "hispanic": 10,
+    "high_risk_cyto": 51,
+    "asct": 174,
+    "pfs_status": 127,
+    "os_status": 43,
+    "race_White": 131,
+    "missing_model": 0
+  }
+]

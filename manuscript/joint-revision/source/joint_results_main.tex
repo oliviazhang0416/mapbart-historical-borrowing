@@ -1,0 +1,26 @@
+\section{Joint-model simulation study}
+\label{sec:joint_validation_main}
+
+\subsection{Design}
+
+We evaluated the joint model in \eqref{eq:model} under five Gaussian conditions: Compatible, One-variable, Two-variable, Heterogeneous and Null. Each of the 40 datasets per condition contained 300 randomized-trial participants, 300 external controls and 10 covariates. Trial treatment was assigned with probability $2/3$, giving an expected 2:1 treatment-to-control allocation. Trial and external residual standard deviations were 1.5 and 1.8, respectively. The first three conditions used common dataset seeds 92026001--92026040 and shared trial data, treatment assignments and noise across conditions; Heterogeneous and Null used seeds 92126001--92126040 and 92226001--92226040.
+
+The Compatible condition had no external-control shift. One-variable added a shift of two outside $X_5>2$. Two-variable added a shift of two outside the checkerboard agreement region
+\[
+ \{X_5>2,\ X_7>2\}\;\cup\;\{X_5\leq 2,\ X_7\leq 2\},
+\]
+so that the shift occurred when exactly one of the two covariates exceeded 2. Heterogeneous used this source shift and individual treatment effects $1+0.5(X_5-\bar X_{5,\mathrm{trial}})$, whose trial-profile average is one; Null used the same source shift with constant treatment effect $\psi=0$. Heterogeneous is therefore a deliberate violation of the common-effect restriction, whereas Null is correctly specified for that restriction. The full data-generating construction and seeds are given in Appendix~\ref{A-sec:G}.
+
+\subsection{Results}
+
+The comparison concerns complete fitted formulations. Joint LRC uses a 50-tree prognostic ensemble and a five-tree randomized-trial discrepancy ensemble with a continuous spike-and-slab prior. Joint source-BART appends the trial-source indicator to the covariates and uses no separate discrepancy ensemble. Separated source-BART fits the treated trial outcomes separately and models the two control sources with a source indicator. The methods therefore differ in mean model, trial-variance treatment, range inputs and calibration as well as in borrowing structure; the comparison does not isolate one mechanism.
+
+Each fit used three chains, 30,000 burn-in iterations and 12,000 retained draws. Table~\ref{T-tab:joint_primary} reports RMSE, the number of 95\% intervals covering the truth and ATE convergence flags for all 15 method-condition combinations. Joint LRC had RMSE 0.1750 in Compatible, compared with 0.2133 for Joint source-BART and 0.2064 for Separated source-BART. Its advantage was smaller under One-variable and reversed under Two-variable, Heterogeneous and Null: Separated source-BART had RMSE 0.2113, 0.1917 and 0.2100 in those conditions, compared with 0.2151, 0.2092 and 0.2298 for Joint LRC. Coverage counts ranged from 36 to 39 of 40. The Null condition has the correctly specified constant effect $\psi=0$; its 40 noisy datasets and the observed diagnostics do not establish nominal error control.
+
+For these complete fitted formulations, pooled RMSE across Compatible, One-variable and Two-variable was 0.199690 for Joint LRC, 0.209416 for Separated source-BART and 0.214491 for Joint source-BART. The paired pooled MSE differences (Joint LRC minus comparator) were -0.003979 and -0.006130, respectively. Their 95\% block-bootstrap CIs were $[-0.011089,0.002817]$ and $[-0.010451,-0.002245]$, respectively. These bootstrap comparisons use only Compatible, One-variable and Two-variable; Heterogeneous and Null are not resampled. The corresponding RMSE reductions were 4.64\% and 6.9\%, below the prespecified 10\% criterion.
+
+\subsection{Computation and scope}
+
+ATE convergence flags count method--dataset groups with $\widehat R>1.05$ or bulk effective sample size below 400. They affect 18 of 200 Joint LRC method--dataset groups, 12 of 200 Joint source-BART method--dataset groups and 21 of 200 Separated source-BART method--dataset groups. The minimum ATE bulk ESS for Joint LRC is about 35. Discrepancy diagnostics are weaker still, with maximum $\widehat R$ values near 2 and minimum bulk ESS values near 4 in the condition summaries. These diagnostics limit interpretation of learned regional discrepancies, including the checkerboard condition. A saved-chain sensitivity check retains all 120 datasets in Compatible, One-variable and Two-variable for each chain index. The pooled RMSE reduction ranges from 4.18\% to 5.01\% versus Separated source-BART and from 6.30\% to 7.35\% versus Joint source-BART (Appendix Table~\ref{A-tab:joint_chain_sensitivity}). These checks describe variation among the saved chains; they do not establish convergence. The RMSE and coverage comparisons remain provisional.
+
+The joint study is evidence for the primary Gaussian model under the stated complete formulations. Earlier separate-treatment Gaussian and survival studies, and the single-arm application, address different likelihoods and remain separate-model variants. The joint validation supports a modest, comparator-specific empirical pattern; it does not establish a general gain for joint treatment modeling, transfer to survival outcomes or a settled convergence result. Appendix~\ref{A-sec:G} gives the complete specification, seeds, calibration inputs and numerical metrics.

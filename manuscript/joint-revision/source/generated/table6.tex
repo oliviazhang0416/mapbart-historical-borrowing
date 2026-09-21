@@ -1,0 +1,33 @@
+\begin{landscape}
+\begingroup
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.13}
+\renewcommand{\arraystretch}{1.04}
+\fontsize{10}{11.5}\selectfont
+\begin{longtable}{lrrrrr}
+\caption{Five-year restricted mean survival time (RMST) in the application.}\label{tab:table6}\\
+\toprule
+Method & \shortstack{RMST ratio\\(95\% interval)} & \shortstack{RMST difference\\(95\% interval)} & \shortstack{EloKRd treatment\\RMST} & \shortstack{EloKRd hypothetical\\control RMST} & \shortstack{UCMM control\\RMST} \\ \midrule
+\endfirsthead
+\multicolumn{6}{l}{\tablename\ \thetable\ (continued)}\\
+\toprule
+Method & \shortstack{RMST ratio\\(95\% interval)} & \shortstack{RMST difference\\(95\% interval)} & \shortstack{EloKRd treatment\\RMST} & \shortstack{EloKRd hypothetical\\control RMST} & \shortstack{UCMM control\\RMST} \\ \midrule
+\endhead
+\midrule\multicolumn{6}{r}{Continued on next page}\\\endfoot
+\bottomrule\endlastfoot
+\multicolumn{6}{l}{\strut\textit{PFS}}\\*
+KM & 1.040 (0.862, 1.254) & 0.143 (-0.548, 0.834) & 3.705 & --- & 3.562 \\
+lrcBART & 0.997 (0.799, 1.229) & -0.009 (-0.768, 0.714) & 3.521 & 3.535 & --- \\
+BART-CP & 0.988 (0.796, 1.215) & -0.042 (-0.760, 0.690) & 3.527 & 3.580 & --- \\
+AFT-CP & 0.901 (0.708, 1.105) & -0.338 (-1.080, 0.335) & 3.069 & 3.408 & --- \\
+hier. AFT & 1.062 (0.789, 1.467) & 0.192 (-0.834, 1.138) & 3.355 & 3.148 & --- \\
+\multicolumn{6}{l}{\strut\textit{OS}}\\*
+KM & 0.891 (0.776, 1.023) & -0.505 (-1.077, 0.068) & 4.122 & --- & 4.627 \\
+lrcBART & 0.898 (0.765, 1.024) & -0.453 (-1.065, 0.101) & 3.995 & 4.456 & --- \\
+BART-CP & 0.898 (0.769, 1.017) & -0.448 (-1.048, 0.073) & 3.985 & 4.439 & --- \\
+AFT-CP & 0.809 (0.654, 0.951) & -0.814 (-1.521, -0.203) & 3.449 & 4.268 & --- \\
+hier. AFT & 0.961 (0.761, 1.387) & -0.153 (-1.085, 1.073) & 3.807 & 3.953 & --- \\
+\end{longtable}
+\noindent\begin{minipage}{\linewidth}\footnotesize RMST and differences are in years. For KM, EloKRd treatment RMST and UCMM control RMST are observed cohort estimates. For adjusted methods, EloKRd treatment and hypothetical control RMSTs are model-based estimates standardized to EloKRd covariates; UCMM control RMST is not reported. A dash denotes an inapplicable estimate. KM is an unadjusted comparison with confidence intervals; model-based intervals are equal-tailed credible intervals. Arm summaries are posterior medians, except KM estimates. The median of a ratio or difference need not equal the ratio or difference of marginal medians. Primary lrcBART uses $H_f=10$, $H_g=5$, $w=1$, requested ESS 30. The hier. AFT comparator uses hierarchical discrepancy-variance prior scale $s_\tau^2=0.05$, where $\tau_\alpha^2,\tau_\beta^2\sim\operatorname{IG}(3/2,3s_\tau^2/2)$.\end{minipage}
+\endgroup
+\end{landscape}

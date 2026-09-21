@@ -1,0 +1,83 @@
+\begin{landscape}
+\subsection{Complete application results}
+\noindent All 58 PFS and OS results are included. Similarity among lrcBART estimates does not resolve prior dependence for unobserved trial-control outcomes.
+\begingroup
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.13}
+\renewcommand{\arraystretch}{1.0}
+\fontsize{8.5}{10.3}\selectfont
+\begin{longtable}{llrrrrr}
+\caption{Complete application results, including all lrcBART sensitivity settings.}\label{tab:tableS10}\\
+\toprule
+Method & Setting & Ratio (95\% interval) & Difference (95\% interval) & \shortstack{EloKRd\\treatment RMST} & \shortstack{EloKRd hypothetical\\control RMST} & \shortstack{UCMM control\\RMST} \\ \midrule
+\endfirsthead
+\multicolumn{7}{l}{\tablename\ \thetable\ (continued)}\\
+\toprule
+Method & Setting & Ratio (95\% interval) & Difference (95\% interval) & \shortstack{EloKRd\\treatment RMST} & \shortstack{EloKRd hypothetical\\control RMST} & \shortstack{UCMM control\\RMST} \\ \midrule
+\endhead
+\midrule\multicolumn{7}{r}{Continued on next page}\\\endfoot
+\bottomrule\endlastfoot
+\multicolumn{7}{l}{\strut\textit{PFS}}\\*
+KM & -- & 1.040 (0.862, 1.254) & 0.143 (-0.548, 0.834) & 3.705 & --- & 3.562 \\
+lrcBART & default, 100 & 0.997 (0.799, 1.229) & -0.009 (-0.768, 0.714) & 3.521 & 3.535 & --- \\
+lrcBART & default, 75 & 0.998 (0.792, 1.250) & -0.009 (-0.806, 0.760) & 3.521 & 3.534 & --- \\
+lrcBART & default, 50 & 0.997 (0.779, 1.311) & -0.011 (-0.883, 0.893) & 3.521 & 3.536 & --- \\
+lrcBART & default, f90 & 0.997 (0.801, 1.224) & -0.012 (-0.759, 0.702) & 3.521 & 3.534 & --- \\
+lrcBART & default, f50 & 0.998 (0.786, 1.280) & -0.008 (-0.847, 0.820) & 3.521 & 3.534 & --- \\
+lrcBART & default, f25 & 0.997 (0.760, 1.419) & -0.011 (-1.000, 1.085) & 3.521 & 3.529 & --- \\
+lrcBART & Hf50, 100 & 0.987 (0.798, 1.220) & -0.046 (-0.775, 0.684) & 3.521 & 3.572 & --- \\
+lrcBART & Hf50, 75 & 0.987 (0.792, 1.247) & -0.049 (-0.804, 0.752) & 3.521 & 3.572 & --- \\
+lrcBART & Hf50, 50 & 0.988 (0.782, 1.290) & -0.044 (-0.875, 0.849) & 3.521 & 3.571 & --- \\
+lrcBART & Hf50, f90 & 0.987 (0.798, 1.222) & -0.046 (-0.775, 0.689) & 3.521 & 3.572 & --- \\
+lrcBART & Hf50, f50 & 0.987 (0.783, 1.281) & -0.047 (-0.865, 0.829) & 3.521 & 3.570 & --- \\
+lrcBART & Hf50, f25 & 0.991 (0.754, 1.436) & -0.032 (-1.021, 1.131) & 3.521 & 3.562 & --- \\
+lrcBART & w0.9, 100 & 0.996 (0.738, 1.754) & -0.015 (-1.131, 1.526) & 3.521 & 3.539 & --- \\
+lrcBART & w0.9, 75 & 0.995 (0.736, 1.753) & -0.017 (-1.145, 1.543) & 3.521 & 3.537 & --- \\
+lrcBART & w0.9, 50 & 0.996 (0.730, 1.783) & -0.014 (-1.176, 1.578) & 3.521 & 3.538 & --- \\
+lrcBART & w0.9, f90 & 0.995 (0.740, 1.750) & -0.018 (-1.129, 1.535) & 3.521 & 3.539 & --- \\
+lrcBART & w0.9, f50 & 0.996 (0.733, 1.767) & -0.014 (-1.163, 1.552) & 3.521 & 3.537 & --- \\
+lrcBART & w0.9, f25 & 0.997 (0.725, 1.842) & -0.012 (-1.223, 1.655) & 3.521 & 3.537 & --- \\
+lrcBART & Hf50, w0.9, 100 & 0.984 (0.734, 1.735) & -0.057 (-1.161, 1.545) & 3.521 & 3.582 & --- \\
+lrcBART & Hf50, w0.9, 75 & 0.985 (0.731, 1.737) & -0.053 (-1.170, 1.545) & 3.521 & 3.584 & --- \\
+lrcBART & Hf50, w0.9, 50 & 0.986 (0.730, 1.765) & -0.053 (-1.179, 1.563) & 3.521 & 3.581 & --- \\
+lrcBART & Hf50, w0.9, f90 & 0.985 (0.734, 1.733) & -0.057 (-1.160, 1.543) & 3.521 & 3.582 & --- \\
+lrcBART & Hf50, w0.9, f50 & 0.985 (0.730, 1.765) & -0.054 (-1.180, 1.561) & 3.521 & 3.583 & --- \\
+lrcBART & Hf50, w0.9, f25 & 0.987 (0.720, 1.844) & -0.048 (-1.244, 1.673) & 3.521 & 3.570 & --- \\
+BART-CP & -- & 0.988 (0.796, 1.215) & -0.042 (-0.760, 0.690) & 3.527 & 3.580 & --- \\
+AFT-CP & -- & 0.901 (0.708, 1.105) & -0.338 (-1.080, 0.335) & 3.069 & 3.408 & --- \\
+hier. AFT & -- & 1.062 (0.789, 1.467) & 0.192 (-0.834, 1.138) & 3.355 & 3.148 & --- \\
+hier. AFT & -- & 1.209 (0.731, 2.136) & 0.567 (-1.204, 1.784) & 3.355 & 2.715 & --- \\
+\multicolumn{7}{l}{\strut\textit{OS}}\\*
+KM & -- & 0.891 (0.776, 1.023) & -0.505 (-1.077, 0.068) & 4.122 & --- & 4.627 \\
+lrcBART & default, 100 & 0.898 (0.765, 1.024) & -0.453 (-1.065, 0.101) & 3.995 & 4.456 & --- \\
+lrcBART & default, 75 & 0.898 (0.764, 1.034) & -0.454 (-1.073, 0.142) & 3.995 & 4.453 & --- \\
+lrcBART & default, 50 & 0.899 (0.763, 1.051) & -0.451 (-1.090, 0.207) & 3.995 & 4.452 & --- \\
+lrcBART & default, f90 & 0.898 (0.766, 1.030) & -0.454 (-1.068, 0.123) & 3.995 & 4.455 & --- \\
+lrcBART & default, f50 & 0.899 (0.763, 1.054) & -0.452 (-1.096, 0.216) & 3.995 & 4.452 & --- \\
+lrcBART & default, f25 & 0.900 (0.756, 1.120) & -0.444 (-1.149, 0.440) & 3.995 & 4.446 & --- \\
+lrcBART & Hf50, 100 & 0.901 (0.771, 1.024) & -0.439 (-1.039, 0.100) & 3.995 & 4.434 & --- \\
+lrcBART & Hf50, 75 & 0.902 (0.768, 1.037) & -0.437 (-1.052, 0.154) & 3.995 & 4.432 & --- \\
+lrcBART & Hf50, 50 & 0.902 (0.766, 1.057) & -0.432 (-1.064, 0.229) & 3.995 & 4.428 & --- \\
+lrcBART & Hf50, f90 & 0.901 (0.769, 1.032) & -0.436 (-1.043, 0.132) & 3.995 & 4.432 & --- \\
+lrcBART & Hf50, f50 & 0.902 (0.766, 1.061) & -0.431 (-1.068, 0.242) & 3.995 & 4.427 & --- \\
+lrcBART & Hf50, f25 & 0.906 (0.759, 1.141) & -0.415 (-1.121, 0.513) & 3.995 & 4.417 & --- \\
+lrcBART & w0.9, 100 & 0.897 (0.763, 1.067) & -0.458 (-1.098, 0.261) & 3.995 & 4.457 & --- \\
+lrcBART & w0.9, 75 & 0.897 (0.762, 1.072) & -0.458 (-1.110, 0.282) & 3.995 & 4.457 & --- \\
+lrcBART & w0.9, 50 & 0.897 (0.759, 1.087) & -0.456 (-1.122, 0.334) & 3.995 & 4.455 & --- \\
+lrcBART & w0.9, f90 & 0.897 (0.762, 1.067) & -0.459 (-1.104, 0.268) & 3.995 & 4.458 & --- \\
+lrcBART & w0.9, f50 & 0.897 (0.759, 1.090) & -0.457 (-1.123, 0.348) & 3.995 & 4.454 & --- \\
+lrcBART & w0.9, f25 & 0.899 (0.754, 1.156) & -0.454 (-1.154, 0.558) & 3.995 & 4.452 & --- \\
+lrcBART & Hf50, w0.9, 100 & 0.902 (0.766, 1.068) & -0.432 (-1.080, 0.265) & 3.995 & 4.434 & --- \\
+lrcBART & Hf50, w0.9, 75 & 0.903 (0.765, 1.082) & -0.432 (-1.072, 0.318) & 3.995 & 4.432 & --- \\
+lrcBART & Hf50, w0.9, 50 & 0.904 (0.765, 1.099) & -0.425 (-1.088, 0.371) & 3.995 & 4.428 & --- \\
+lrcBART & Hf50, w0.9, f90 & 0.903 (0.766, 1.076) & -0.432 (-1.067, 0.297) & 3.995 & 4.433 & --- \\
+lrcBART & Hf50, w0.9, f50 & 0.904 (0.765, 1.103) & -0.424 (-1.091, 0.389) & 3.995 & 4.428 & --- \\
+lrcBART & Hf50, w0.9, f25 & 0.907 (0.758, 1.174) & -0.413 (-1.136, 0.610) & 3.995 & 4.418 & --- \\
+BART-CP & -- & 0.898 (0.769, 1.017) & -0.448 (-1.048, 0.073) & 3.985 & 4.439 & --- \\
+AFT-CP & -- & 0.809 (0.654, 0.951) & -0.814 (-1.521, -0.203) & 3.449 & 4.268 & --- \\
+hier. AFT & -- & 0.961 (0.761, 1.387) & -0.153 (-1.085, 1.073) & 3.807 & 3.953 & --- \\
+hier. AFT & -- & 1.208 (0.777, 1.710) & 0.646 (-1.057, 1.684) & 3.807 & 3.117 & --- \\
+\end{longtable}
+\noindent\begin{minipage}{\linewidth}\footnotesize All 58 method/endpoint results are included. Default: $H_f=10$, $H_g=5$, $w=1$. Hf50 changes $H_f$ to 50; w0.9 fixes $w=0.9$. Application labels 100, 75 and 50 request ESS 30, 22.5 and 15, respectively; f90, f50 and f25 request the corresponding fraction of the calibration ceiling. Intervals, units and arm-column definitions follow Table 6. Contrasts use the EloKRd hypothetical control for adjusted methods and the observed UCMM control for KM. Within each endpoint, the first and second hier. AFT rows use hierarchical discrepancy-variance prior scales $s_\tau^2=0.05$ and $s_\tau^2=0.5$, respectively.\end{minipage}
+\endgroup
+\end{landscape}

@@ -1,0 +1,38 @@
+{
+  "exported_index_files": 554,
+  "temporary_build": "/var/folders/q4/l3y9rnh936n07fzy0bw_5yg40000gn/T/lrc-pr-preflight-dwxu93er/manuscript/joint-revision",
+  "documents": [
+    {
+      "document": "main_critical_final",
+      "warnings": [],
+      "pdf_text_matches_supplied": true
+    },
+    {
+      "document": "main_tables_figures",
+      "warnings": [],
+      "pdf_text_matches_supplied": true
+    },
+    {
+      "document": "appendix",
+      "warnings": [],
+      "pdf_text_matches_supplied": true
+    },
+    {
+      "document": "main_tracked",
+      "warnings": [],
+      "pdf_text_matches_supplied": true
+    },
+    {
+      "document": "main_tables_figures_tracked",
+      "warnings": [],
+      "pdf_text_matches_supplied": true
+    },
+    {
+      "document": "appendix_tracked",
+      "warnings": [],
+      "pdf_text_matches_supplied": true
+    }
+  ],
+  "initial_manifest_mismatches": [],
+  "summary_check_passed": true
+}
