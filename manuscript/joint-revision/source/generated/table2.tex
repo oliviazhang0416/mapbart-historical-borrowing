@@ -1,0 +1,75 @@
+\begingroup
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.13}
+\renewcommand{\arraystretch}{1.04}
+\fontsize{10}{11.5}\selectfont
+\begin{longtable}{lrrrr}
+\caption{Gaussian mean-difference performance in representative two-arm scenarios.}\label{tab:table2}\\
+\toprule
+Method & Bias & RMSE & Coverage & Power \\ \midrule
+\endfirsthead
+\multicolumn{5}{l}{\tablename\ \thetable\ (continued)}\\
+\toprule
+Method & Bias & RMSE & Coverage & Power \\ \midrule
+\endhead
+\midrule\multicolumn{5}{r}{Continued on next page}\\\endfoot
+\bottomrule\endlastfoot
+\multicolumn{5}{l}{\strut\textit{Sc1}}\\*
+lrcBART & 0.003 & 0.174 & 0.950 & 0.890 \\
+BART-NP & -0.010 & 0.209 & 0.970 & 0.730 \\
+BART-CP & 0.009 & 0.153 & 0.950 & 0.980 \\
+BART-PP & -0.001 & 0.197 & 0.950 & 0.800 \\
+LM-NP & -0.019 & 0.348 & 0.930 & 0.390 \\
+LM-CP & 0.015 & 0.262 & 0.940 & 0.710 \\
+LM-PP & -0.005 & 0.349 & 0.950 & 0.390 \\
+hier. LM & -0.002 & 0.329 & 0.940 & 0.450 \\
+PSCL & 0.019 & 0.290 & 0.920 & 0.480 \\
+MAP & 0.023 & 0.302 & 0.940 & 0.530 \\
+\multicolumn{5}{l}{\strut\textit{Sc2}}\\*
+lrcBART & 0.003 & 0.186 & 0.940 & 0.860 \\
+BART-NP & -0.032 & 0.211 & 0.940 & 0.750 \\
+BART-CP & 0.048 & 0.188 & 0.930 & 0.950 \\
+BART-PP & -0.004 & 0.200 & 0.970 & 0.740 \\
+LM-NP & -0.062 & 0.358 & 0.900 & 0.440 \\
+LM-CP & 0.343 & 0.463 & 0.730 & 0.920 \\
+LM-PP & 0.007 & 0.355 & 0.950 & 0.450 \\
+hier. LM & 0.052 & 0.363 & 0.930 & 0.510 \\
+PSCL & 0.007 & 0.317 & 0.910 & 0.390 \\
+MAP & 0.186 & 0.458 & 0.870 & 0.550 \\
+\multicolumn{5}{l}{\strut\textit{Sc3, $\rho=0$}}\\*
+lrcBART & 0.009 & 0.315 & 0.930 & 0.560 \\
+BART-NP & -0.046 & 0.328 & 0.950 & 0.520 \\
+BART-CP & 0.957 & 0.985 & 0.010 & 1.000 \\
+BART-PP & 0.004 & 0.309 & 0.940 & 0.550 \\
+LM-NP & -0.057 & 0.367 & 0.930 & 0.340 \\
+LM-CP & 0.989 & 1.027 & 0.050 & 1.000 \\
+LM-PP & 0.047 & 0.350 & 0.940 & 0.500 \\
+hier. LM & 0.085 & 0.373 & 0.930 & 0.510 \\
+PSCL & 0.667 & 0.721 & 0.290 & 0.980 \\
+MAP & 0.202 & 0.434 & 0.910 & 0.610 \\
+\newpage
+\multicolumn{5}{l}{\strut\textit{Sc4, $\delta=1$}}\\*
+lrcBART & -0.007 & 0.201 & 0.940 & 0.810 \\
+BART-NP & -0.010 & 0.209 & 0.970 & 0.730 \\
+BART-CP & -0.689 & 0.706 & 0.000 & 0.000 \\
+BART-PP & -0.012 & 0.197 & 0.970 & 0.770 \\
+LM-NP & -0.019 & 0.348 & 0.930 & 0.390 \\
+LM-CP & -0.726 & 0.772 & 0.180 & 0.010 \\
+LM-PP & -0.054 & 0.352 & 0.960 & 0.350 \\
+hier. LM & -0.104 & 0.358 & 0.930 & 0.290 \\
+PSCL & -0.483 & 0.563 & 0.530 & 0.060 \\
+MAP & -0.230 & 0.467 & 0.860 & 0.170 \\
+\multicolumn{5}{l}{\strut\textit{Sc5, $X_5$, $\delta=1$}}\\*
+lrcBART & -0.050 & 0.214 & 0.930 & 0.690 \\
+BART-NP & -0.010 & 0.209 & 0.970 & 0.730 \\
+BART-CP & -0.334 & 0.366 & 0.370 & 0.350 \\
+BART-PP & -0.014 & 0.195 & 0.970 & 0.760 \\
+LM-NP & -0.019 & 0.348 & 0.930 & 0.390 \\
+LM-CP & -0.353 & 0.439 & 0.660 & 0.190 \\
+LM-PP & -0.030 & 0.348 & 0.970 & 0.370 \\
+hier. LM & -0.063 & 0.338 & 0.920 & 0.360 \\
+PSCL & -0.230 & 0.370 & 0.850 & 0.210 \\
+MAP & -0.160 & 0.378 & 0.920 & 0.270 \\
+\end{longtable}
+\noindent\begin{minipage}{\linewidth}\footnotesize Each row summarizes 100 alternative-hypothesis replicates. Coverage is for a 95\% interval. Empirical power is the frequency of posterior probability of benefit exceeding 0.95 (PSCL: lower 95\% confidence limit above the threshold). Gaussian decisions use a threshold of 0.5 and survival decisions use a ratio threshold of 1. RMSE is the square root of the mean squared error. NP denotes no historical pooling (trial controls only); CP denotes complete pooling; PP denotes source-adjusted pooling using a source indicator. PP is distinct from the hierarchical comparator. lrcBART requests ESS 100; the MAP comparator in Table 2 also requests 100. Full configurations and Monte Carlo standard errors appear in the appendix. The hierarchical comparator uses discrepancy-variance prior scale $s_\tau^2=0.25$.\end{minipage}
+\endgroup

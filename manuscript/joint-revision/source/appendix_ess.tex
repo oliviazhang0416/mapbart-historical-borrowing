@@ -1,0 +1,397 @@
+\section{Prior effective sample size: comparison, derivation and computation}\label{sec:B}
+
+\subsection{Comparison with established prior-ESS definitions}\label{sec:B.1}
+Table~\ref{tab:ESScomparison} places the proposed definition beside the variance calibration of \citet{Neuenschwander2010MAP}, the curvature match of \citet{Morita2008ESS}, and the expected local-information-ratio (ELIR) definition of \citet{neuenschwander2020}. Throughout the table, $D_H$ denotes the historical dataset, $\theta_h$ denotes a historical-study parameter or estimand, with $h$ indexing historical studies when applicable, and $\theta_\star$ denotes the corresponding current-study parameter or estimand. The two Neuenschwander rows separate the complete-pooling calibration anchor from the partial-pooling MAP prior whose ESS is inferred. For Morita's method, $Y_{1:m}$ denotes a hypothetical sample of size $m$ from the reference sampling model; write $i_\epsilon(\theta_\star)\coloneqq-\partial_{\theta_\star}^2\log\pi_\epsilon(\theta_\star)$ for low-information-prior curvature and $j_m(Y_{1:m};\theta_\star)\coloneqq-\partial_{\theta_\star}^2\log\{\prod_{r=1}^m p(Y_r\mid\theta_\star)\}$ for observed likelihood information. For the proposed method, the target prior is the RWD-informed prior for the current-control mean, and $(\theta_h,\delta_\star,\theta_\star)$ corresponds to $(\mu_f,\mu_g,\mu)$ in the main text.
+
+\begin{landscape}
+\begingroup
+\footnotesize
+\setlength{\tabcolsep}{2pt}
+\renewcommand{\arraystretch}{1.18}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\begin{longtable}{L{1.35in}L{2.55in}L{2.15in}L{2.35in}}
+\caption{Comparison of prior effective sample size definitions. Panel A summarizes each target; Panel B gives the corresponding reference or calibration and ESS.}\label{tab:ESScomparison}\\
+\toprule
+Method/case&
+\multicolumn{3}{c}{Target}\\
+\cmidrule(lr){2-4}
+&Target prior&Information measure&Information quantity\\
+\midrule
+\endfirsthead
+\multicolumn{4}{l}{\textbf{Table \thetable\ (continued): Panel A, target}}\\
+\toprule
+Method/case&Target prior&Information measure&Information quantity\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+
+Neuenschwander et al.\ (2010): complete pooling
+&
+$\pi_0(\theta_\star)\coloneqq p(\theta_\star\mid D_H,\tau=0)$, the complete-pooling MAP prior
+&
+Inverse marginal variance, where
+$V_0\coloneqq\Var_{\pi_0}(\theta_\star)$
+&
+$\mathcal I_0\coloneqq1/V_0$, the complete-pooling prior information
+\\
+\midrule
+
+Neuenschwander et al.\ (2010): partial pooling
+&
+$\pi_{\mathrm{target}}(\theta_\star)\coloneqq
+p(\theta_\star\mid D_H)$, the partial-pooling MAP prior
+&
+Inverse marginal variance, where
+$V_{\mathrm{target}}\coloneqq
+\Var_{\pi_{\mathrm{target}}}(\theta_\star)$
+&
+$\mathcal I_{\mathrm{target}}\coloneqq
+1/V_{\mathrm{target}}$, the partial-pooling prior information
+\\
+\midrule
+
+Morita--Thall--M\"uller (2008)
+&
+Supplied target prior $\pi_{\mathrm{target}}(\theta_\star)$
+&
+Negative log-prior curvature at
+$\bar\theta_\star\coloneqq
+\E_{\pi_{\mathrm{target}}}(\theta_\star)$
+&
+$\mathcal I_{\mathrm{target}}\coloneqq
+-\left.\partial_{\theta_\star}^2
+\log\pi_{\mathrm{target}}(\theta_\star)
+\right|_{\theta_\star=\bar\theta_\star}$
+\\
+\midrule
+
+ELIR
+&
+Supplied target prior $\pi_{\mathrm{target}}(\theta_\star)$
+&
+Pointwise negative log-prior curvature
+&
+$\mathcal I_{\mathrm{target}}(\theta_\star)
+\coloneqq-\partial_{\theta_\star}^2
+\log\pi_{\mathrm{target}}(\theta_\star)$
+\\
+\midrule
+
+Proposed conditional variance match
+&
+RWD-informed target prior $\pi_{\mathrm{target}}(\theta_\star\mid w,\tau_0^2)$ induced for
+$\theta_\star\coloneqq\theta_h+\delta_\star$ by the historical posterior and discrepancy prior
+&
+Inverse conditional marginal variance, where
+$V_{\mathrm{target}}(w,\tau_0^2)\coloneqq
+\Var_{\pi_{\mathrm{target}}}(\theta_\star\mid w,\tau_0^2)$
+&
+$\mathcal I_{\mathrm{target}}(w,\tau_0^2)
+\coloneqq1/V_{\mathrm{target}}(w,\tau_0^2)$
+\\
+\end{longtable}
+
+\newpage
+
+\addtocounter{table}{-1}
+\renewcommand{\theHtable}{ESScomparisonB.\arabic{table}}
+\begin{longtable}{L{1.05in}L{1.55in}L{1.40in}L{1.55in}L{1.45in}L{1.55in}}
+\multicolumn{6}{l}{\textbf{Table \thetable\ (continued): Panel B, reference and ESS}}\\
+\toprule
+Method/case&
+\multicolumn{3}{c}{Reference}&
+\multicolumn{2}{c}{ESS}\\
+\cmidrule(lr){2-4}\cmidrule(lr){5-6}
+&Information source&Information measure&Information quantity&Matching or calibration&Result\\
+\midrule
+\endfirsthead
+\multicolumn{6}{l}{\textbf{Table \thetable\ (continued): Panel B, reference and ESS}}\\
+\toprule
+Method/case&Information source&Information measure&Information quantity&Matching or calibration&Result\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+
+Neuenschwander: complete pooling
+&
+--&--&--
+&
+Anchor $\ESS_0\coloneqq N_H$, where $N_H$ is the total historical sample size
+&
+$\ESS_0=N_H$
+\\
+\midrule
+
+Neuenschwander: partial pooling
+&
+--&--&--
+&
+$\mathcal I_{\mathrm{target}}
+=(\ESS_{\mathrm{target}}/N_H)\mathcal I_0$
+&
+$\ESS_{\mathrm{target}}
+=N_HV_0/V_{\mathrm{target}}$
+\\
+\midrule
+
+Morita--Thall--M\"uller
+&
+$\pi_{\epsilon,m}(\theta_\star\mid Y_{1:m})
+\propto\pi_\epsilon(\theta_\star)
+\prod_{r=1}^m p(Y_r\mid\theta_\star)$
+&
+Expected negative log-posterior curvature at $\bar\theta_\star$
+&
+$\mathcal I_{\mathrm{ref}}(m)\coloneqq
+i_\epsilon(\bar\theta_\star)
++\E_{Y_{1:m}}\{j_m(Y_{1:m};\bar\theta_\star)\}$
+&
+$\mathcal I_{\mathrm{target}}
+\approx\mathcal I_{\mathrm{ref}}(m)$; choose the closest match
+&
+$\ESS_{\mathrm{MTM}}\coloneqq
+\arg\min_{m\geq0}
+\lvert\mathcal I_{\mathrm{target}}
+-\mathcal I_{\mathrm{ref}}(m)\rvert$
+\\
+\midrule
+
+ELIR
+&
+One observation $Y\sim p(\,\cdot\mid\theta_\star)$
+&
+Expected Fisher information in one observation
+&
+$\mathcal I_{\mathrm{ref}}(\theta_\star)
+\coloneqq i_F(\theta_\star)
+=\E_{Y\mid\theta_\star}
+\{-\partial_{\theta_\star}^2\log p(Y\mid\theta_\star)\}$
+&
+$\mathcal I_{\mathrm{target}}(\theta_\star)
+=m(\theta_\star)\mathcal I_{\mathrm{ref}}(\theta_\star)$
+&
+$\ESS_{\mathrm{ELIR}}\coloneqq
+\E_{\pi_{\mathrm{target}}}\{m(\theta_\star)\}$
+\\
+\midrule
+
+Proposed method
+&
+One observation $Y\sim p(\,\cdot\mid\theta_\star)$
+&
+Expected Fisher information in one observation
+&
+$\mathcal I_{\mathrm{ref}}(\theta_\star)
+\coloneqq i_F(\theta_\star)$
+&
+$\mathcal I_{\mathrm{target}}(w,\tau_0^2)
+=m(w,\tau_0^2;\theta_\star)
+\mathcal I_{\mathrm{ref}}(\theta_\star)$
+&
+$\ESS(w,s_0^2)\coloneqq
+\E_{\tau_0^2}\{m(w,\tau_0^2;\theta_\star)\}$;
+for the normal reference, $i_F=1/\sigma_1^2$
+\\
+\end{longtable}
+\endgroup
+\end{landscape}
+
+Neuenschwander's complete-pooling prior supplies a known ESS anchor. Morita matches the target-prior curvature to the expected curvature of a posterior constructed from a low-information prior and hypothetical data. ELIR averages local ratios of prior curvature to one-observation Fisher information over the target prior. For the proposed method, this target prior is the RWD-informed prior; the ESS averages conditional inverse-variance matches over the calibration distribution of $\tau_0^2$.
+
+\subsection{Calculation of historical uncertainty}\label{sec:B.2}
+For the main-text historical component $\mu_f=N^{-1}\sum_{i=1}^{N}f(x_i^*)$,
+\begin{equation}\label{eq:Vf}
+V_f
+=\frac1{N^2}
+\sum_{i=1}^{N}\sum_{i'=1}^{N}
+\Cov\{f(x_i^*),f(x_{i'}^*)
+\mid\mathbf Y_{2},\mathbf X_{2},\mathbf X_*\}.
+\end{equation}
+Given preliminary posterior draws $f^{(b)}$, form
+$\mu_f^{(b)}\coloneqq N^{-1}\sum_i f^{(b)}(x_i^*)$ and estimate $V_f$ by their sample variance. This calculation integrates tree and leaf uncertainty and retains cross-profile covariance. Averaging the pointwise posterior variances would omit the covariance terms.
+
+\subsection{Derivation of discrepancy uncertainty}\label{sec:B.3}
+Let $\mathcal T^g\coloneqq(\mathcal T_{h^g}^g)_{h^g=1}^{H_g}$ and define
+\begin{equation}\label{eq:weights}
+a_{h^g\ell}\coloneqq
+\frac1{N}\sum_{i=1}^{N}
+\ind\{x_i^*\in\ell\text{ of tree }h^g\}.
+\end{equation}
+Regrouping the trial-profile average of the discrepancy trees gives
+\begin{equation}
+\mu_g=\sum_{h^g,\ell}a_{h^g\ell}\theta^g_{h^g\ell}.
+\end{equation}
+Within each tree, $a_{h^g\ell}\geq0$ and $\sum_\ell a_{h^g\ell}=1$. Conditional on the trees and indicators, the independent zero-mean leaf priors imply
+\begin{equation}\label{eq:conditionalVg}
+\begin{aligned}
+\E(\mu_g\mid\mathcal T^g,\mathbf z,w,\tau_0^2)&=0,\\
+\Var(\mu_g\mid\mathcal T^g,\mathbf z,w,\tau_0^2)
+&=\sum_{h^g,\ell}a_{h^g\ell}^2
+\{z_{h^g\ell}\tau_0^2+(1-z_{h^g\ell})\tau_1^2\}.
+\end{aligned}
+\end{equation}
+The conditional mean remains zero after integrating over the indicators, so the between-mean term in the law of total variance vanishes. Since $\E(z_{h^g\ell}\mid w)=w$,
+\[
+\Var(\mu_g\mid\mathcal T^g,w,\tau_0^2)
+=\{w\tau_0^2+(1-w)\tau_1^2\}
+\sum_{h^g,\ell}a_{h^g\ell}^2.
+\]
+The same argument applies when integrating over the prior trees, giving main-text equation~\ref{T-eq:Vgmain}. Thus $V_g$ integrates leaf, indicator and tree uncertainty at fixed $w,\tau_0^2$. The identity is exact under the stated independent zero-mean priors; Monte Carlo enters only in evaluating the tree expectation.
+
+\subsection{Proof of the prior ESS curve theorem}\label{sec:B.4}
+Under the all-spike calibration, let
+\[
+C_g\coloneqq
+\E_{\mathcal T^g}\!\left[\sum_{h^g,\ell}a_{h^g\ell}^2\right].
+\]
+Every finite tree has at least one occupied terminal node and
+$\sum_\ell a_{h^g\ell}^2\leq1$, so $0<C_g\leq H_g$. If
+$U\sim\chi^2_{\nu_0}$, the scaled inverse-chi-square variable can be coupled over all scale values as $\tau_0^2=\nu_0s_0^2/U$. Main-text equation~\ref{T-eq:essspike} becomes
+\[
+\ESS_{\tau_0}(s_0^2)
+=\E_U\!\left[
+\frac{\sigma_1^2}{V_f+C_g\nu_0s_0^2/U}
+\right].
+\]
+For every $U>0$, the integrand is continuous, strictly decreasing and strictly convex in $s_0^2>0$, and is bounded above by $\sigma_1^2/V_f$. Dominated convergence establishes continuity and the limits
+\[
+\lim_{s_0^2\downarrow0}\ESS_{\tau_0}(s_0^2)
+=\frac{\sigma_1^2}{V_f},
+\qquad
+\lim_{s_0^2\to\infty}\ESS_{\tau_0}(s_0^2)=0.
+\]
+Pointwise strict inequalities preserve strict monotonicity and strict convexity after expectation. The intermediate value theorem and strict monotonicity give a unique positive solution for each target in $(0,\sigma_1^2/V_f)$. This proves main-text Theorem~\ref{T-thm:ess} without requiring $\E(\tau_0^2)$ to be finite.
+
+\subsection{Monte Carlo evaluation and implemented prior-scale selection}\label{sec:B.5}
+Estimate $V_f$ from the posterior averages of $f$ over the standardization profiles and estimate
+$C_g$ by simulating discrepancy trees from the calibration prior. For independent
+$U_b\sim\chi^2_{\nu_0}$, $b=1,\ldots,B$, evaluate
+\begin{equation}\label{eq:MCess}
+\widehat\ESS_{\tau_0}(s_0^2)
+\coloneqq\frac1B\sum_{b=1}^B
+\frac{\widehat\sigma_1^2}
+{\widehat V_f+(\nu_0s_0^2/U_b)\widehat C_g}.
+\end{equation}
+Reusing the $U_b$ values over the scale grid makes the Monte Carlo curve monotone. The preliminary $f$ predictions are posterior draws conditional on the historical dataset.
+
+\noindent\textbf{Algorithm B1: full-variance ESS evaluation and target selection.}
+\begin{enumerate}
+\item Specify the current-control standardization profiles, historical outcome likelihood, candidate splitting rules and fixed reference residual variance estimate.
+\item Fit the historical model, average each posterior prediction draw over the standardization profiles and estimate $V_f$.
+\item Simulate discrepancy trees from the calibration prior and estimate $C_g$.
+\item Draw $U_b\sim\chi^2_{\nu_0}$ and calculate \eqref{eq:MCess} over candidate scales.
+\item For an attainable target, solve the monotone equation or select a grid approximation; record targets outside the attainable range.
+\end{enumerate}
+
+The implemented selector divides the posterior draws of $\mu_f$ into $J=20$ consecutive blocks, calculates a variance in each block and rescales the block variances so that their arithmetic mean equals the variance across all draws. Write the rescaled values as $\widehat V_{f,k}$. It substitutes each $\widehat V_{f,k}$ into \eqref{eq:MCess}, yielding $\widehat\ESS_k(s_0^2)$, and uses their arithmetic mean as the central curve. With
+$m_*\coloneqq\min(m_{\mathrm{requested}},\widehat\sigma_1^2/\widehat V_f)$, the selector chooses the smallest supplied scale satisfying
+\begin{equation}\label{eq:blockrule}
+\frac1J\sum_{k=1}^J
+\ind\{\widehat\ESS_k(s_0^2)\leq m_*\}\geq0.95.
+\end{equation}
+If no grid value satisfies the rule, it chooses the largest value. If the requested target reaches or exceeds the full-variance ceiling, the current implementation chooses the smallest grid value.
+
+The block-based central curve does not generally have the full-variance ceiling as its zero-scale limit because
+\[
+\lim_{s_0^2\downarrow0}
+\frac1J\sum_{k=1}^J\widehat\ESS_k(s_0^2)
+=\frac1J\sum_{k=1}^J
+\frac{\widehat\sigma_1^2}{\widehat V_{f,k}}
+\geq\frac{\widehat\sigma_1^2}{\widehat V_f},
+\]
+with equality only when the positive block variances are equal. Consecutive blocks of an autocorrelated Markov chain also do not supply a formal 95\% posterior or repeated-sampling guarantee. The following figure illustrates the curves for one separate-treatment Gaussian two-arm dataset; Table~\ref{tab:tableS11a} evaluates the full-variance expression in the application.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=.82\linewidth,keepaspectratio]{figureS1.pdf}
+\caption{Illustrative prior ESS curves for the separate-treatment Gaussian two-arm Sc1, replicate 1. The lrcBART curve is the block-based central ESS summary over the variance-scale grid; the dotted horizontal line is its full-variance ceiling. The MAP overlay uses its corresponding prior ESS calculation. Because MAP and lrcBART use different prior constructions and ESS implementations, the common horizontal axis denotes each method's supplied variance-scale parameter rather than identical prior distributions. The curves use one dataset and are not averaged over replicates.}
+\end{figure}
+
+\subsection{Pointwise and overall means}\label{sec:B.6}
+For one standardization profile $x$, define the scalar current-control target $\mu(x)\coloneqq f(x)+g(x)$ and
+\[
+V_f(x)\coloneqq
+\Var\{f(x)\mid\mathbf Y_2,\mathbf X_2,x\}.
+\]
+One terminal node in each discrepancy tree has weight one, so
+\[
+V_g(w,\tau_0^2;x)
+=H_g\{w\tau_0^2+(1-w)\tau_1^2\}.
+\]
+Under the all-spike reference, the pointwise ESS is therefore
+\[
+\ESS_{\tau_0}(s_0^2;x)
+=\E_{\tau_0^2}\!\left[
+\frac{\sigma_1^2}{V_f(x)+H_g\tau_0^2}
+\right].
+\]
+The matched reference observation has the same target, $Y^{\mathrm{ref}}\mid x\sim N\{\mu(x),\sigma_1^2\}$. Thus the target and reference describe the same conditional mean parameter.
+
+For standardization profiles $x_1,\ldots,x_n$, the overall target is $\bar\mu=n^{-1}\sum_i\mu(x_i)$ and
+\begin{equation}\label{eq:nonadd}
+\Var(\bar\mu)
+=\frac1{n^2}\left[
+\sum_i\Var\{\mu(x_i)\}
++\sum_{i\ne i'}\Cov\{\mu(x_i),\mu(x_{i'})\}
+\right].
+\end{equation}
+The same fitted functions inform all profiles, so the covariance terms generally do not vanish. Inverse variance is also nonlinear. Pointwise ESS values therefore do not generally sum or average to the overall ESS; the overall ESS must be calculated from the variance of $\bar\mu$.
+
+\subsection{Reference interpretation and implementation qualifications}\label{sec:B.7}
+The theoretical reference treats $\sigma_1^2$ as fixed. Numerical calibration substitutes a fixed estimate $\widehat\sigma_1^2$; in two-arm analyses this estimate uses randomized controls. All reported analyses use all trial profiles, including the treated profiles in a single-arm analysis, and a single-arm analysis uses the RWD-control residual variance as the reference scale under $\sigma_1^2=\sigma_2^2$.
+
+For survival outcomes, censoring enters the preliminary historical likelihood and therefore affects $V_f$. The reference information unit remains one uncensored normal observation on the log-time scale.
+
+The preliminary historical fit, calibration tree simulation and final joint fit use different admissible split rules. The current calibration simulator limits depth to 12, while the separate-treatment two-arm fit requires at least five randomized controls per discrepancy leaf; the primary joint fit instead uses all trial participants for that restriction. Prior ESS calibration uses an untruncated spike-variance distribution; the two-arm sampler uses its upper-truncated counterpart, and single-arm fits fix the spike variance at $\min(s_0^2,\tau_1^2/2)$. The joint fitting tree weight is specified in \eqref{eq:treeweight}, whereas its prior-tree calibration uses a locally forced-terminal recursion. Accordingly, the reported prior ESS corresponds to the stated calibration specification. Aligning the full-variance rule, scale law and tree prior with the final fit would require a new calibration and evaluation of the affected analyses.
+
+\subsection{Treatment information in the joint likelihood}\label{sec:B.8}
+The control-mean target and the treatment coefficient have different uncertainty. For fixed forests, indicators and scales, collect all $f$ and $g$ leaf parameters in $\beta_0$, with prior covariance $\Lambda_0$. Write $Z_0=[Z_f,\operatorname{diag}(S)Z_g]$ for their observation-level design: an $f$ row reaches one leaf per $f$ tree, and a $g$ row is zero for an external observation. Let $A$ be the treatment column and $W$ the diagonal matrix of source precisions. Normal updating gives joint precision
+\[
+Q=\begin{pmatrix}
+\Lambda_0^{-1}+Z_0^\top WZ_0&Z_0^\top WA\\
+A^\top WZ_0&v_\psi^{-1}+A^\top WA
+\end{pmatrix}.
+\]
+Integrating the forest coefficients yields
+\begin{equation}\label{eq:schur}
+\Var(\psi\mid\text{trees, indicators, scales},\mathcal D)
+=\left[v_\psi^{-1}+A^\top WA
+-A^\top WZ_0(\Lambda_0^{-1}+Z_0^\top WZ_0)^{-1}Z_0^\top WA\right]^{-1}.
+\end{equation}
+This is the inverse Schur complement of the forest block. The subtracted quadratic form is nonnegative, so the variance is at least the full-conditional variance $(v_\psi^{-1}+A^\top WA)^{-1}$ used to draw $\psi$. Integrating tree and scale states requires averaging the conditional variances and adding the variance of their conditional means. A control-mean precision ratio neither supplies these covariance terms nor defines an incremental ESS for treatment. Equation~\eqref{eq:schur} is a Gaussian identity, not a new treatment-ESS definition.
+
+\subsection{Marginal ELIR for the sum of tree contributions}\label{sec:B.9}
+For a differentiable scalar prior density $p_\mu$ and normal reference variance $\sigma_1^2$, marginal ELIR is
+\[
+\ESS_{\mathrm{ELIR}}(p_\mu)
+=\sigma_1^2\int\frac{\{p_\mu'(u)\}^2}{p_\mu(u)}\,du,
+\]
+when the location information is finite and the boundary terms required for integration by parts vanish. This is the expected prior-curvature definition of \citet{neuenschwander2020}. It uses the density of the total mean, not separate leaf conditional distributions from backfitting. For independent normal leaf contributions $u_j$ with variances $v_j$ and fixed target weights $r_j$, the weighted sum has
+\[
+\ESS_{\mathrm{ELIR}}\left(\sum_j r_j u_j\right)
+=\left(\sum_j\frac{r_j^2}{e_j}\right)^{-1},\qquad e_j=\sigma_1^2/v_j.
+\]
+The weights are target-profile proportions within a tree; at one profile each reached leaf has weight one. The inverse sum arises because the tree contributions add to the mean and their variances add under independence. Fitted contributions from different trees are generally dependent.
+
+For a historical Gaussian fit conditional on its forest structures and scales, let $Z_f$ be the historical leaf-incidence matrix, $\Lambda_f=\lambda_f^2 I$, and $y_2$ the centered historical responses. The joint posterior of the historical leaf coefficients has covariance and mean
+\[
+\Sigma_f=(\Lambda_f^{-1}+Z_f^\top Z_f/\sigma_2^2)^{-1},\qquad
+m_f=\Sigma_f Z_f^\top y_2/\sigma_2^2.
+\]
+Let $c_f$ and $a_g$ contain the target proportions in the historical and discrepancy leaves, and let $D_z$ be the diagonal matrix of discrepancy component variances. Conditional on the joint state $\eta$, independence of the external posterior and discrepancy prior gives
+\[
+\mu\mid\eta,\mathcal D_2\sim\N(M_\eta,V_\eta),\qquad
+M_\eta=m_0+c_f^\top m_f,\qquad
+V_\eta=c_f^\top\Sigma_f c_f+a_g^\top D_z a_g,
+\]
+where $m_0$ restores centering. A finite approximation to the mixing distribution is $p_B(u)=\sum_{b=1}^B\omega_b\phi(u;M_b,V_b)$ with positive weights summing to one. Historical forest states must be sampled jointly from their historical-data posterior, while discrepancy states come from the specified prior. They cannot be assembled by independently resampling fitted trees. In an AFT fit, the state also includes the augmented historical log times.
+
+For this finite normal mixture, let $s_b(u)=(M_b-u)/V_b$. Its marginal score is the conditional mean of the component score given $u$. Total variance of the scores and integration by parts give
+\[
+\frac{\sigma_1^2}{\Var_{p_B}(\mu)}
+\leq\ESS_{\mathrm{ELIR}}(p_B)
+\leq\sigma_1^2\sum_b\frac{\omega_b}{V_b}.
+\]
+These bounds refer to the same mixture. The implemented calibration instead integrates tree and indicator uncertainty inside $V_g$, substitutes the historical marginal variance, and averages over an untruncated scale distribution. The bounds therefore do not order that calibration against the ELIR of the fitted model. The reported studies use the variance reference, not a marginal-ELIR replacement.

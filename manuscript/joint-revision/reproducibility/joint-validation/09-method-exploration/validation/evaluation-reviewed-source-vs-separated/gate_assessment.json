@@ -1,0 +1,17 @@
+{
+  "all_numerical_gates_pass": false,
+  "comparison_role": "secondary",
+  "gates": {
+    "pooled_rmse_reduction_at_least_10_percent": false,
+    "paired_mse_bootstrap_upper_below_zero": false,
+    "no_condition_rmse_deterioration_over_10_percent": false,
+    "absolute_bias_at_most_0_10_in_every_condition": true,
+    "coverage_at_least_36_of_40_in_every_condition": true,
+    "null_exclusions_at_most_4_of_40": true,
+    "heterogeneous_rmse_deterioration_at_most_10_percent": false,
+    "both_methods_ate_rhat_at_most_1_05": false,
+    "both_methods_ate_bulk_ess_at_least_400": false
+  },
+  "null_interval_exclusions": 2,
+  "interpretation": "Numerical screen only. Primary-agent review of frozen specification, implementation, convergence, comparator fairness and fresh-seed lineage is required. These thresholds do not establish nominal coverage or type-I-error control."
+}

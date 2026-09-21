@@ -1,0 +1,260 @@
+\section{Fixed-region theory and control-source benchmarks}\label{sec:C}
+\subsection{Joint treatment and discrepancy learning}\label{sec:C.joint}
+We prove main-text Theorem~\ref{T-thm:joint_learning}. Condition on a fixed finite partition, the group design and known, fixed positive residual variances. Collect parameters in
+$\vartheta=(f_1,\ldots,f_J,g_1,\ldots,g_J,\psi)^\top$.
+The design has, within each region $j$, rows $e_{f_j}^\top$, $(e_{f_j}+e_{g_j})^\top$ and $(e_{f_j}+e_{g_j}+e_\psi)^\top$ for external controls, concurrent controls and treated participants. Here $e_k$ denotes a coordinate vector in $\mathbb R^{2J+1}$.
+
+If all three row types have positive counts, the design has full column rank. Indeed, a vector orthogonal to every external row has each $f$ coordinate zero; orthogonality to concurrent-control rows then makes each $g$ coordinate zero, and treated rows determine the remaining treatment coordinate. Let $X_0$ contain one of each row type and let $q_n$ be the smallest group-by-region observation precision, $n_{a,j}/\sigma_a^2$, where $\sigma_{\mathrm{trt}}^2=\sigma_1^2$. As all counts increase, $q_n\to\infty$ and
+\[
+G_n=X^\top WX\succeq q_nX_0^\top X_0,
+\]
+so $\lambda_{\min}(G_n)\to\infty$ without a relative growth-rate restriction.
+
+Conditional on a discrepancy allocation $z\in\{0,1\}^J$, let $Q_z$ be the prior precision of $\vartheta$. It is fixed and positive definite. The Gaussian posterior has
+\[
+V_z=(Q_z+G_n)^{-1},\qquad m_z=V_zX^\top WY.
+\]
+At the fixed true parameter $\vartheta^*$,
+\[
+\E_{\vartheta^*}(m_z)-\vartheta^*=-V_zQ_z\vartheta^*,\qquad
+\operatorname{Cov}_{\vartheta^*}(m_z)=V_zG_nV_z\preceq V_z.
+\]
+The operator norm of $V_z$ is at most $1/\lambda_{\min}(G_n)$, so both the squared bias and sampling variance tend to zero. It follows that
+\[
+\E_{\vartheta^*}\!\left[\int\|\vartheta-\vartheta^*\|^2
+\,d\Pi_z(\vartheta\mid Y)\right]
+=\operatorname{tr}(V_z)+\E_{\vartheta^*}\|m_z-\vartheta^*\|^2\longrightarrow0.
+\]
+Markov's inequality yields posterior concentration in probability for each component. There are only $2^J$ components, and the mixture probability outside a neighborhood is bounded by the largest component probability, whatever their posterior weights. Norm equivalence in the fixed-dimensional parameter space gives the theorem's displayed concentration statement.
+
+For a region with $|g_j^*|\ne c$, a draw that is on the opposite side of the tolerance boundary must satisfy $|g_j-g_j^*|\geq\bigl||g_j^*|-c\bigr|>0$. Concentration makes this probability vanish. A finite union establishes the simultaneous practical-agreement limits. This proof does not require consistent recovery of the spike/slab labels.
+
+Removing all concurrent-control rows leaves the nonzero null direction $(0_J,1_J,-1)$. It changes every $g_j$ by the same constant and the treatment coefficient by its negative. Thus the single-arm likelihood does not identify them separately. The all-three-groups-per-region assumption is a sufficient condition for the theorem; it is not claimed to be a minimal design condition.
+
+\subsection{Control-source benchmarks}\label{sec:C.1}
+We study two properties: learning practical agreement and characterizing the estimation benefit and error induced by borrowing. The following separate control-source results use a Gaussian model on a fixed finite partition $R_1,\ldots,R_J$ of the target covariate domain. Within region $j$, independent historical and trial controls have means $f_j$ and $f_j+g_j$, with known positive residual variances $\sigma_2^2$ and $\sigma_1^2$. Here $g_j$ is the total regional source difference. Both source means are unknown and estimated jointly. Use independent priors across regions, with $f_j\sim\N(0,\lambda_j^2)$ independent of
+\[
+g_j\sim w\N(0,\tau_0^2)+(1-w)\N(0,\tau_1^2),
+\qquad 0<w<1,\quad 0<\tau_0^2<\tau_1^2<\infty.
+\]
+All prior parameters are fixed, with $0<\lambda_j^2<\infty$.
+
+\begin{theorem}[Learning local practical agreement]\label{thm:regional_learning}
+Suppose the regional model is correctly specified, with true parameters $f_j^*,g_j^*$. As the numbers $n_{1,j}$ and $n_{2,j}$ of controls from both sources tend to infinity in every region, for every $\epsilon>0$,
+\[
+\Pi\left\{\max_{1\leq j\leq J}
+\bigl(|f_j-f_j^*|+|g_j-g_j^*|\bigr)>\epsilon\mid\mathcal D\right\}\longrightarrow0
+\]
+almost surely under the true sampling law, where $\mathcal D$ denotes the observed control data. Thus the current-control means $f_j+g_j$ are also consistently learned. If $|g_j^*|\ne c$ in every region, the following limits hold simultaneously:
+\begin{equation}\label{eq:regional_agreement}
+B_{c,j}\coloneqq\Pi(|g_j|<c\mid\mathcal D)
+\longrightarrow
+\begin{cases}
+1,& |g_j^*|<c,\\
+0,& |g_j^*|>c,
+\end{cases}
+\quad\text{almost surely}.
+\end{equation}
+\end{theorem}
+For this control-source benchmark, $B_{c,j}$ is the probability based only on the two control groups. For $x\in R_j$, it is constant within the region. The posterior increasingly supports practical agreement where the true difference is small and rules it out where the difference exceeds the tolerance. This interpretation uses posterior probabilities directly, without a labeling rule.
+
+\noindent\textbf{Estimation benefit and conflict risk.}
+For an exact risk calculation in one region, retain the discrepancy mixture but replace the normal prior on the historical mean $f$ by the flat prior $p(f)\propto1$. This is a separate benchmark assumption. Write $\mu_1=f+g$, $d=\mu_1-f$ for the true discrepancy, $v_s=\sigma_s^2/n_s>0$, $V=v_1+v_2$, and $D=\bar Y_1-\bar Y_2$. Let
+\begin{equation}\label{eq:regional_weight}
+\begin{aligned}
+\gamma(D)&=\frac{w\phi(D;0,V+\tau_0^2)}
+{w\phi(D;0,V+\tau_0^2)+(1-w)\phi(D;0,V+\tau_1^2)},\\
+a_k&=\frac{v_1}{V+\tau_k^2},\qquad
+a(D)=\gamma(D)a_0+\{1-\gamma(D)\}a_1,
+\end{aligned}
+\end{equation}
+where $\phi(\cdot;m,v)$ is a normal density with mean $m$ and variance $v$.
+
+\begin{theorem}[Regional borrowing benefit and conflict risk]\label{thm:borrowing_risk}
+Under the flat-baseline regional benchmark, the posterior mean of the current-control mean is
+\begin{equation}\label{eq:regional_estimator}
+\widehat\mu_1=\{1-a(D)\}\bar Y_1+a(D)\bar Y_2.
+\end{equation}
+The coefficient $a(D)$ decreases strictly with $|D|>0$ and tends to $a_1>0$ as $|D|\to\infty$. Put $a_*=v_1/V$. Its repeated-sampling bias and mean squared error are
+\begin{equation}\label{eq:regional_risk}
+\begin{aligned}
+\operatorname{Bias}_d(\widehat\mu_1)&=-\E_d\{a(D)D\},\\
+R(d)\coloneqq\E_d(\widehat\mu_1-\mu_1)^2
+&=\frac{v_1v_2}{V}
++\E_d\!\left[\{(a_*-a(D))D-a_*d\}^2\right],
+\end{aligned}
+\end{equation}
+where the expectations on the right are over $D\sim\N(d,V)$. Under exact agreement, $d=0$, the estimator is unbiased and $R(0)<v_1$, the mean squared error of the trial-only mean. For fixed sample sizes and prior parameters, as $|d|\to\infty$,
+\[
+\frac{\operatorname{Bias}_d(\widehat\mu_1)}{d}\longrightarrow-a_1,
+\qquad \frac{R(d)}{d^2}\longrightarrow a_1^2.
+\]
+\end{theorem}
+Theorem~\ref{thm:borrowing_risk} establishes an estimation benefit under agreement and quantifies the remaining error under conflict. The finite normal slab leaves residual shrinkage, so the benchmark does not have uniformly bounded borrowing bias over arbitrarily large discrepancies. The mean squared error result does not imply that every realized posterior interval is shorter.
+
+\subsection{Proof of the control-source learning theorem}\label{sec:C.2}
+Fix region $j$, suppress its index on $v_s\coloneqq\sigma_s^2/n_{s,j}$, and let $\beta_j=(f_j,g_j)^\top$. The sufficient statistic
+\begin{equation}\label{eq:regional_sufficient}
+\widehat\beta_j=
+\begin{pmatrix}\bar Y_{2,j}\\\bar Y_{1,j}-\bar Y_{2,j}\end{pmatrix}
+\end{equation}
+has normal sampling distribution with mean $\beta_j^*=(f_j^*,g_j^*)^\top$ and covariance
+\begin{equation}\label{eq:regional_sampling_covariance}
+\Sigma_j=\begin{pmatrix}v_2&-v_2\\-v_2&v_1+v_2\end{pmatrix}.
+\end{equation}
+As both sample sizes increase, the strong law gives $\widehat\beta_j\to\beta_j^*$ almost surely and $\Sigma_j\to0$.
+
+Conditional on discrepancy component $k\in\{0,1\}$, the prior covariance of $\beta_j$ is $P_{jk}=\operatorname{diag}(\lambda_j^2,\tau_k^2)$. Normal updating gives
+\begin{equation}\label{eq:regional_posterior}
+\begin{aligned}
+C_{jk}&=(\Sigma_j^{-1}+P_{jk}^{-1})^{-1},\\
+m_{jk}&=C_{jk}\Sigma_j^{-1}\widehat\beta_j
+=\widehat\beta_j-C_{jk}P_{jk}^{-1}\widehat\beta_j.
+\end{aligned}
+\end{equation}
+Because $0\prec C_{jk}\preceq\Sigma_j$ in the positive-semidefinite order, $C_{jk}\to0$. The matrix $P_{jk}$ is fixed and positive definite, so $m_{jk}\to\beta_j^*$ almost surely. Each component posterior therefore puts probability tending to one in any neighborhood of $\beta_j^*$. The posterior mixture has the same property: its probability outside a neighborhood is at most the larger of the two component probabilities. This argument does not require the mixture allocation probability to converge to zero or one.
+
+A finite union bound over $j$ establishes the simultaneous posterior convergence in the theorem. The bound
+\[
+|(f_j+g_j)-(f_j^*+g_j^*)|\leq|f_j-f_j^*|+|g_j-g_j^*|
+\]
+proves learning of the current-control means. Finally, if $|g_j^*|\ne c$, put $\delta_j=\bigl||g_j^*|-c\bigr|>0$. A posterior draw for which $|g_j|$ and $|g_j^*|$ are on opposite sides of $c$ must satisfy $|g_j-g_j^*|\geq\delta_j$. Posterior concentration makes this event's probability vanish. There are finitely many regions, so the practical-agreement limits hold almost surely in all of them simultaneously. This conclusion concerns posterior probabilities directly and introduces no decision cutoff for $B_{c,j}$.
+
+\subsection{Proof of the flat-baseline control-risk theorem}\label{sec:C.3}
+\noindent\textbf{Joint posterior and borrowing coefficient.}
+Suppress the region index and write $\mu_1=f+g$, $v_s=\sigma_s^2/n_s$, $V=v_1+v_2$, and $D=\bar Y_1-\bar Y_2$. Integrating the flat-baseline likelihood over $f$ gives
+\begin{equation}\label{eq:regional_flat_integral}
+\int_{\mathbb R}\phi(\bar Y_1;f+g,v_1)\phi(\bar Y_2;f,v_2)\,df
+=\phi(D;g,V).
+\end{equation}
+Integrating this expression against the two proper discrepancy components gives the positive finite mixture $w\phi(D;0,V+\tau_0^2)+(1-w)\phi(D;0,V+\tau_1^2)$. Thus the joint posterior is proper, and its spike probability is $\gamma(D)$ in equation~\eqref{eq:regional_weight}. Under component $k$,
+\[
+g\mid D,k\sim\N\!\left(\frac{\tau_k^2}{V+\tau_k^2}D,
+\frac{V\tau_k^2}{V+\tau_k^2}\right).
+\]
+Define the precision-weighted mean and coefficient
+\begin{equation}\label{eq:regional_T}
+T\coloneqq\frac{v_2\bar Y_1+v_1\bar Y_2}{V},\qquad a_*\coloneqq\frac{v_1}{V}.
+\end{equation}
+Conditional on $g$ and the observations, the posterior mean of $\mu_1$ is $T+a_*g$. Hence its component-specific posterior mean is $\bar Y_1-a_kD$, where $a_k=v_1/(V+\tau_k^2)$. Averaging over the components proves equation~\eqref{eq:regional_estimator}.
+
+The posterior spike odds are
+\begin{equation}\label{eq:regional_odds}
+\frac{\gamma(D)}{1-\gamma(D)}
+=C\exp(-\kappa D^2),\qquad
+C=\frac{w}{1-w}\sqrt{\frac{V+\tau_1^2}{V+\tau_0^2}},\qquad
+\kappa=\frac12\left(\frac1{V+\tau_0^2}-\frac1{V+\tau_1^2}\right)>0.
+\end{equation}
+It follows that $\gamma(D)$ decreases strictly with $|D|>0$ and tends to zero as $|D|\to\infty$. Because $a_0>a_1>0$, the coefficient $a(D)=a_1+(a_0-a_1)\gamma(D)$ has the stated monotonicity and limit. Also $0<a(D)<a_*=v_1/V$.
+
+\noindent\textbf{Exact risk and benefit under agreement.}
+Let $d=\mu_1-f$ denote the fixed true discrepancy in the sampling experiment. Under independent normal sampling, $T$ and $D$ are independent, with
+\begin{equation}\label{eq:regional_T_distribution}
+\E_d(T)=\mu_1-a_*d,\qquad
+\Var_d(T)=\frac{v_1v_2}{V},\qquad D\sim\N(d,V).
+\end{equation}
+The posterior-mean estimator can be written as $\widehat\mu_1=T+\{a_*-a(D)\}D$. Taking its expectation or squared error proves the bias and risk expressions in equation~\eqref{eq:regional_risk}.
+
+At $d=0$, $a(D)$ is even and $D$ is symmetrically distributed, so $\E_0\{a(D)D\}=0$. The estimator is therefore unbiased. Since $0<a(D)<a_*$ and $P(D\ne0)=1$,
+\begin{equation}\label{eq:agreement_risk_gain}
+\begin{aligned}
+R(0)&=\frac{v_1v_2}{V}+\E_0\!\left[\{a_*-a(D)\}^2D^2\right]\\
+&<\frac{v_1v_2}{V}+a_*^2\E_0(D^2)
+=\frac{v_1v_2}{V}+\frac{v_1^2}{V}=v_1.
+\end{aligned}
+\end{equation}
+This is a strict repeated-sampling mean squared error improvement over the trial-only mean. It is not a statement about posterior interval width in every dataset. The normal-expectation formula for $R(d)$ is continuous in $d$, by dominated convergence on compact sets of $d$. Thus a neighborhood of exact agreement also has $R(d)<v_1$, although its size depends on both sampling variances and the prior parameters.
+
+For numerical evaluation, a second risk identity follows by normal integration by parts:
+\begin{equation}\label{eq:regional_stein_risk}
+R(d)=v_1+\E_d\{a(D)^2D^2\}
+-2v_1\E_d\{a(D)+Da'(D)\}.
+\end{equation}
+Indeed, $\E(\bar Y_1-\mu_1\mid D)=a_*(D-d)$ and
+$\E_d\{(D-d)h(D)\}=V\E_d\{h'(D)\}$ for $h(D)=a(D)D$.
+The smooth bounded coefficient and its Gaussian-decaying derivative make the integration valid. Treating $a(D)$ as a fixed coefficient would omit the derivative term and would not give the correct risk.
+
+\noindent\textbf{Severe conflict at fixed sample sizes.}
+Write $b(D)=(a_0-a_1)\gamma(D)$. Then $a(D)=a_1+b(D)$ and $0\leq b(D)\leq(a_0-a_1)C\exp(-\kappa D^2)$. For each fixed integer $q\geq0$, completing the square gives
+\[
+\E_d\{|D|^q e^{-\kappa D^2}\}
+=O\!\left[(1+|d|^q)
+\exp\!\left\{-\frac{\kappa d^2}{1+2\kappa V}\right\}\right].
+\]
+Consequently, the bias contribution $\E_d\{b(D)D\}$ tends to zero. Comparing the risk formula with the constant-coefficient estimator $\bar Y_1-a_1D$ also leaves only polynomial multiples of these vanishing expectations. Therefore
+\begin{equation}\label{eq:regional_conflict_limits}
+\begin{aligned}
+\operatorname{Bias}_d(\widehat\mu_1)&=-a_1d+o(1),\\
+R(d)&=a_1^2d^2+(1-a_1)^2v_1+a_1^2v_2+o(1),
+\end{aligned}
+\qquad |d|\to\infty.
+\end{equation}
+Dividing by $d$ and $d^2$, respectively, proves the theorem's limits. A finite normal slab therefore leaves unbounded borrowing bias over arbitrarily large true discrepancies at fixed sample sizes.
+
+Increasing trial information is a different limit. With fixed positive prior scales, fixed true $d$, and bounded $v_2$, the inequality $a(D)\leq v_1/\tau_0^2$ gives
+\begin{equation}\label{eq:regional_increasing_trial}
+|\operatorname{Bias}_d(\widehat\mu_1)|
+\leq\frac{v_1}{\tau_0^2}\E_d|D|
+\leq\frac{v_1}{\tau_0^2}\bigl(|d|+\sqrt{v_1+v_2}\bigr)
+\longrightarrow0\quad\text{as }v_1\downarrow0.
+\end{equation}
+This limit does not permit the spike variance to shrink arbitrarily with the sample size.
+
+\subsection{Separate-treatment contrast benchmark}\label{sec:C.4}
+Let $p_j\geq0$, $\sum_jp_j=1$, be fixed target-region weights. Write $e_j=\widehat\mu_{1,j}-\mu_{1,j}$ and $b_j=\E(e_j)$. The mean squared error of the standardized control estimate is
+\begin{equation}\label{eq:regional_aggregate_risk}
+\E\!\left(\sum_jp_je_j\right)^2
+=\left(\sum_jp_jb_j\right)^2+
+\sum_{j,k}p_jp_k\Cov(e_j,e_k).
+\end{equation}
+Under independent regional data and fixed independent regional priors in the flat-baseline benchmark, the off-diagonal covariance terms vanish. If all regions have exact agreement, the regional estimators are unbiased and their aggregate risk is $\sum_jp_j^2R_j(0)<\sum_jp_j^2v_{1,j}$, the risk of the standardized trial-only control mean.
+
+For this separate-treatment contrast benchmark, write the error of the same independent treatment estimator as $e_{\mathrm{trt}}$, with bias $b_{\mathrm{trt}}$. The contrast error is $e_{\mathrm{trt}}-\sum_jp_je_j$, so its mean squared error is
+\[
+\Var(e_{\mathrm{trt}})+\sum_{j,k}p_jp_k\Cov(e_j,e_k)
++\left(b_{\mathrm{trt}}-\sum_jp_jb_j\right)^2.
+\]
+Under exact agreement in all regions, the strict control-risk improvement therefore also improves contrast estimation relative to the same treatment estimator with trial-only controls. Under conflict, the weighted control biases must be retained; if the treatment estimator is unbiased, the contrast bias is $-\sum_jp_jb_j$.
+
+These formulas condition on the regional weights and design. Shared estimated mixture parameters and overlapping trees can induce regional dependence, so covariance terms cannot be discarded for the fitted ensemble. Under the learning model of Theorem~\ref{thm:regional_learning}, posterior consistency of all regional control means also implies consistency of their fixed weighted mean. Adding a consistently learned treatment mean yields consistency of the corresponding contrast. An extension from fixed regions and weights to a learned ensemble standardized over empirical trial covariates requires its own design and posterior-concentration argument.
+
+\subsection{Supporting properties of a conditional discrepancy leaf}\label{sec:C.5}
+The following two lemmas retain the original leaf-level calculations as supporting results. Fix a discrepancy-tree partition, every other tree contribution, $n\geq1$ trial partial residuals after treatment adjustment $\mathbf r$ in a leaf, $\sigma_1^2>0$, $0<w<1$, and $0<\tau_0^2<\tau_1^2<\infty$. Let $\bar r$ be their mean, and let $z=1$ denote the spike component. Normal marginalization gives
+\begin{equation}\label{eq:odds}
+\frac{P(z=1\mid\mathbf r)}{P(z=0\mid\mathbf r)}
+=\frac{w}{1-w}\sqrt{\frac{\tau_1^2+\sigma_1^2/n}{\tau_0^2+\sigma_1^2/n}}
+\exp\left[-\frac{\bar r^2}{2}
+\left\{\frac{1}{\tau_0^2+\sigma_1^2/n}-\frac{1}{\tau_1^2+\sigma_1^2/n}\right\}\right].
+\end{equation}
+For this subsection, write these odds as $C_{\ell}e^{-\kappa_{\ell}\bar r^2}$, with $C_{\ell},\kappa_{\ell}>0$, and put $\gamma_{\ell}(\bar r)=P(z=1\mid\mathbf r)$ and $\omega_k=\tau_k^2/(\tau_k^2+\sigma_1^2/n)$.
+
+\begin{lemma}[Bounded additional shrinkage in a fixed leaf]\label{lem:leaf_shrinkage}
+Under the stated conditional leaf model, the difference between the mixture posterior mean and the slab-only posterior mean is bounded as a function of $\bar r$ and tends to zero as $|\bar r|\to\infty$.
+\end{lemma}
+\begin{proof}
+The component means are $\omega_k\bar r$. Hence the difference is $\Delta_{\mathrm{mix}}(\bar r)=-\gamma_{\ell}(\bar r)(\omega_1-\omega_0)\bar r$. Since $\gamma_{\ell}(\bar r)\leq C_{\ell}e^{-\kappa_{\ell}\bar r^2}$,
+\[
+|\Delta_{\mathrm{mix}}(\bar r)|\leq(\omega_1-\omega_0)C_{\ell}|\bar r|e^{-\kappa_{\ell}\bar r^2}
+\leq\frac{(\omega_1-\omega_0)C_{\ell}}{\sqrt{2e\kappa_{\ell}}}.
+\]
+The first bound tends to zero in both tails. Relative to the unshrunk likelihood mean $\bar r$, the remaining slab shrinkage is $(\omega_1-1)\bar r$, which is unbounded at fixed $n$ and finite $\tau_1^2$.
+\end{proof}
+
+\begin{lemma}[Conditional learning of a leaf discrepancy]\label{lem:leaf_learning}
+At fixed sample size, the posterior spike probability decreases strictly with $|\bar r|>0$. If the fixed leaf receives independent $\N(d,\sigma_1^2)$ partial residuals, all other quantities remain fixed, and $n\to\infty$, then for its parameter $\theta$ and $|d|\ne c$,
+$P(|\theta|<c\mid\mathbf r)\to\ind\{|d|<c\}$ almost surely. The spike probability need not converge to zero or one.
+\end{lemma}
+\begin{proof}
+Monotonicity follows from equation~\eqref{eq:odds}. Almost surely $\bar r\to d$. Each component posterior has mean $\omega_k\bar r\to d$ and variance $(n/\sigma_1^2+\tau_k^{-2})^{-1}\to0$. Thus each component, and their posterior mixture, concentrates at $d$. Positive separation from the tolerance boundary proves the probability limit. Nevertheless, the spike probability converges to
+\[
+\frac{w\phi(d;0,\tau_0^2)}{w\phi(d;0,\tau_0^2)+(1-w)\phi(d;0,\tau_1^2)},
+\]
+which is strictly between zero and one for finite $d$. Learning a discrepancy does not uniquely identify its overlapping prior component.
+\end{proof}
+
+\subsection{Extension to the full model}\label{sec:C.6}
+The regional theorems fix the partition and all prior parameters; the risk theorem additionally uses a flat baseline prior. In the fitted model, tree structures, other contributions, the shared mixture probability, and the spike variance are estimated and dependent, with data-dependent scale choices. The proper Gaussian baseline prior also contributes shrinkage. None of the regional risk or learning results automatically transfers to that setting. A sum of tree functions can have multiple tree decompositions, so the scientifically meaningful target is the total $g(x)$, together with $f(x)$ and $f(x)+g(x)$.
+
+A full-model learning result would require joint posterior concentration of the historical and current-control functions over the target covariate distribution, with adequate support from both sources. Subject to separation from the tolerance boundary, such concentration could justify convergence of posterior practical-agreement probabilities averaged over that population. It would not by itself imply uniform convergence at every profile, exact recovery of tree boundaries, or an estimation-risk improvement.
+
+Without trial controls, the separate treatment likelihood supplies no information about $g$. Neither a regional theorem nor an ESS calculation supplies that missing information. The regional-discrepancy figure reports finite-sample empirical behavior; Table~\ref{M-tab:table7} reports patient-profile prior information and is not evidence that the discrepancy is consistently learned in the single-arm application. Censored-outcome extensions likewise require additional arguments rather than treating imputed log times as fully observed independent data in these proofs.

@@ -1,0 +1,32 @@
+[
+  {
+    "name": "main_draft",
+    "returncode": 0,
+    "issues": []
+  },
+  {
+    "name": "main_tables_figures",
+    "returncode": 0,
+    "issues": []
+  },
+  {
+    "name": "appendix",
+    "returncode": 0,
+    "issues": []
+  },
+  {
+    "name": "main_tracked",
+    "returncode": 0,
+    "issues": []
+  },
+  {
+    "name": "main_tables_figures_tracked",
+    "returncode": 0,
+    "issues": []
+  },
+  {
+    "name": "appendix_tracked",
+    "returncode": 0,
+    "issues": []
+  }
+]

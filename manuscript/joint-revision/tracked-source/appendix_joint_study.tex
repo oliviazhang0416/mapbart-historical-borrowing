@@ -1,0 +1,160 @@
+\section{Joint treatment and control validation}
+\label{sec:G}
+
+This appendix documents the Gaussian validation for the joint primary model. The model is
+\begin{equation}
+\begin{aligned}
+ y_i&=f(x_i)+S_i g(x_i)+A_i\psi+\varepsilon_i,\\
+ v_i&=\begin{cases}
+ \sigma_1^2,&S_i=1,\\
+ \sigma_2^2,&S_i=0,
+ \end{cases}
+ \qquad \varepsilon_i\sim N(0,v_i),\\
+ \psi&\sim N(0,v_\psi),\qquad v_\psi=100.
+\end{aligned}
+ \label{eq:joint_app_model}
+\end{equation}
+where $S_i=1$ for both randomized-trial arms and $S_i=0$ for external controls. The treatment indicator is $A_i=1$ for treated trial subjects and zero otherwise. Thus the randomized-control mean is $f+g$, the treated mean is $f+g+\psi$, and the external-control mean is $f$. The standardized trial contrast is the average of the treated and control potential-mean difference over the trial profiles, and equals $\psi$ under the common-effect model. The Heterogeneous condition deliberately violates that restriction and is scored against its realized trial-profile ATE.
+
+\subsection{Posterior computation}
+
+The prognostic function $f$ is a sum of $H_f=50$ trees and the discrepancy function $g$ is a sum of $H_g=5$ trees. Let
+\[
+ p_k(d)=\alpha_k(1+d)^{-\beta_k},\qquad
+ (\alpha_f,\beta_f)=(0.95,2),\quad (\alpha_g,\beta_g)=(0.5,3).
+\]
+The primary tree prior uses these depth weights in a globally restricted admissible-tree distribution. For a valid tree $T$,
+\begin{equation}
+ \widetilde\pi_k(T)\propto
+ \prod_{v\in I(T)}\frac{p_k(d(v))}{V(v)C(v,s_v)}
+ \prod_{\ell\in L(T)}\{1-p_k(d(\ell))\}
+ \;1\{T\text{ is admissible}\},
+ \label{eq:joint_treeweight}
+\end{equation}
+where $I(T)$ and $L(T)$ are its internal nodes and leaves, $V(v)$ is the number of ancestor-admissible splitting variables at $v$, and $C(v,s_v)$ is the number of available cutpoints for the selected variable. The normalizing constant is over the finite valid-tree support. Admissibility requires ancestor-consistent cuts and at least five fitting observations per leaf: all sources for $f$ and randomized-trial observations for $g$. A terminal node with no remaining cut retains the factor $1-p_k(d)$ under this globally restricted target. This is a depth-weighted restricted tree prior with a single normalizing constant over valid trees.
+
+The minimum leaf size is five and the grow, prune and change move probabilities are 0.3, 0.3 and 0.4. The $f$ terminal parameters have a normal prior with variance
+\[
+ \lambda_f^2=\left\{\frac{R_y}{2k\sqrt{H_f}}\right\}^2,
+ \qquad k=2,
+\]
+where $R_y$ is the range of the centered observed outcome passed to the final fit. The discrepancy terminal parameters use
+\[
+ z_{h\ell}\mid w\sim\operatorname{Bernoulli}(w),\qquad
+ \theta^g_{h\ell}\mid z_{h\ell}=1\sim N(0,\tau_0^2),\qquad
+ \theta^g_{h\ell}\mid z_{h\ell}=0\sim N(0,\tau_1^2).
+\]
+Here $w\sim\operatorname{Beta}(1,1)$, $\nu_0=3$, $\tau_0^2$ has a scaled inverse-chi-square prior with scale $s_0^2$ truncated to $(0,\tau_1^2)$, and $\tau_1^2=R_y^2/(4k^2H_g)$ is fixed. The discrepancy scale is updated through the spike indicators; the slab scale is not updated. The source-specific residual variance priors have three degrees of freedom and scales obtained from source-specific residual-scale estimates and the factor $\chi^2_{3,0.1}/3$. The randomized-trial variance $\sigma_1^2$ is shared by treated and control trial observations; the external-control variance is $\sigma_2^2$.
+
+After centering the observed outcomes, the treatment-adjusted partial residual is
+\[
+ r_i=y_i-f_{-h}(x_i)-S_i g(x_i)-A_i\psi.
+\]
+An $f$-tree update uses both sources with their respective precisions. A $g$-tree update uses randomized observations, including treated observations after subtracting $A_i\psi$, and the spike/slab leaf indicator is integrated out for structure proposals. Conditional on the forests and variances, the treatment update is
+\begin{equation}
+\begin{aligned}
+ V_\psi&=\left(v_\psi^{-1}+\sum_{i:A_i=1}1/v_i\right)^{-1},\\
+ m_\psi&=V_\psi\sum_{i:A_i=1}\frac{y_i-f(x_i)-S_i g(x_i)}{v_i},\\
+ \psi\mid-&\sim N(m_\psi,V_\psi).
+\end{aligned}
+\label{eq:joint_app_psi}
+\end{equation}
+The same $A_i\psi$ term is removed before each forest update and is included in residual-variance updates. Each iteration updates the 50 $f$ trees once, performs five sweeps over the five $g$ trees, then updates the discrepancy hyperparameters, $\psi$ and the two residual variances.
+
+\subsection{Training-only calibration and data-dependent scales}
+
+The calibration selects $s_0^2$ for the discrepancy prior; it is not an ESS calculation for the joint treatment coefficient. Stage 1 fits plain BART to the 300 external-control outcomes and evaluates its posterior mean surface at the 300 trial profiles. A separate plain BART fit to randomized-control outcomes supplies the variance estimate used as $\sigma_1^2$ in calibration. The calibration uses 20 consecutive posterior blocks, $q=0.95$, $H_g=5$, $\nu_0=3$, $\alpha_g=0.5$, $\beta_g=3$, 4,000 inverse-chi-square draws, 2,000 prior-tree draws and requested target $N_{\mathrm{target}}=100$. It uses 1,000 burn-in iterations and 1,000 draws for each calibration fit. The tree-grid calculation uses the combined external and trial profile covariates. Treated outcomes are excluded from this scale-selection stage.
+
+The final joint fit independently calculates its outcome range and source residual-scale priors from the 600 outcomes supplied to that fit, including treated and control trial outcomes and external controls. This distinction is part of the fitted formulation: calibration is training-only, while the final range and variance rules are fit-specific. The selected scale is not described as supplying 100 effective observations to the treatment effect. The existing ESS quantity remains a control-mean prior reference.
+
+\begin{table}[p]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2pt}
+\caption{Comparator specifications. The methods differ in mean model, variance treatment, range inputs and calibration as well as in borrowing structure.}
+\label{tab:joint_comparators}
+\begin{tabular}{@{}p{0.80in}p{1.35in}p{1.20in}p{1.20in}p{1.10in}@{}}
+\toprule
+Method & Mean model & Trial variance & Range inputs & Calibration \\
+\midrule
+Joint LRC & $f(x)+Sg(x)+A\psi$; 50 $f$ trees and 5 $g$ trees & One $\sigma_1^2$ for both trial arms; $\sigma_2^2$ external & All 600 outcomes for $R_y$; combined trial and external profiles for tree grid & Training-only control fits; $N_{\mathrm{target}}=100$, selected $s_0^2$ \\
+Joint source-BART & Source-indicator mean with common $A\psi$; no separate $g$ ensemble & One trial variance and one external variance & All 600 outcomes; same profile inputs & None: $H_g=0$, so the supplied discrepancy scale is unused \\
+Separated source-BART & Separate treated mean; source-indicator model for controls & Separate treated fit; source-specific control variances & Treated fit and pooled-control fit use their own outcomes & None: $H_g=0$; no common $\psi$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Data-generating conditions and reproducibility}
+
+The study has five conditions, 40 datasets per condition, 300 trial subjects, 300 external controls and 10 covariates. Covariates and the baseline outcome surface $F$ follow the constructions in Appendix~\ref{sec:E.1}--\ref{sec:E.2}. The outcome intercept is $b_0=0.42$. A common candidate pool receives independent source indicators with probability $1/2$; exactly 300 trial and 300 external observations are then sampled from their respective source groups. Within the trial, $P(A_i=1\mid S_i=1)=2/3$, giving the expected 2:1 treatment-to-control allocation. Gaussian trial and external residual standard deviations are 1.5 and 1.8.
+
+The Compatible condition has no external shift. One-variable adds a shift of two outside $X_5>2$. Two-variable adds a shift of two outside the checkerboard agreement region
+\[
+ \{X_5>2,\ X_7>2\}\;\cup\;\{X_5\leq 2,\ X_7\leq 2\}.
+\]
+Thus the shift is applied when exactly one of the two covariates exceeds 2. Heterogeneous uses the Two-variable source shift and treatment effect
+\[
+ \tau_i=1+0.5(X_{5i}-\bar X_{5,\mathrm{trial}}),
+\]
+whose trial-profile mean is one. Null uses the same source shift and constant treatment effect $\psi=0$. The condition names distinguish this 40-replicate study from the separate Sc1--Sc5 simulation record.
+
+Compatible, One-variable and Two-variable share dataset seeds 92026001--92026040 and share trial data, treatment assignments and noise within each replicate. Heterogeneous uses 92126001--92126040 and Null uses 92226001--92226040. For a dataset seed $s$, calibration seeds are $s+100001$ for the randomized-control stage, $s+200001$ for the external-control stage and $s+300001$ for the calibration calculation. Validation fit seeds are recorded in \texttt{09-method-exploration/}\allowbreak\texttt{validation/jobs.csv}; the long-chain run used 30,000 burn-in iterations, 12,000 retained draws and three chains for every method-condition-replicate combination.
+
+The reproducibility package retains the relative validation directory \texttt{09-method-exploration/}\allowbreak\texttt{validation/} and its files \texttt{validation\_core.R}, \texttt{run\_validation.R} and \texttt{summarize\_validation.R}, together with the joint-package R and C++ sources. Their SHA-256 values and the output manifest are retained in the package. The original validation archive contains the raw chain files. The accompanying source package contains pooled method--dataset rows, seed and configuration fields, and checksums; it does not redistribute the raw chains.
+
+\subsection{Complete numerical results}
+
+Table~\ref{tab:joint_full_metrics} gives the pooled ATE bias, mean interval width, RMSE, Monte Carlo standard error of the RMSE, 95\% coverage count and ATE convergence flags. The RMSE standard errors quantify finite-replicate uncertainty in the displayed RMSE; the flags report method--dataset groups and are separate from posterior uncertainty. ATE flags use $\widehat R>1.05$ or bulk effective sample size below 400. The paired block-bootstrap comparison uses only Compatible, One-variable and Two-variable, with shared replicate seeds and common trial data; it does not resample Heterogeneous or Null. Its interval is a sampling-uncertainty statement for the paired empirical comparison, not a posterior interval and not a correction for failed chains.
+
+\begin{table}[p]
+\centering
+\caption{Complete joint validation metrics. Bias, interval width and RMSE are pooled over the 40 datasets in each condition. Coverage is the number of central 95\% intervals containing the truth out of 40. RMSE SE is the Monte Carlo standard error of the RMSE. ATE flags count method--dataset groups with $\widehat R>1.05$ or bulk effective sample size below 400.}
+\label{tab:joint_full_metrics}
+\setlength{\tabcolsep}{2.6pt}
+\scriptsize
+\begin{tabular}{llrrrrrr}
+\toprule
+Condition & Method & Bias & Width & RMSE & RMSE SE & Coverage & Flags\\
+\midrule
+Compatible & Joint LRC & -0.057 & 0.683 & 0.175 & 0.017 & 38/40 & 0\\
+Compatible & Joint source-BART & -0.047 & 0.775 & 0.213 & 0.020 & 39/40 & 1\\
+Compatible & Separated source-BART & -0.037 & 0.744 & 0.206 & 0.021 & 37/40 & 1\\
+One-variable & Joint LRC & -0.055 & 0.762 & 0.207 & 0.018 & 38/40 & 3\\
+One-variable & Joint source-BART & -0.052 & 0.782 & 0.216 & 0.020 & 38/40 & 2\\
+One-variable & Separated source-BART & -0.045 & 0.747 & 0.211 & 0.021 & 37/40 & 0\\
+Two-variable & Joint LRC & -0.046 & 0.803 & 0.215 & 0.018 & 38/40 & 3\\
+Two-variable & Joint source-BART & -0.052 & 0.784 & 0.215 & 0.020 & 38/40 & 2\\
+Two-variable & Separated source-BART & -0.040 & 0.761 & 0.211 & 0.021 & 37/40 & 7\\
+Heterogeneous & Joint LRC & -0.047 & 0.811 & 0.209 & 0.021 & 38/40 & 8\\
+Heterogeneous & Joint source-BART & -0.039 & 0.789 & 0.211 & 0.021 & 38/40 & 4\\
+Heterogeneous & Separated source-BART & -0.034 & 0.763 & 0.192 & 0.020 & 39/40 & 5\\
+Null & Joint LRC & -0.024 & 0.810 & 0.230 & 0.029 & 36/40 & 4\\
+Null & Joint source-BART & -0.015 & 0.789 & 0.215 & 0.025 & 38/40 & 3\\
+Null & Separated source-BART & -0.018 & 0.769 & 0.210 & 0.022 & 38/40 & 8\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Across the 200 method-condition groups, the ATE convergence summary for Joint LRC has median/max $\widehat R=1.004/1.058$ and minimum/median bulk ESS $35.2/1289.5$. The corresponding Joint source-BART values are $1.004/1.057$ and $36.8/1438.5$, and the separated values are $1.003/1.059$ and $31.9/2464.0$. Discrepancy-contrast diagnostics are materially worse: the maximum $\widehat R$ values are 2.004, 2.164 and 1.987, and the minimum bulk ESS values are 4.1, 3.8 and 4.1 for Joint LRC, Joint source-BART and Separated source-BART, respectively. These diagnostics support a qualified treatment-effect comparison and do not support a claim of reliable regional discrepancy recovery.
+
+Across Compatible, One-variable and Two-variable, pooled Joint LRC RMSE is 0.199690, compared with 0.209416 for Separated source-BART and 0.214491 for Joint source-BART. The paired MSE differences (Joint LRC minus comparator) are -0.003979 (95\% block-bootstrap CI $[-0.011089,0.002817]$) and -0.006130 (CI $[-0.010451,-0.002245]$). The corresponding RMSE reductions are 4.64\% and 6.9\%, below the prespecified 10\% improvement criterion. The validation therefore records a modest, comparator-specific empirical pattern. It does not establish general superiority, recovery of regional discrepancies or transfer to survival or single-arm analyses.
+
+
+\subsection{Saved-chain sensitivity}
+Each chain-index summary retains all 120 datasets in Compatible, One-variable and Two-variable. Table~\ref{tab:joint_chain_sensitivity} computes RMSE from the posterior mean within each saved chain, using the same datasets for every method. The percentage reduction is $100(1-\mathrm{RMSE}_{\mathrm{LRC}}/\mathrm{RMSE}_{\mathrm{comparator}})$. No diagnostic-based exclusions are applied. The pooled direction is similar across chain indices, but this descriptive check does not establish adequate mixing or replace the three-chain diagnostics.
+\begin{table}[htbp]
+\centering\small
+\caption{Saved-chain sensitivity across 120 datasets per chain index.}
+\label{tab:joint_chain_sensitivity}
+\begin{tabular}{crrrrr}
+\toprule
+&\multicolumn{3}{c}{RMSE}&\multicolumn{2}{c}{LRC reduction (\%)}\\
+\cmidrule(lr){2-4}\cmidrule(lr){5-6}
+Chain & Joint LRC & Joint source & Separated source & vs separated & vs joint source\\
+\midrule
+1 & 0.199403 & 0.214421 & 0.209069 & 4.623 & 7.004\\
+2 & 0.199121 & 0.214920 & 0.209618 & 5.008 & 7.351\\
+3 & 0.201897 & 0.215474 & 0.210701 & 4.178 & 6.301\\
+\bottomrule
+\end{tabular}
+\end{table}

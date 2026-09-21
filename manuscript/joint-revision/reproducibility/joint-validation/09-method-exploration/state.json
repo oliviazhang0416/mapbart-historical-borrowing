@@ -1,0 +1,110 @@
+{
+  "workflow_version": 1,
+  "objective": "Find a reproducible promising direction for external-control treatment inference; distinguish LRC-specific gains from shared improvements.",
+  "phase": "validation_reviewed_convergence_pending",
+  "owner": "primary agent",
+  "implementation_model": "gpt-5.6-luna",
+  "fallback_implementation_model": "gpt-5.6-terra",
+  "max_child_agents": 3,
+  "max_total_numeric_workers": 6,
+  "candidates": [
+    {
+      "id": "AUDIT-01",
+      "status": "complete; isolated sparse kernel repair checked; performance rerun pending",
+      "agent": "diagnostic_audit",
+      "folder": "audit",
+      "promotable": false
+    },
+    {
+      "id": "ORACLE-01",
+      "status": "complete; 36 fits, six datasets, diagnostic only",
+      "agent": "oracle_benchmark",
+      "folder": "oracle",
+      "promotable": false
+    },
+    {
+      "id": "JOINT-SOURCE-01",
+      "status": "fresh validation reviewed; numerical gates unmet; convergence follow-up required",
+      "agent": "joint_model",
+      "folder": "joint-model",
+      "promotable": true
+    },
+    {
+      "id": "JOINT-LRC-01",
+      "status": "fresh validation reviewed; numerical gates unmet; convergence follow-up required",
+      "agent": "joint_model",
+      "folder": "joint-model",
+      "promotable": true
+    }
+  ],
+  "commands": {
+    "oracle-summary": [
+      "Rscript",
+      "09-method-exploration/oracle/summarize_oracle.R"
+    ],
+    "joint-checks": [
+      "env",
+      "R_LIBS_USER=09-method-exploration/joint-model/private-library",
+      "Rscript",
+      "09-method-exploration/joint-model/checks.R"
+    ],
+    "validation-cycle": [
+      "python3",
+      "09-method-exploration/run_validation_cycle.py"
+    ],
+    "sync-reports": [
+      "python3",
+      "09-method-exploration/sync_reports.py"
+    ],
+    "sparse-checks": [
+      "Rscript",
+      "09-method-exploration/sparse-repair/checks.R"
+    ]
+  },
+  "validation_primary_candidate": "JOINT-LRC-01",
+  "validation_architectural_comparator": "JOINT-SOURCE-01",
+  "validation_baseline": "separated sourceBART with source-specific variances",
+  "validation_baseline_id": "SEPARATED-SOURCE-01",
+  "candidate_frozen_at_utc": "2026-09-19T22:32:14Z",
+  "next_action": "Qualified report, slides, and manuscript updated. No further search for a larger effect is required for exploratory reporting. Before a settled numerical claim, record a fixed-model computational rerun protocol for the 51 flagged ATE method-dataset groups and diagnose discrepancy-chain behavior. Preserve all original data and results.",
+  "background_scheduler_installed": false,
+  "numerical_batch": {
+    "pid": 1957,
+    "started_utc": "2026-09-19T22:56:08.511133Z",
+    "workers": 6,
+    "expected_fit_jobs": 1800,
+    "log": "validation/cycle.log"
+  },
+  "analytic_preparation": {
+    "date": "2026-09-20",
+    "note": "RESEARCH-NOTE-20260920.md",
+    "centered_discrepancy": "derived; not implemented or fitted",
+    "shared_partitions": "derived and analytic mechanism checked; not selected or fitted",
+    "sparse_repair": "isolated joint-factor target; kernel checks and independent review passed; no performance rerun",
+    "validation_unchanged": true
+  },
+  "numerical_failure_utc": "2026-09-20T06:41:34.663998Z",
+  "numerical_completed_utc": "2026-09-20T16:30:18.287933Z",
+  "reporting_failure_resolved": true,
+  "reviewed_evaluations": [
+    "validation/evaluation-reviewed-lrc-vs-separated",
+    "validation/evaluation-reviewed-source-vs-separated",
+    "validation/evaluation-reviewed-lrc-vs-source"
+  ],
+  "scientific_conclusion": "Modest exploratory pooled RMSE reductions: 4.64% versus separated source-BART and 6.9% versus joint source-BART, mainly under compatible controls. Frozen 10% designation remains unmet; convergence follow-up is pending.",
+  "communication_revision": {
+    "date": "2026-09-20",
+    "user_direction": "Accept the modest observed performance; update the exploration report, author slides, and main manuscript using lower-cost writing agents.",
+    "scope": "Qualified exploratory reporting; original numerical designation is unchanged.",
+    "writing_model": "gpt-5.6-luna",
+    "manuscript": "Updated: Section 2.7 joint treatment model, Section 3.5 comparison, Web Appendix H full design/computation/results, and bounded abstract/discussion changes.",
+    "new_performance_runs": false,
+    "status": "complete",
+    "deck_pages": 71,
+    "main_update_pages": "38-42",
+    "backup_update_pages": "48-50",
+    "manuscript_clean_pages": 88,
+    "manuscript_tracked_pages": 109,
+    "manuscript_audit": "05-writing/humanize_logs/joint-manuscript-20260920/"
+  }
+}

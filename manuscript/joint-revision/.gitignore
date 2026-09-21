@@ -1,0 +1,6 @@
+# Local build output
+build/
+__pycache__/
+# These label-only files are required to compile the standalone cross-referenced documents.
+!source/generated/*_refs.aux
+!tracked-source/generated/*_refs.aux

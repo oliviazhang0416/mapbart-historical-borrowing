@@ -1,0 +1,154 @@
+\section{Posterior computation}\label{sec:A}
+\subsection{Joint priors, tree support and conditioning}\label{sec:A.1}
+The primary likelihood includes every trial and external observation, with $S_i$ and $A_i$ as defined in the main text. The outcome centering constant is the sample mean across all three groups and is restored for predictions. The joint range rule uses their outcome range $R_y$. The tree priors are independent across trees, and the leaf priors are independent given tree structures and shared hyperparameters.
+
+For source $s\in\{1,2\}$, use
+\[
+\sigma_s^2\sim\IG(\nu_\sigma/2,\nu_\sigma\lambda_{\sigma,s}/2),\qquad \nu_\sigma=3,
+\]
+where $p(u)\propto u^{-a-1}\exp(-b/u)$. The scale is $\lambda_{\sigma,s}=\widehat\sigma_s^2\chi^2_{3,0.10}/3$. The joint Gaussian wrapper estimates $\widehat\sigma_s$ by regressing centered outcomes on covariates within source; its trial fit includes both randomized arms. This empirical-Bayes preliminary fit omits the treatment indicator. When the treatment effect is nonzero, its residuals therefore contain treatment variation as well as residual outcome variation, and the resulting scale depends on the effect and allocation. We retain this choice in the reported experiment; no treatment-adjusted prior-scale sensitivity has been fitted. The resulting scales, centering and cutpoint grid are held fixed in posterior sampling. The forest scales are $\lambda_f^2=R_y^2/(16H_f)$ and $\tau_1^2=R_y^2/(16H_g)$.
+
+The joint implementation assigns the following normalized weight over admissible trees. If $I(T)$ and $L(T)$ are internal and terminal nodes, $d(v)$ is node depth, $V(v)$ counts ancestor-admissible variables, and $C(v,s_v)$ counts available cuts for the selected variable, then
+\begin{equation}\label{eq:treeweight}
+\pi_k(T)\ \propto\
+\prod_{v\in I(T)}\frac{p_k\{d(v)\}}{V(v)C(v,s_v)}
+\prod_{\ell\in L(T)}[1-p_k\{d(\ell)\}]
+\ind\{T\text{ is admissible}\}.
+\end{equation}
+Admissibility requires ancestor-consistent cuts and at least five fitting observations per leaf: all sources for $f$, and all trial participants for $g$. Normalization is over the resulting finite tree support. Even a terminal node with no remaining cut retains its factor $1-p_k(d)$. Its normalized marginal tree law is not the usual recursively normalized Galton--Watson law. This globally restricted weight differs from a recursive prior that assigns forced termination probability one at such nodes. The calibration tree simulator uses the latter recursion, another reason its ESS is a prior-setting reference rather than an exact characterization of the fitted tree prior.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Primary joint LRC-BART specification.}\label{tab:S1}
+\begin{tabular}{p{2.0in}p{3.9in}}
+\toprule
+Quantity & Specification\\\midrule
+Mean & $f(x)+Sg(x)+A\psi$\\
+Residual variances & One shared trial variance; one external variance\\
+Forests & $H_f=50$, $H_g=5$; independent tree structures\\
+Depth factors & $(\alpha_f,\beta_f)=(0.95,2)$; $(\alpha_g,\beta_g)=(0.5,3)$\\
+Treatment prior & $\psi\sim\N(0,100)$, with variance 100\\
+Mixture & $w\sim\operatorname{Beta}(1,1)$, updated; $\nu_0=3$ spike prior truncated below $\tau_1^2$\\
+Tree moves & Grow/prune/change probabilities 0.3/0.3/0.4; a stump proposes grow\\
+Posterior sampling & Three chains; 30,000 warm-up and 12,000 retained iterations; five $g$ sweeps per iteration\\
+Scale calibration & Control outcomes only; requested control-mean count 100; 20 blocks; 141-point scale grid\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Partial residuals}\label{sec:A.2}
+For a prognostic tree $h$ and discrepancy tree $h$, respectively, define
+\begin{equation}\label{eq:partial}
+\begin{aligned}
+r_i^f&=Y_i-f^{(-h)}(x_i)-S_i g(x_i)-A_i\psi,&&\text{all observations},\\
+r_i^g&=Y_i-f(x_i)-g^{(-h)}(x_i)-A_i\psi,&&S_i=1.
+\end{aligned}
+\end{equation}
+The current tree is omitted from the indicated sum. For an $f$ update both trial arms have precision $1/\sigma_1^2$ and external observations have precision $1/\sigma_2^2$. All trial participants contribute to a $g$ update. These partial responses are held fixed during the structure proposal. In the separate-treatment variant, only the two control groups enter these calculations, with $A_i=0$.
+
+\subsection{Marginal leaf likelihoods}\label{sec:A.3}
+Within a specified leaf, write $r_i$ for the relevant partial residuals, suppressing their source labels only in the generic normal integral. For an $f$ leaf these include all $r_i^f$, with their respective residual variances; for a $g$ leaf they include $r_i^g$ for $S_i=1$.
+\begin{lemma}[Normal leaf integral]\label{lem:leaf}
+Suppose $r_i\mid\theta\sim\N(\theta,\sigma_i^2)$ independently in a leaf and $\theta\sim\N(0,q^2)$, with $q^2>0$. Let $A\coloneqq \sum_i\sigma_i^{-2}$ and $B\coloneqq \sum_i r_i\sigma_i^{-2}$. The marginal leaf density is
+\begin{equation}\label{eq:leafdensity}
+p(\mathbf r_\ell\mid \mathcal T_{h^k}^k,\text{rest})=
+\left[\prod_{i\in\ell}\phi(r_i;0,\sigma_i^2)\right]
+(1+q^2A)^{-1/2}\exp\!\left\{\frac{q^2B^2}{2(1+q^2A)}\right\}.
+\end{equation}
+Here $k\in\{f,g\}$, $\mathcal T_{h^k}^k$ denotes the current component-specific tree, and $\theta$ denotes its leaf parameter. The last argument of $\phi$ is variance; the result also holds for an empty leaf, using $A=B=0$ and an empty product of one.
+\end{lemma}
+\begin{proof}
+Factor the observation-level product from the normal likelihood and integrate the remaining prior-weighted kernel:
+\begin{equation}
+\frac{1}{\sqrt{2\pi q^2}}\int\exp\left\{-\frac12(A+q^{-2})\theta^2+B\theta\right\}d\theta.
+\end{equation}
+Completing the square gives mean $B/(A+q^{-2})$ and precision $A+q^{-2}$. Its normalizing integral is $\{q^2(A+q^{-2})\}^{-1/2}\exp\{B^2/[2(A+q^{-2})]\}$, which is the stated factor.
+\end{proof}
+
+For an $f$ leaf, let $n_{s,\ell},S_{s,\ell}$ be the count and sum of its partial residuals from source $s$. In the joint model, source-1 counts include both randomized arms, unlike the main-text sample size $n_1$ that counts concurrent controls only. Write $A$ and $B$ for the leaf precision and precision-weighted residual sum. The marginal likelihood factor is
+\begin{equation}\label{eq:Mf}
+\begin{gathered}
+A\coloneqq \frac{n_{1,\ell}}{\sigma_1^2}+\frac{n_{2,\ell}}{\sigma_2^2},\qquad
+B\coloneqq \frac{S_{1,\ell}}{\sigma_{1}^2}+\frac{S_{2,\ell}}{\sigma_{2}^2},\\
+M_f=(1+\lambda_f^2A)^{-1/2}
+\exp\!\left\{\frac{\lambda_f^2B^2}{2(1+\lambda_f^2A)}\right\}.
+\end{gathered}
+\end{equation}
+For a $g$ leaf, redefine $A$ and $B$ using only its trial-participant count and partial-residual sum. Integrate its parameter under each component, then sum over its indicator:
+\begin{equation}\label{eq:Mg}
+\begin{aligned}
+A&\coloneqq \frac{n_{1,\ell}}{\sigma_1^2},\qquad B\coloneqq \frac{S_{1,\ell}}{\sigma_1^2},\\
+M_g&=w(1+\tau_0^2A)^{-1/2}
+\exp\!\left\{\frac{\tau_0^2B^2}{2(1+\tau_0^2A)}\right\}\\
+&\quad+(1-w)(1+\tau_1^2A)^{-1/2}
+\exp\!\left\{\frac{\tau_1^2B^2}{2(1+\tau_1^2A)}\right\}.
+\end{aligned}
+\end{equation}
+Thus both $\theta^g_{h^g\ell}$ and $z_{h^g\ell}$ are marginalized for a discrepancy-tree proposal. The quantities $w,\tau_0^2,\tau_1^2$ are held fixed, not integrated out in this step. For an empty trial leaf, $M_g=w+(1-w)=1$.
+
+\subsection{Metropolis--Hastings tree updates}\label{sec:A.4}
+The marginal tree likelihood is the observation-level density product times the product of its leaf factors. The observation product is identical under both partitions, so it cancels from the Metropolis--Hastings ratio. Suppressing the tree index and component label, a proposal $\mathcal T\to \mathcal T^*$ is accepted with probability
+\begin{equation}\label{eq:MH}
+\min\left\{1,
+\frac{p(\mathcal T^*)}{p(\mathcal T)}\frac{q(\mathcal T\mid \mathcal T^*)}{q(\mathcal T^*\mid \mathcal T)}
+\frac{\prod_{\ell\in \mathcal T^*}M_\ell}{\prod_{\ell\in \mathcal T}M_\ell}\right\}.
+\end{equation}
+The tree prior uses the restricted weights in \eqref{eq:treeweight}; the proposal ratio accounts for the choice of move, node and rule. For a grow move replacing parent $P$ with children $L,R$, the likelihood contribution reduces to $M_LM_R/M_P$. The current implementation uses grow, prune and change proposals; an inadmissible proposal is rejected.
+
+\subsection{Conditional parameter distributions}\label{sec:A.5}
+After accepting or rejecting a structure, sample node parameters for the retained tree. For an $f$ leaf,
+\begin{equation}
+\theta^f_{h^f\ell}\mid\text{rest}\sim
+\N\!\left(\frac{B}{A+\lambda_f^{-2}},\frac{1}{A+\lambda_f^{-2}}\right).
+\end{equation}
+For a nonempty $g$ leaf, let $\bar r=S_{1,\ell}/n_{1,\ell}$. Its spike probability is
+\begin{equation}\label{eq:spikeposterior}
+P(z_{h^g\ell}=1\mid\text{rest})=
+\frac{w\,\phi(\bar r;0,\tau_0^2+\sigma_1^2/n_{1,\ell})}
+{w\,\phi(\bar r;0,\tau_0^2+\sigma_1^2/n_{1,\ell})+(1-w)\,\phi(\bar r;0,\tau_1^2+\sigma_1^2/n_{1,\ell})}.
+\end{equation}
+This compares the density of the partial-residual mean under the two integrated components, including their prior weights. Given component variance $\tau_k^2$ ($k=0$ for $z=1$ and $k=1$ for $z=0$),
+\begin{equation}
+\theta^g_{h^g\ell}\mid z_{h^g\ell},\text{rest}\sim
+\N\!\left(\frac{B}{A+\tau_k^{-2}},\frac{1}{A+\tau_k^{-2}}\right).
+\end{equation}
+An empty leaf instead draws $z\sim\operatorname{Bernoulli}(w)$ and $\theta$ from its selected prior component; division by $n_{1,\ell}=0$ is never required.
+
+Let $L_g$ be the total number of discrepancy terminal nodes, $K_0\coloneqq \sum_{h^g,\ell}z_{h^g\ell}$ and $S_0\coloneqq \sum_{h^g,\ell}z_{h^g\ell}(\theta^g_{h^g\ell})^2$. With $w\sim\operatorname{Beta}(a_w,b_w)$, where $a_w=b_w=1$ by default,
+\begin{equation}
+w\mid\text{rest}\sim\operatorname{Beta}(a_w+K_0,b_w+L_g-K_0).
+\end{equation}
+When the spike variance is updated under the hierarchical prior,
+\begin{equation}
+\tau_0^2\mid\text{rest}\sim
+\operatorname{scaled\text{-}Inv}\chi^2\!\left(
+\nu_0+K_0,\frac{\nu_0s_0^2+S_0}{\nu_0+K_0}\right)
+\text{ restricted to }(0,\tau_1^2).
+\end{equation}
+For each source, write $n_s^{\mathrm{fit}}$ for its fitting sample size, equal to $N$ for source 1 and $n_2$ for source 2 in the joint model. Define its residual sum of squares using the full current mean, $\mathrm{RSS}_{s}$. Then
+\begin{equation}
+\sigma_{s}^2\mid\text{rest}\sim
+\IG\left(\frac{\nu_\sigma+n_s^{\mathrm{fit}}}{2},\frac{\nu_\sigma\lambda_{\sigma,s}+\mathrm{RSS}_{s}}{2}\right).
+\end{equation}
+The residual sums of squares use $Y_i-f(x_i)-S_i g(x_i)-A_i\psi$. The coefficient $\psi$ is drawn from main-text equation~\eqref{T-eq:psi_update}; this is a full conditional, with $f,g$ held at their current values.
+
+\subsection{Joint sampling cycle}\label{sec:A.6}
+\begin{enumerate}
+\item Initialize both forests, their leaf parameters and indicators, $\psi$, the mixture parameters and the two residual variances.
+\item Update each $f$ tree using all treatment-adjusted partial responses, the marginal factor $M_f$, and the conditional leaf distribution.
+\item Update the $g$ trees using all trial participants' treatment-adjusted partial responses and $M_g$; draw each retained tree's indicators and leaf parameters. The reported joint fits repeat this discrepancy sweep five times.
+\item Update $\tau_0^2$ and $w$ from their conditional distributions.
+\item Draw $\psi$ from its Gaussian full conditional, then update the two residual variances.
+\item Repeat and retain the joint draws after warm-up. Prediction and interval summaries average over the retained states; conditional update variances are not substituted for marginal posterior uncertainty.
+\end{enumerate}
+The ordering above describes a composition of conditionally invariant updates. The implementation updates the treatment coefficient before the residual variances, and updates leaf parameters after every accepted or rejected tree proposal. The tree move integrates leaf parameters and discrepancy indicators while holding shared scales and $w$ fixed. Immediate conditional draws for the retained tree restore those marginalized variables before another block uses them. Five discrepancy sweeps repeat valid updates and do not change the target distribution. These facts concern the specified transition kernel, not its mixing rate.
+
+\subsection{Separate-treatment and single-arm computation}\label{sec:A.7}
+The supplementary Gaussian/survival experiments and application use a different implementation that fits the treatment surface separately and applies the two-source model only to controls. For that variant, source-1 counts in the formulas above count concurrent controls, and no treatment term enters a control-tree residual. The prognostic forest has $H_f=50$ in simulations and $H_f=10$ or 50 in the application, with $H_g=5$ throughout. Outcome ranges are calculated separately for pooled controls and treated participants.
+
+The treatment sum of trees is fitted separately under the normal or augmented-normal likelihood. It uses $H_{\mathrm{trt}}=50$, $(\alpha_{\mathrm{trt}},\beta_{\mathrm{trt}})=(0.95,2)$, independent $\theta^{\mathrm{trt}}_{h^{\mathrm{trt}}\ell}\sim\N(0,\lambda_{\mathrm{trt}}^2)$ with $\lambda_{\mathrm{trt}}^2=R_{y,\mathrm{trt}}^2/(16H_{\mathrm{trt}})$, and $\sigma_{\mathrm{trt}}^2\sim\IG(\nu_\sigma/2,\nu_\sigma\lambda_{\sigma,\mathrm{trt}}/2)$. The treatment-specific $\lambda_{\sigma,\mathrm{trt}}$ follows the preliminary residual rule in Section A.1.
+
+
+These separate-treatment simulations use 1,000 warm-up and 1,000 retained draws per fit. Application fits use four chains with 2,000 warm-up and 2,000 retained draws per chain. Their prior-scale calibration uses 1,000 warm-up and 1,000 retained historical draws in simulation and 2,000 warm-up and 4,000 retained draws in the application.
+
+When there are no concurrent controls, every discrepancy leaf has $M_g=1$. In this separate-treatment variant, $g$ is sampled from its specified prior and $\sigma_1^2$ is set equal to $\sigma_2^2$. The reported single-arm fits fix $w$ and $\tau_0^2=\min(s_0^2,\tau_1^2/2)$ and permit discrepancy trees with no concurrent-control observations. The shared cutpoint specification and empirical scales are conditioned on. These prior-driven control predictions are distinct from the joint randomized-trial coefficient in main-text equation~\eqref{T-eq:model}.

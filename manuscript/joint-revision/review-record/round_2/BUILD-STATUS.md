@@ -1,0 +1,1 @@
+Round 2: final main, tables and appendix compiled with recorder, external-reference cycles and no undefined/overfull/duplicate-label/destination warnings. Separate voice pass removed 12 redundant main-text bold lead-ins only; integrity checks retained.

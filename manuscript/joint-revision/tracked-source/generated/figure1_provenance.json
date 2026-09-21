@@ -1,0 +1,9 @@
+{
+  "replicates": 40,
+  "scenarios": ["sc5_X5_d0.5", "sc5_X5_d1", "sc5_X5_d2", "sc4_d2"],
+  "bin_breaks": [-0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5],
+  "max_recovery_error": 4.884981308351e-15,
+  "trial_control_profiles": 16012,
+  "profiles_in_display_range": 15788,
+  "source": "Current Gaussian primary fits; exact saved seeds and scales"
+}

@@ -1,0 +1,308 @@
+--- Yunxuan/main_tables_figures.tex
++++ Joint-revision/main_tables_figures.tex
+@@ -28,7 +28,7 @@
+ \newcommand{\N}{\mathrm{N}}
+ \newcommand{\IG}{\operatorname{IG}}
+ \newcommand{\ind}{\mathbf{1}}
+-\newcommand{\lrc}{lrcBART}
++\newcommand{\lrc}{LRC-BART}
+ \newtheorem{theorem}{Theorem}
+ \newtheorem{lemma}{Lemma}[section]
+ \theoremstyle{remark}\newtheorem{remark}{Remark}[section]
+@@ -37,214 +37,29 @@
+ \def\input@path{{source/}}
+ \makeatother
+ \hypersetup{pdfauthor={},pdfsubject={Statistical methods manuscript draft}}
+- \fancyhead[R]{\small Main tables and figures}
+-\usepackage{tikz}
+-\usetikzlibrary{arrows.meta}
++ \externaldocument[A-]{source/generated/appendix_refs}[appendix.pdf]
++\fancyhead[R]{\small Main tables}
+ \begin{document}
+-\begin{center}
+-{\Large\bfseries Main tables and figures}\par\medskip
+-{Locally robust commensurate Bayesian additive regression trees for historical information borrowing}\par
+-{}
+-\end{center}
+-\noindent Tables 1--7 and Figures 1--2 accompany the main manuscript. Full configurations, Monte Carlo standard errors and implementation details appear in the separate appendix.
+-
+-\begin{table}[h!]
+-\centering\small
+-\caption{Simulation study designs.}\label{tab:design}
+-\begin{tabular}{p{1.35in}rrrrp{1.05in}}
++\begin{center}{\Large\bfseries Main tables}\par\medskip
++{Joint treatment and source-discrepancy modeling with locally robust commensurate Bayesian additive regression trees}\end{center}
++\begin{table}[!htbp]
++\centering
++\caption{Descriptive joint treatment and control comparison across five Gaussian conditions. Each entry gives RMSE / 95\% interval coverage count / ATE convergence flags, with 40 datasets per condition. The flags count method--dataset groups with $\widehat R>1.05$ or bulk effective sample size below 400; they do not count individual chains. Comparative estimates remain provisional because of these diagnostics.}
++\label{tab:joint_primary}
++\setlength{\tabcolsep}{3.5pt}
++\footnotesize
++\begin{tabular}{lccc}
+ \toprule
+-Design & Trial $N$ & Historical $n_3$ & $P(Z=1)$ & Replicates & Settings\\
++Condition & Joint LRC & Joint source-BART & Separated source-BART\\
+ \midrule
+-Gaussian, two-arm & 300 & 300 & $2/3$ & 100 & Sc1--Sc5; 12 settings\\
+-Survival, two-arm & 300 & 300 & $3/4$ & 100 & Sc1--Sc5; 12 settings\\
+-Gaussian, single-arm & 200 & 300 & 1 & 100 & Sc1--Sc2\\
+-Survival, single-arm & 200 & 300 & 1 & 100 & Sc1--Sc2\\
++Compatible & 0.1750 / 38 / 0 & 0.2133 / 39 / 1 & 0.2064 / 37 / 1\\
++One-variable & 0.2068 / 38 / 3 & 0.2155 / 38 / 2 & 0.2105 / 37 / 0\\
++Two-variable & 0.2151 / 38 / 3 & 0.2147 / 38 / 2 & 0.2113 / 37 / 7\\
++Heterogeneous & 0.2092 / 38 / 8 & 0.2112 / 38 / 4 & 0.1917 / 39 / 5\\
++Null & 0.2298 / 36 / 4 & 0.2150 / 38 / 3 & 0.2100 / 38 / 8\\
+ \bottomrule
+ \end{tabular}
+-\caption*{Ten predictors are generated in each design. $Z=1$ denotes trial treatment; two-arm allocation is Bernoulli, so realized arm sizes vary. Historical controls are regenerated for each replicate. Sc1: common covariate distributions; Sc2: selection on observed prognostic variables; Sc3: latent-variable selection with proxy correlations $-0.5,0,0.5$; Sc4: global historical shift of 1 or 2; Sc5: regional shifts outside $X_5>2$ (0.5, 1, 2) or $X_7\leq2$ (1, 2). Gaussian treatment effects are 1; survival effects are $\log(1.4)$ on the log-time scale.}
+ \end{table}
+-\clearpage
+-\begingroup
+-\setlength{\tabcolsep}{4pt}
+-\renewcommand{\arraystretch}{1.13}
+-\renewcommand{\arraystretch}{1.04}
+-\fontsize{10}{11.5}\selectfont
+-\begin{longtable}{lrrrr}
+-\caption{Gaussian mean-difference performance in representative two-arm scenarios.}\label{tab:table2}\\
+-\toprule
+-Method & Bias & RMSE & Coverage & Power \\ \midrule
+-\endfirsthead
+-\multicolumn{5}{l}{\tablename\ \thetable\ (continued)}\\
+-\toprule
+-Method & Bias & RMSE & Coverage & Power \\ \midrule
+-\endhead
+-\midrule\multicolumn{5}{r}{Continued on next page}\\\endfoot
+-\bottomrule\endlastfoot
+-\multicolumn{5}{l}{\strut\textit{Sc1}}\\*
+-lrcBART & 0.003 & 0.174 & 0.950 & 0.890 \\
+-BART-NP & -0.010 & 0.209 & 0.970 & 0.730 \\
+-BART-CP & 0.009 & 0.153 & 0.950 & 0.980 \\
+-BART-PP & -0.001 & 0.197 & 0.950 & 0.800 \\
+-LM-NP & -0.019 & 0.348 & 0.930 & 0.390 \\
+-LM-CP & 0.015 & 0.262 & 0.940 & 0.710 \\
+-LM-PP & -0.005 & 0.349 & 0.950 & 0.390 \\
+-hier. LM & -0.002 & 0.329 & 0.940 & 0.450 \\
+-PSCL & 0.019 & 0.290 & 0.920 & 0.480 \\
+-MAP & 0.023 & 0.302 & 0.940 & 0.530 \\
+-\multicolumn{5}{l}{\strut\textit{Sc2}}\\*
+-lrcBART & 0.003 & 0.186 & 0.940 & 0.860 \\
+-BART-NP & -0.032 & 0.211 & 0.940 & 0.750 \\
+-BART-CP & 0.048 & 0.188 & 0.930 & 0.950 \\
+-BART-PP & -0.004 & 0.200 & 0.970 & 0.740 \\
+-LM-NP & -0.062 & 0.358 & 0.900 & 0.440 \\
+-LM-CP & 0.343 & 0.463 & 0.730 & 0.920 \\
+-LM-PP & 0.007 & 0.355 & 0.950 & 0.450 \\
+-hier. LM & 0.052 & 0.363 & 0.930 & 0.510 \\
+-PSCL & 0.007 & 0.317 & 0.910 & 0.390 \\
+-MAP & 0.186 & 0.458 & 0.870 & 0.550 \\
+-\multicolumn{5}{l}{\strut\textit{Sc3, $\rho=0$}}\\*
+-lrcBART & 0.009 & 0.315 & 0.930 & 0.560 \\
+-BART-NP & -0.046 & 0.328 & 0.950 & 0.520 \\
+-BART-CP & 0.957 & 0.985 & 0.010 & 1.000 \\
+-BART-PP & 0.004 & 0.309 & 0.940 & 0.550 \\
+-LM-NP & -0.057 & 0.367 & 0.930 & 0.340 \\
+-LM-CP & 0.989 & 1.027 & 0.050 & 1.000 \\
+-LM-PP & 0.047 & 0.350 & 0.940 & 0.500 \\
+-hier. LM & 0.085 & 0.373 & 0.930 & 0.510 \\
+-PSCL & 0.667 & 0.721 & 0.290 & 0.980 \\
+-MAP & 0.202 & 0.434 & 0.910 & 0.610 \\
+-\newpage
+-\multicolumn{5}{l}{\strut\textit{Sc4, $\delta=1$}}\\*
+-lrcBART & -0.007 & 0.201 & 0.940 & 0.810 \\
+-BART-NP & -0.010 & 0.209 & 0.970 & 0.730 \\
+-BART-CP & -0.689 & 0.706 & 0.000 & 0.000 \\
+-BART-PP & -0.012 & 0.197 & 0.970 & 0.770 \\
+-LM-NP & -0.019 & 0.348 & 0.930 & 0.390 \\
+-LM-CP & -0.726 & 0.772 & 0.180 & 0.010 \\
+-LM-PP & -0.054 & 0.352 & 0.960 & 0.350 \\
+-hier. LM & -0.104 & 0.358 & 0.930 & 0.290 \\
+-PSCL & -0.483 & 0.563 & 0.530 & 0.060 \\
+-MAP & -0.230 & 0.467 & 0.860 & 0.170 \\
+-\multicolumn{5}{l}{\strut\textit{Sc5, $X_5$, $\delta=1$}}\\*
+-lrcBART & -0.050 & 0.214 & 0.930 & 0.690 \\
+-BART-NP & -0.010 & 0.209 & 0.970 & 0.730 \\
+-BART-CP & -0.334 & 0.366 & 0.370 & 0.350 \\
+-BART-PP & -0.014 & 0.195 & 0.970 & 0.760 \\
+-LM-NP & -0.019 & 0.348 & 0.930 & 0.390 \\
+-LM-CP & -0.353 & 0.439 & 0.660 & 0.190 \\
+-LM-PP & -0.030 & 0.348 & 0.970 & 0.370 \\
+-hier. LM & -0.063 & 0.338 & 0.920 & 0.360 \\
+-PSCL & -0.230 & 0.370 & 0.850 & 0.210 \\
+-MAP & -0.160 & 0.378 & 0.920 & 0.270 \\
+-\end{longtable}
+-\noindent\begin{minipage}{\linewidth}\footnotesize Each row summarizes 100 alternative-hypothesis replicates. Coverage is for a 95\% interval. Empirical power is the frequency of posterior probability of benefit exceeding 0.95 (PSCL: lower 95\% confidence limit above the threshold). Gaussian decisions use a threshold of 0.5 and survival decisions use a ratio threshold of 1. RMSE is the square root of the mean squared error. NP denotes no historical pooling (trial controls only); CP denotes complete pooling; PP denotes source-adjusted pooling using a source indicator. PP is distinct from the hierarchical comparator. lrcBART requests ESS 100; the MAP comparator in Table 2 also requests 100. Full configurations and Monte Carlo standard errors appear in the appendix. The hierarchical comparator uses discrepancy-variance prior scale $s_\tau^2=0.25$.\end{minipage}
+-\endgroup
+- \clearpage
+-\begingroup
+-\setlength{\tabcolsep}{4pt}
+-\renewcommand{\arraystretch}{1.13}
+-\renewcommand{\arraystretch}{1.04}
+-\fontsize{10}{11.5}\selectfont
+-\begin{longtable}{lrrrr}
+-\caption{Median-survival-ratio performance in representative two-arm scenarios.}\label{tab:table3}\\
+-\toprule
+-Method & Bias & RMSE & Coverage & Power \\ \midrule
+-\endfirsthead
+-\multicolumn{5}{l}{\tablename\ \thetable\ (continued)}\\
+-\toprule
+-Method & Bias & RMSE & Coverage & Power \\ \midrule
+-\endhead
+-\midrule\multicolumn{5}{r}{Continued on next page}\\\endfoot
+-\bottomrule\endlastfoot
+-\multicolumn{5}{l}{\strut\textit{Sc1}}\\*
+-lrcBART & 0.014 & 0.290 & 0.970 & 0.420 \\
+-BART-NP & 0.048 & 0.392 & 0.980 & 0.330 \\
+-BART-CP & 0.010 & 0.218 & 0.950 & 0.660 \\
+-BART-PP & -0.034 & 0.316 & 0.980 & 0.300 \\
+-AFT-NP & -0.105 & 0.455 & 0.970 & 0.070 \\
+-AFT-CP & 0.027 & 0.307 & 1.000 & 0.330 \\
+-AFT-PP & 0.022 & 0.415 & 0.990 & 0.100 \\
+-hier. AFT & 0.050 & 0.443 & 0.990 & 0.140 \\
+-\multicolumn{5}{l}{\strut\textit{Sc2}}\\*
+-lrcBART & 0.058 & 0.341 & 0.960 & 0.480 \\
+-BART-NP & 0.117 & 0.440 & 0.960 & 0.320 \\
+-BART-CP & 0.130 & 0.310 & 0.970 & 0.630 \\
+-BART-PP & -0.019 & 0.349 & 0.970 & 0.280 \\
+-AFT-NP & 0.018 & 0.529 & 0.960 & 0.160 \\
+-AFT-CP & 1.202 & 1.435 & 0.570 & 0.920 \\
+-AFT-PP & 0.403 & 0.817 & 0.920 & 0.300 \\
+-hier. AFT & 0.417 & 0.815 & 0.930 & 0.390 \\
+-\multicolumn{5}{l}{\strut\textit{Sc3, $\rho=0$}}\\*
+-lrcBART & 0.076 & 0.472 & 0.970 & 0.290 \\
+-BART-NP & 0.014 & 0.502 & 0.960 & 0.180 \\
+-BART-CP & 2.642 & 2.802 & 0.000 & 1.000 \\
+-BART-PP & 0.075 & 0.446 & 0.960 & 0.300 \\
+-AFT-NP & -0.090 & 0.531 & 0.970 & 0.110 \\
+-AFT-CP & 3.187 & 3.429 & 0.010 & 1.000 \\
+-AFT-PP & 0.477 & 0.839 & 0.930 & 0.470 \\
+-hier. AFT & 0.415 & 0.836 & 0.920 & 0.350 \\
+-\newpage
+-\multicolumn{5}{l}{\strut\textit{Sc4, $\delta=1$}}\\*
+-lrcBART & -0.007 & 0.332 & 0.940 & 0.370 \\
+-BART-NP & 0.048 & 0.392 & 0.980 & 0.330 \\
+-BART-CP & -0.729 & 0.736 & 0.000 & 0.000 \\
+-BART-PP & -0.080 & 0.311 & 0.960 & 0.230 \\
+-AFT-NP & -0.105 & 0.455 & 0.970 & 0.070 \\
+-AFT-CP & -0.768 & 0.780 & 0.080 & 0.000 \\
+-AFT-PP & -0.212 & 0.405 & 0.960 & 0.030 \\
+-hier. AFT & -0.159 & 0.459 & 0.970 & 0.060 \\
+-\multicolumn{5}{l}{\strut\textit{Sc5, $X_5$, $\delta=1$}}\\*
+-lrcBART & -0.054 & 0.331 & 0.930 & 0.330 \\
+-BART-NP & 0.048 & 0.392 & 0.980 & 0.330 \\
+-BART-CP & -0.391 & 0.422 & 0.420 & 0.070 \\
+-BART-PP & -0.067 & 0.316 & 0.960 & 0.240 \\
+-AFT-NP & -0.105 & 0.455 & 0.970 & 0.070 \\
+-AFT-CP & -0.441 & 0.484 & 0.700 & 0.000 \\
+-AFT-PP & -0.116 & 0.385 & 1.000 & 0.060 \\
+-hier. AFT & -0.074 & 0.433 & 0.980 & 0.080 \\
+-\end{longtable}
+-\noindent\begin{minipage}{\linewidth}\footnotesize Each row summarizes 100 alternative-hypothesis replicates. Coverage is for a 95\% interval. Empirical power is the frequency of posterior probability of benefit exceeding 0.95 (PSCL: lower 95\% confidence limit above the threshold). Gaussian decisions use a threshold of 0.5 and survival decisions use a ratio threshold of 1. RMSE is the square root of the mean squared error. NP denotes no historical pooling (trial controls only); CP denotes complete pooling; PP denotes source-adjusted pooling using a source indicator. PP is distinct from the hierarchical comparator. lrcBART requests ESS 100; the MAP comparator in Table 2 also requests 100. Full configurations and Monte Carlo standard errors appear in the appendix. The hierarchical comparator uses discrepancy-variance prior scale $s_\tau^2=0.25$.\end{minipage}
+-\endgroup
+- \clearpage
+-\begingroup
+-\setlength{\tabcolsep}{4pt}
+-\renewcommand{\arraystretch}{1.13}
+-\renewcommand{\arraystretch}{1.04}
+-\fontsize{10}{11.5}\selectfont
+-\begin{longtable}{lrrrr}
+-\caption{Single-arm performance for Gaussian mean differences and median-survival ratios.}\label{tab:table4}\\
+-\toprule
+-Method & Bias & RMSE & Coverage & Power \\ \midrule
+-\endfirsthead
+-\multicolumn{5}{l}{\tablename\ \thetable\ (continued)}\\
+-\toprule
+-Method & Bias & RMSE & Coverage & Power \\ \midrule
+-\endhead
+-\midrule\multicolumn{5}{r}{Continued on next page}\\\endfoot
+-\bottomrule\endlastfoot
+-\multicolumn{5}{l}{\strut\textit{Gaussian, Sc1}}\\*
+-lrcBART & -0.015 & 0.156 & 0.950 & 0.890 \\
+-BART-CP & -0.014 & 0.153 & 0.940 & 0.940 \\
+-LM-CP & -0.029 & 0.270 & 0.960 & 0.600 \\
+-hier. LM & -0.025 & 0.272 & 1.000 & 0.090 \\
+-\multicolumn{5}{l}{\strut\textit{Gaussian, Sc2}}\\*
+-lrcBART & 0.062 & 0.177 & 0.980 & 0.910 \\
+-BART-CP & 0.056 & 0.176 & 0.930 & 0.950 \\
+-LM-CP & 0.290 & 0.395 & 0.850 & 0.910 \\
+-hier. LM & 0.357 & 0.444 & 1.000 & 0.500 \\
+-\multicolumn{5}{l}{\strut\textit{Survival, Sc1}}\\*
+-lrcBART & -0.020 & 0.178 & 0.990 & 0.590 \\
+-BART-CP & -0.011 & 0.180 & 0.970 & 0.730 \\
+-AFT-CP & 0.055 & 0.373 & 0.970 & 0.370 \\
+-hier. AFT & 0.097 & 0.388 & 1.000 & 0.020 \\
+-\multicolumn{5}{l}{\strut\textit{Survival, Sc2}}\\*
+-lrcBART & 0.070 & 0.216 & 0.980 & 0.730 \\
+-BART-CP & 0.069 & 0.216 & 0.990 & 0.770 \\
+-AFT-CP & 0.676 & 0.859 & 0.820 & 0.810 \\
+-hier. AFT & 0.872 & 1.042 & 1.000 & 0.370 \\
+-\end{longtable}
+-\noindent\begin{minipage}{\linewidth}\footnotesize Each row summarizes 100 alternative-hypothesis replicates. Coverage is for a 95\% interval; empirical power is the frequency of posterior probability of benefit exceeding 0.95, using a threshold of 0.5 for Gaussian mean differences and 1 for survival ratios. All single-arm lrcBART primary rows use fixed $w=1$, $H_f=50$, $H_g=5$ and requested ESS 100. The hierarchical discrepancy variance has prior $\operatorname{IG}(3/2,3s_\tau^2/2)$. In single-arm studies, CP uses all historical controls with full likelihood weight and no source discrepancy; there are no observed trial controls to pool. Full configurations and Monte Carlo standard errors appear in the appendix. The single-arm hierarchical comparator uses discrepancy-variance prior scale $s_\tau^2=0.05$.\end{minipage}
+-\endgroup
+  \clearpage
+ \begingroup
+ \setlength{\tabcolsep}{4pt}
+@@ -363,63 +178,4 @@
+ \end{longtable}
+ \noindent\begin{minipage}{\linewidth}\footnotesize Each row is one EloKRd patient covariate profile. Age groups are $<50$, 50--59, 60--69 and $\geq70$ years. Age is rounded to one decimal year for display; calculations use exact age. UCMM cohort $n$ is the number of patients among all 200 triplet-treated UCMM controls matching that row's age group, sex, race, Hispanic/Latino status, cytogenetic risk and ASCT. Counts repeat when EloKRd rows share the same displayed combination and should not be summed down the table. Prior ESS is informed by the full 200-patient triplet UCMM cohort and is expressed in uncensored normal-reference units for the conditional mean log-PFS at the same profile. The same residual variance and globally selected PFS scale are used for all profiles. Values do not measure outcome compatibility and do not sum or average to overall ESS. ASCT is postinduction.\end{minipage}
+ \endgroup
+- \clearpage
+-\begin{figure}[p]
+-\centering
+-\resizebox{\textwidth}{!}{\begin{tikzpicture}[>=Stealth, yscale=1.5,
+-  v/.style={draw, circle, minimum size=9mm, inner sep=0pt, font=\normalsize},
+-  uv/.style={v, dashed},
+-  lbl/.style={font=\small},
+-  ed/.style={->, >=Stealth, shorten >=2pt, shorten <=2pt},
+-  ttl/.style={font=\small\bfseries}]
+-
+-\begin{scope}
+-  \node[v, label={[lbl]below:treatment}]   (Z1) at (0,0)      {$Z$};
+-  \node[v, label={[lbl]below:outcome}]      (Y1) at (2.7,0)    {$Y$};
+-  \node[v, label={[lbl]left:data source}]   (D1) at (0,1.3)    {$D$};
+-  \node[v, label={[lbl]above:covariates}]   (X1) at (1.35,2.6) {$X$};
+-  \draw[ed] (D1) -- (Z1);
+-  \draw[ed] (Z1) -- (Y1);
+-  \draw[ed] (X1) -- (Y1);
+-  \node[ttl] at (1.35,3.5) {(1) No confounding};
+-\end{scope}
+-
+-\begin{scope}[xshift=5.4cm]
+-  \node[v, label={[lbl]below:treatment}]   (Z2) at (0,0)      {$Z$};
+-  \node[v, label={[lbl]below:outcome}]      (Y2) at (2.7,0)    {$Y$};
+-  \node[v, label={[lbl]left:data source}]   (D2) at (0,1.3)    {$D$};
+-  \node[v, label={[lbl]above:covariates}]   (X2) at (1.35,2.6) {$X$};
+-  \draw[ed] (D2) -- (Z2);
+-  \draw[ed] (Z2) -- (Y2);
+-  \draw[ed] (X2) -- (Y2);
+-  \draw[ed] (X2) -- (D2);
+-  \node[ttl] at (1.35,3.5) {(2) Measured confounding};
+-\end{scope}
+-
+-\begin{scope}[xshift=10.8cm]
+-  \node[v, label={[lbl]below:treatment}]    (Z3) at (0,0)      {$Z$};
+-  \node[v, label={[lbl]below:outcome}]       (Y3) at (2.7,0)    {$Y$};
+-  \node[v, label={[lbl]left:data source}]    (D3) at (0,1.3)    {$D$};
+-  \node[uv, label={[lbl]right:unmeasured}]   (U3) at (1.6,1.3)  {$U$};
+-  \node[v, label={[lbl]above:proxy}]         (X3) at (1.6,2.6)  {$X$};
+-  \draw[ed] (D3) -- (Z3);
+-  \draw[ed] (Z3) -- (Y3);
+-  \draw[ed] (U3) -- (D3);
+-  \draw[ed] (U3) -- (Y3);
+-  \draw[ed] (U3) -- (X3) node[midway, right, font=\small] {$\rho$};
+-  \node[ttl] at (1.35,3.5) {(3) Unmeasured confounding};
+-\end{scope}
+-
+-\end{tikzpicture}}
+-\caption{Directed acyclic graphs (DAGs) for the source-selection mechanisms in Sc1--Sc3. In this schematic, $D$ denotes data source (trial or historical), $Z$ treatment assignment, $Y$ an individual outcome, $X$ the measured predictors relevant to the depicted paths and $U$ unmeasured prognostic variables; participant and group indices are suppressed. Sc1: measured covariates predict the outcome but do not influence source selection. Sc2: measured covariates influence both source selection and outcome. Sc3: unmeasured variables influence source selection and outcome, and generate observed proxies through $U\to X$, with proxy association indexed by $\rho$. Other measured predictors are omitted from the schematic. The $D\to Z$ edge reflects that historical observations are controls, whereas treatment is assigned within the trial. These diagrams illustrate the simulation mechanisms, not an established causal structure for the clinical application.}
+-\label{fig:dag_scenarios}
+-\end{figure}
+- \clearpage
+-\begin{figure}[p]
+-\centering
+-\includegraphics[width=\linewidth]{figure1.pdf}
+-\caption{Regional historical shifts for Gaussian outcomes (Sc5). Historical outcomes are shifted upward by $\delta=0.5,1,2$ where $X_5\leq2$, and are unshifted otherwise. (a) Posterior probability of a small discrepancy, $P\{|g(x)|<0.5\mid\text{data}\}$. (b) Posterior mean discrepancy; dashed lines show the true trial-minus-historical discrepancy, $-\delta$ in the shifted region and zero elsewhere. Solid curves summarize pooled trial-control profiles within $X_5$ bins of width 0.5 across 40 replicates; they are not uncertainty intervals. The dotted line marks the shift boundary. Primary lrcBART uses $H_f=50$, $H_g=5$, $w\sim\operatorname{Beta}(1,1)$ and requested prior ESS 100.}
+-\label{fig:regional}
+-\end{figure}
+-\clearpage
+-\end{document}
++ \end{document}

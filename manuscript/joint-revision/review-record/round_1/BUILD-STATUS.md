@@ -1,0 +1,1 @@
+Round 1: clean main, tables and appendix compiled with pdflatex-recorder/bibtex and external-reference cycles. Zero undefined references/citations, overfull boxes, multiply defined labels or duplicate destinations in final logs. Author fields remain blank.

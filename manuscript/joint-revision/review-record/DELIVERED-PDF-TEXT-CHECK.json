@@ -1,0 +1,26 @@
+[
+  {
+    "file": "main_draft.pdf",
+    "text_equal": true
+  },
+  {
+    "file": "main_tracked.pdf",
+    "text_equal": true
+  },
+  {
+    "file": "main_tables_figures.pdf",
+    "text_equal": true
+  },
+  {
+    "file": "main_tables_figures_tracked.pdf",
+    "text_equal": true
+  },
+  {
+    "file": "appendix.pdf",
+    "text_equal": true
+  },
+  {
+    "file": "appendix_tracked.pdf",
+    "text_equal": true
+  }
+]
