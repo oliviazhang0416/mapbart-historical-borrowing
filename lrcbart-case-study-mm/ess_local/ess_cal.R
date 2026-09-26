@@ -45,6 +45,16 @@ ess_settings <- list(
   n_tau = as.integer(ess_n_tau), n_cg = as.integer(ess_n_cg),
   n_burn = as.integer(ess_n_burn), n_draw = as.integer(ess_n_draw),
   seed = as.integer(ess_seed), augmentation = TRUE,
+  # JOINT LRC-BART ADDITION START
+  data_hash = unname(tools::md5sum(ess_data_file)),
+  code_hash = tools::md5sum(c(
+    file.path(mainDir, "lrcBART", "clrcbart.cpp"),
+    file.path(mainDir, "lrcBART", "cess.cpp"),
+    list.files(file.path(mainDir, "lrcBART", "include.lrc"),
+               full.names = TRUE, recursive = TRUE),
+    file.path(projDir, "ess_local", "ess_cal.R")
+  )),
+  # JOINT LRC-BART ADDITION END
   coding = "harmonized"
 )
 
@@ -52,8 +62,8 @@ ess_target_names <- c("100", "75", "50", "f90", "f50", "f25")
 ess_use_checkpoint <- FALSE
 if (file.exists(ess_checkpoint) &&
     file.info(ess_checkpoint)$mtime >= ess_data_mtime) {
-  ess_cached <- readRDS(ess_checkpoint)
-  ess_use_checkpoint <- identical(ess_cached$settings, ess_settings) &&
+  ess_cached <- tryCatch(readRDS(ess_checkpoint), error = function(e) NULL)
+  ess_use_checkpoint <- is.list(ess_cached) && identical(ess_cached$settings, ess_settings) &&
     identical(normalizePath(ess_cached$data_file),
               normalizePath(ess_data_file)) &&
     identical(as.character(ess_cached$targets$target_name), ess_target_names)
@@ -230,13 +240,10 @@ if (ess_use_checkpoint) {
     s0_sq = stats::setNames(ess_targets$s0_sq, ess_targets$target_name),
     ceiling = ess_ceiling, V_mu_f = ess_V_whole,
     V_profile_f = apply(ess_stage1_f_test, 2, stats::var),
-    V_blocks = ess_V_blocks, V_blocks_raw = ess_V_raw,
     ess_tau0_blocks = ess_tau0_blocks,
     ess_tau0_grid = colMeans(ess_tau0_blocks),
     sigma1_sq = ess_sigma1_sq,
-    sigma1_sq_blocks = ess_sigma1_blocks, c_g = ess_c_g,
-    stage1_mu_draws = ess_mu_draws,
-    stage1_sigma2_sq = ess_stage1_fit$sigma2_sq,
+    c_g = ess_c_g,
     checkpoint = ess_checkpoint
   )
   saveRDS(ess_calibration, ess_checkpoint)

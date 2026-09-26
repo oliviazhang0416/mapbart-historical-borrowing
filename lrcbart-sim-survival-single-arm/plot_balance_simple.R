@@ -1,3 +1,5 @@
+# JOINT LRC-BART MODIFICATION START
+# Matching original survival single-arm plot, adapted to the agreed Sc1 descendants.
 rm(list=ls())
 
 # Resolve the repository root: walk up from this script's own location first,
@@ -45,7 +47,7 @@ stopifnot(n_T %in% c(30L, 200L))
 size_suffix <- paste0("_n", n_T)
 p_obs <- 10L
 # Pipeline selection; standalone runs use the same alternative-hypothesis default.
-plot_context <- NULL
+plot_context <- list(hypothesis = if ("--null" %in% commandArgs(TRUE)) "null" else "alternative")
 # ---- Local plot selection and result readers ----
 # Plot selection is independent of which comparison methods were fitted today.
 `%||%` <- function(x, default) if (is.null(x)) default else x
@@ -55,22 +57,27 @@ stopifnot(length(plot_hypothesis) == 1L, plot_hypothesis %in% c("null", "alterna
 plot_saved <- character()
 
 plot_scenario_id <- function(cfg) {
-  tag <- paste0("sc", cfg$sc)
+  variant <- cfg$variant %||% ""
+  tag <- paste0("sc", cfg$sc, variant)
   if (cfg$sc == 3) tag <- paste0(tag, "_cor", cfg$cor)
-  if (cfg$sc == 4) tag <- paste0(tag, "_d", cfg$delta_rwd)
-  if (cfg$sc == 5) tag <- paste0(tag, "_", cfg$region, "_d", cfg$delta_rwd)
+  if (variant == "b") tag <- paste0(tag, "_", cfg$region)
+  if (nzchar(variant)) tag <- paste0(tag, "_d", cfg$delta_rwd)
   tag
 }
 selected_sc <- function(default) {
   if (is.null(plot_context$scenarios)) return(default)
-  unique(vapply(plot_context$scenarios, function(x) as.integer(x$sc), integer(1)))
+  chosen <- vapply(plot_context$scenarios, function(x)
+    paste0(x$sc, x$variant %||% ""), character(1))
+  default[default %in% chosen]
 }
 selected_configurations <- function(sc, default) {
-  if (is.null(plot_context$scenarios) || sc <= 3) return(default)
-  chosen <- Filter(function(x) x$sc == sc, plot_context$scenarios)
-  vapply(chosen, function(x) if (sc == 4) paste0("d", x$delta_rwd) else
-    paste0(x$region, "_d", x$delta_rwd), character(1))
+  if (is.null(plot_context$scenarios) || sc %in% c("1", "2", "3")) return(default)
+  chosen <- Filter(function(x) paste0(x$sc, x$variant %||% "") == sc,
+                   plot_context$scenarios)
+  unique(vapply(chosen, function(x) if (sc == "1b")
+    paste0(x$region, "_d", x$delta_rwd) else paste0("d", x$delta_rwd), character(1)))
 }
+# JOINT LRC-BART MODIFICATION END
 selected_correlations <- function(sc, default) {
   if (is.null(plot_context$scenarios) || sc != 3) return(default)
   unique(vapply(Filter(function(x) x$sc == sc, plot_context$scenarios), `[[`, numeric(1), "cor"))
@@ -175,11 +182,16 @@ weight_labels <- function(method, weights) {
 # LRC-BART MODIFICATION START
 # Load the final requested replicate for Sc1 and Sc2 without a subscenario.
 all_data <- data.frame()
-for (sc in selected_sc(1:2)) {
+for (sc in selected_sc(c("1", "1a", "1b", "1c", "1c-i", "1c-ii", "2"))) {
+  configurations <- if (sc == "1a") c("d1", "d2") else
+    if (sc == "1b") c("X5_d0.5", "X5_d1", "X5_d2", "X7_d1", "X7_d2") else
+    if (sc %in% c("1c", "1c-i", "1c-ii")) "d2" else "Base"
+  for (configuration in selected_configurations(sc, configurations)) {
+  scenario_tag <- paste0("sc", sc, if (sc %in% c("1", "2")) "" else paste0("_", configuration))
   for (hypo in plot_hypothesis) {
     filename <- file.path(
       projectDir, data_folder,
-      paste0("data_p", p_obs, size_suffix, "_sc", sc, "_", hypo, "_",
+      paste0("data_p", p_obs, size_suffix, "_", scenario_tag, "_", hypo, "_",
              n_replicates, ".RData")
     )
     data_full <- tryCatch(read_plot_data(filename), error = function(e) NULL)
@@ -195,10 +207,12 @@ for (sc in selected_sc(1:2)) {
     data$U1 <- NA_real_
     data$U2 <- NA_real_
     data$Scenario <- sc
+    data$Configuration <- if (configuration == "Base") "Default" else configuration
     data$Correlation <- NA_real_
     data$Hypothesis <- hypo
     all_data <- rbind(all_data, data)
   }
+}
 }
 # LRC-BART MODIFICATION END
 
@@ -217,12 +231,10 @@ all_data$Group <- factor(ifelse(all_data$Z == 1, "Treatment", "External Control"
 all_data$Hypothesis <- factor(all_data$Hypothesis, levels = c("null", "alternative"))
 
 # Create scenario label (with rho for Scenario 3)
-all_data$Scenario_Label <- ifelse(all_data$Scenario == 3,
-                                   paste0("Scenario 3\n(ρ=", all_data$Correlation, ")"),
-                                   paste0("Scenario ", all_data$Scenario))
-all_data$Scenario_Label <- plot_factor(all_data$Scenario_Label,
-                                   levels = c("Scenario 1", "Scenario 2",
-                                              "Scenario 3\n(ρ=-0.5)", "Scenario 3\n(ρ=0)", "Scenario 3\n(ρ=0.5)"))
+all_data$Scenario_Label <- plot_factor(
+  paste0("Scenario ", all_data$Scenario,
+    ifelse(all_data$Configuration == "Default", "", paste0("\n", all_data$Configuration))),
+  levels = character())
 
 # Reorder data so External Control is plotted last (on top)
 all_data_reordered <- all_data %>% arrange(desc(Group == "External Control"))
@@ -234,10 +246,10 @@ all_data_reordered <- all_data %>% arrange(desc(Group == "External Control"))
 # Create KM plots for each scenario (Sc1, Sc2, and Sc3 with 3 rho values)
 km_plots <- list()
 
-# Scenarios 1 and 2
-for (sc in selected_sc(1:2)) {
-  df <- all_data[all_data$Scenario == sc, ]
-  scenario_label <- paste0("Scenario ", sc)
+# Plot each scenario/configuration separately.
+for (scenario_label in levels(all_data$Scenario_Label)) {
+  df <- all_data[all_data$Scenario_Label == scenario_label, ]
+  if (!nrow(df)) next
 
   fit <- survfit(Surv(y, delta) ~ Group, data = df)
 
@@ -274,23 +286,23 @@ save_pipeline_plot(file.path(projectDir, "inserts",
 # For sc == 1 and 2: X5, X6
 # For sc == 3: X5, U1, X6, U2
 
-sc1_data <- all_data_reordered[all_data_reordered$Scenario == 1, ]
+sc1_data <- all_data_reordered[all_data_reordered$Scenario %in% c("1", "1a", "1b", "1c", "1c-i", "1c-ii"), ]
 sc2_data <- all_data_reordered[all_data_reordered$Scenario == 2, ]
 sc3_data <- all_data_reordered[all_data_reordered$Scenario == 3, ]
 
 # Define covariate label mapping
-cov_labels <- c("X5" = "X₅ (Measured)", "X6" = "X₆ (Measured)",
+cov_labels <- c("X5" = "X₅ (Measured)", "X6" = "X₆ (Measured)", "X7" = "X₇ (Measured)",
                 "U1" = "U₁ (Unmeasured)", "U2" = "U₂ (Unmeasured)")
 
 # Reshape to long format
 if (nrow(sc1_data) > 0) {
   sc1_long <- sc1_data %>%
-    dplyr::select(Scenario_Label, Group, X5, X6) %>%
-    pivot_longer(cols = c(X5, X6),
+    dplyr::select(Scenario_Label, Group, X5, X6, X7) %>%
+    pivot_longer(cols = c(X5, X6, X7),
                  names_to = "Covariate",
                  values_to = "Value")
   sc1_long$Covariate <- factor(cov_labels[sc1_long$Covariate],
-                                levels = c("X₅ (Measured)", "X₆ (Measured)"))
+                                levels = c("X₅ (Measured)", "X₆ (Measured)", "X₇ (Measured)"))
 } else {
   sc1_long <- NULL
 }
@@ -358,3 +370,5 @@ save_pipeline_plot(file.path(projectDir, "inserts",
        limitsize = FALSE)
 
 finish_pipeline_plot()
+
+# JOINT LRC-BART MODIFICATION END

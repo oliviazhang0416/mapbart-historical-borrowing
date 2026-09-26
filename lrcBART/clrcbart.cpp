@@ -44,17 +44,21 @@ using Eigen::VectorXd;
 // sampler settings are grouped in hyper/control lists rather than introducing
 // a package interface.
 // ---------------------------------------------------------------------------
+// JOINT LRC-BART MODIFICATION START
+// Trailing optional treatment input preserves original positional calls.
 // [[Rcpp::export]]
 Rcpp::List clrcbart(
     Rcpp::NumericMatrix x,          // p x n training covariates
     Rcpp::NumericVector y,          // centered outcome or centered log-time
-    Rcpp::IntegerVector source,     // 1 = RCT control, 2 = RWD control
+    Rcpp::IntegerVector source,     // 1 = trial (controls only in legacy mode), 2 = external
     Rcpp::IntegerVector status,     // 1 = observed, 0 = censored
     Rcpp::NumericVector censor,     // centered log censoring bound
     Rcpp::NumericMatrix x_test,     // p x n_test; may have zero columns
     Rcpp::List cutpoints,
     Rcpp::List hyper,
-    Rcpp::List control)
+    Rcpp::List control,
+    Rcpp::Nullable<Rcpp::NumericVector> treatment = R_NilValue)
+// JOINT LRC-BART MODIFICATION END
 {
   const size_t p=(size_t)x.nrow();
   const size_t n=(size_t)x.ncol();
@@ -84,7 +88,36 @@ Rcpp::List clrcbart(
     else if(source[i]==2) ++n2;
     else Rcpp::stop("source values must be 1 (RCT) or 2 (RWD)");
   }
-  const bool single_arm=(n1==0);
+  // JOINT LRC-BART MODIFICATION START
+  // PR#2 R/lrcbart.R: source codes describe membership, not treatment.
+  // Only absence of ALL trial rows invokes the inherited prior-only g path.
+  const bool no_trial_data=(n1==0);
+  const bool joint_model=treatment.isNotNull();
+  Rcpp::NumericVector A;
+  size_t n_treated=0;
+  double tau=0.0; // manuscript psi; distinct from discrepancy tau0/tau1
+  double tau_prior_var=100.0;
+  if(joint_model) {
+    A=Rcpp::NumericVector(treatment.get());
+    if((size_t)A.size()!=n)
+      Rcpp::stop("treatment must have length ncol(x)");
+    if(hyper.containsElementNamed("tau_prior_var"))
+      tau_prior_var=Rcpp::as<double>(hyper["tau_prior_var"]);
+    if(!std::isfinite(tau_prior_var) || tau_prior_var<=0.0)
+      Rcpp::stop("tau_prior_var must be positive and finite");
+    for(size_t i=0;i<n;i++) {
+      if(!std::isfinite(A[i]) || (A[i]!=0.0 && A[i]!=1.0))
+        Rcpp::stop("treatment must contain only finite 0/1 indicators");
+      if(source[i]==2 && A[i]!=0.0)
+        Rcpp::stop("external observations must have treatment zero");
+      if(A[i]==1.0) ++n_treated;
+      if(!std::isfinite(y[i])) Rcpp::stop("joint outcomes must be finite");
+    }
+  }
+  // Joint single-arm means treated trial data without concurrent controls.
+  // Preserve the old flag's meaning for callers omitting treatment.
+  const bool single_arm=joint_model ? (n_treated>0 && n_treated==n1) : no_trial_data;
+  // JOINT LRC-BART MODIFICATION END
 
   const size_t Hf=(size_t)Rcpp::as<int>(hyper["H_f"]);
   const size_t Hg=(size_t)Rcpp::as<int>(hyper["H_g"]);
@@ -108,7 +141,9 @@ Rcpp::List clrcbart(
   const size_t n_min_f=(size_t)Rcpp::as<int>(hyper["n_min"]);
   const size_t n_min_g_requested=hyper.containsElementNamed("n_min_g") ?
     (size_t)Rcpp::as<int>(hyper["n_min_g"]) : n_min_f;
-  const size_t n_min_g=single_arm ? 0 : n_min_g_requested;
+  // JOINT LRC-BART MODIFICATION START
+  const size_t n_min_g=no_trial_data ? 0 : n_min_g_requested;
+  // JOINT LRC-BART MODIFICATION END
 
   if(Hf==0) Rcpp::stop("H_f must be positive");
   if(lambda_f_sq<=0.0 || tau1_sq<=0.0 || s0_sq<=0.0)
@@ -135,6 +170,27 @@ Rcpp::List clrcbart(
   const bool keep_test=Rcpp::as<bool>(control["keep_test"]);
   const int seed=Rcpp::as<int>(control["seed"]);
   if(n_burn<0 || n_draw<1 || thin<1) Rcpp::stop("invalid MCMC control values");
+
+  // JOINT LRC-BART ADDITION START
+  // PR#2 sampler control: repeat g updates, then update hyperparameters once.
+  const double gs=control.containsElementNamed("g_sweeps") ?
+    Rcpp::as<double>(control["g_sweeps"]) : 1.0;
+  if(!std::isfinite(gs) || gs<1.0 || gs!=std::floor(gs) ||
+     gs>(double)std::numeric_limits<int>::max())
+    Rcpp::stop("g_sweeps must be a positive integer");
+  const int g_sweeps=(int)gs;
+  if(joint_model) {
+    if(!std::isfinite(sigma1_sq) || sigma1_sq<=0.0 ||
+       !std::isfinite(sigma2_sq) || sigma2_sq<=0.0)
+      Rcpp::stop("joint initial source variances must be positive and finite");
+    for(size_t i=0;i<n;i++) {
+      if(event[i]!=0 && event[i]!=1)
+        Rcpp::stop("status values must be 0 or 1");
+      if(!augmentation && event[i]==0)
+        Rcpp::stop("censored joint outcomes require augmentation=TRUE");
+    }
+  }
+  // JOINT LRC-BART ADDITION END
 
   Rcpp::NumericVector latent=Rcpp::clone(y);
   if(augmentation) {
@@ -174,6 +230,9 @@ Rcpp::List clrcbart(
 
   Rcpp::NumericVector out_sig1(n_draw),out_sig2(n_draw),out_tau0(n_draw),out_w(n_draw);
   Rcpp::IntegerVector out_K0(n_draw),out_Lg(n_draw);
+  // JOINT LRC-BART ADDITION START
+  Rcpp::NumericVector out_tau(joint_model ? n_draw : 0);
+  // JOINT LRC-BART ADDITION END
   Rcpp::NumericMatrix f_train(keep_train ? n_draw : 0,keep_train ? n : 0);
   Rcpp::NumericMatrix g_train(keep_train ? n_draw : 0,keep_train ? n : 0);
   Rcpp::NumericMatrix f_test(keep_test ? n_draw : 0,keep_test ? np : 0);
@@ -189,7 +248,13 @@ Rcpp::List clrcbart(
   const int total=n_burn+n_draw*thin;
   int saved=0;
   for(int it=0;it<total;it++) {
-    for(size_t i=0;i<n;i++) offset_f[i]=(source[i]==1) ? gforest.f(i) : 0.0;
+    // JOINT LRC-BART MODIFICATION START
+    // PR#2 compute_resid: all groups enter f after source/treatment adjustment.
+    for(size_t i=0;i<n;i++) {
+      offset_f[i]=(source[i]==1) ? gforest.f(i) : 0.0;
+      if(joint_model) offset_f[i]+=A[i]*tau;
+    }
+    // JOINT LRC-BART MODIFICATION END
     int dummyK=0,dummyL=0;
     double dummyS0=0.0;
     fforest.draw(sigma1_sq,sigma2_sq,&offset_f[0],
@@ -198,9 +263,20 @@ Rcpp::List clrcbart(
     int K0=0,Lg=0;
     double S0=0.0;
     if(Hg>0) {
-      for(size_t i=0;i<n;i++) offset_g[i]=fforest.f(i);
+      // JOINT LRC-BART MODIFICATION START
+      // Both trial arms enter g; the forest excludes source-2 rows as before.
+      for(size_t i=0;i<n;i++) {
+        offset_g[i]=fforest.f(i);
+        if(joint_model) offset_g[i]+=A[i]*tau;
+      }
       gforest.set_g_hyper(tau0_sq,tau1_sq,w);
-      gforest.draw(sigma1_sq,sigma2_sq,&offset_g[0],K0,Lg,S0,gen);
+      for(int sweep=0;sweep<g_sweeps;sweep++) {
+        // drmu accumulates per-leaf statistics. Only the FINAL sweep's
+        // retained leaves may contribute to the once-per-iteration update.
+        K0=0; Lg=0; S0=0.0;
+        gforest.draw(sigma1_sq,sigma2_sq,&offset_g[0],K0,Lg,S0,gen);
+      }
+      // JOINT LRC-BART MODIFICATION END
 
       if(update_tau0) {
         const double post_nu=nu0+(double)K0;
@@ -213,9 +289,27 @@ Rcpp::List clrcbart(
       }
     }
 
+    // JOINT LRC-BART ADDITION START
+    // PR#2 update_tau/tau_moments: proper normal coefficient conditional,
+    // after g hyperparameters and before source variances and AFT augmentation.
+    if(joint_model) {
+      double precision=1.0/tau_prior_var, weighted_sum=0.0;
+      for(size_t i=0;i<n;i++) if(A[i]!=0.0) {
+        const double base=fforest.f(i)+((source[i]==1 && Hg>0) ? gforest.f(i) : 0.0);
+        precision+=A[i]*A[i]/sigma1_sq;
+        weighted_sum+=A[i]*(latent[i]-base)/sigma1_sq;
+      }
+      const double variance=1.0/precision;
+      tau=variance*weighted_sum+std::sqrt(variance)*gen.normal();
+    }
+    // JOINT LRC-BART ADDITION END
+
     double rss1=0.0,rss2=0.0;
     for(size_t i=0;i<n;i++) {
-      const double mu=fforest.f(i)+((source[i]==1 && Hg>0) ? gforest.f(i) : 0.0);
+      // JOINT LRC-BART MODIFICATION START
+      double mu=fforest.f(i)+((source[i]==1 && Hg>0) ? gforest.f(i) : 0.0);
+      if(joint_model) mu+=A[i]*tau;
+      // JOINT LRC-BART MODIFICATION END
       const double resid=latent[i]-mu;
       if(source[i]==1) rss1+=resid*resid;
       else rss2+=resid*resid;
@@ -226,13 +320,20 @@ Rcpp::List clrcbart(
 
     if(augmentation) {
       for(size_t i=0;i<n;i++) if(event[i]==0) {
-        const double mu=fforest.f(i)+((source[i]==1 && Hg>0) ? gforest.f(i) : 0.0);
+        // JOINT LRC-BART MODIFICATION START
+        // PR#2 impute_censored: treatment also shifts the latent log-time mean.
+        double mu=fforest.f(i)+((source[i]==1 && Hg>0) ? gforest.f(i) : 0.0);
+        if(joint_model) mu+=A[i]*tau;
+        // JOINT LRC-BART MODIFICATION END
         const double sd=std::sqrt(source[i]==1 ? sigma1_sq : sigma2_sq);
         latent[i]=rtnorm(mu,lower[i],sd,gen);
       }
     }
 
     if(it>=n_burn && ((it-n_burn)%thin==0)) {
+      // JOINT LRC-BART ADDITION START
+      if(joint_model) out_tau[saved]=tau;
+      // JOINT LRC-BART ADDITION END
       out_sig1[saved]=sigma1_sq;
       out_sig2[saved]=sigma2_sq;
       out_tau0[saved]=tau0_sq;
@@ -319,7 +420,9 @@ Rcpp::List clrcbart(
   Rcpp::List cutpoints_out(xi.size());
   for(size_t v=0;v<xi.size();v++) cutpoints_out[v]=Rcpp::wrap(xi[v]);
 
-  return Rcpp::List::create(
+  // JOINT LRC-BART MODIFICATION START
+  // Keep the complete legacy output contract when treatment is omitted.
+  Rcpp::List result=Rcpp::List::create(
     Rcpp::Named("f_draws")=f_draws,
     Rcpp::Named("g_draws")=g_draws,
     Rcpp::Named("cutpoints")=cutpoints_out,
@@ -336,6 +439,14 @@ Rcpp::List clrcbart(
     Rcpp::Named("g_test")=g_test,
     Rcpp::Named("accept")=accept,
     Rcpp::Named("single_arm")=single_arm);
+  if(joint_model) {
+    result["tau"]=out_tau; // psi in the manuscript; add A*tau to f+S*g in R
+    result["tau_prior_var"]=tau_prior_var;
+    result["joint_model"]=true;
+    result["no_trial_data"]=no_trial_data;
+  }
+  return result;
+  // JOINT LRC-BART MODIFICATION END
 }
 // LRC-BART MODIFICATION END
 

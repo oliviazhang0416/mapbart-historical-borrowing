@@ -1,3 +1,5 @@
+# JOINT LRC-BART MODIFICATION START
+# Fresh original plotting script, adapted for joint results and Sc1 children.
 rm(list=ls())
 
 # Resolve the repository root: walk up from this script's own location first,
@@ -42,7 +44,7 @@ data_folder <- "data"
 
 p_obs <- 10
 # Pipeline selection; standalone runs use the same alternative-hypothesis default.
-plot_context <- NULL
+plot_context <- list(hypothesis = if ("--null" %in% commandArgs(TRUE)) "null" else "alternative")
 # ---- Local plot selection and result readers ----
 # Plot selection is independent of which comparison methods were fitted today.
 `%||%` <- function(x, default) if (is.null(x)) default else x
@@ -51,23 +53,29 @@ plot_hypothesis <- plot_context$hypothesis %||% "alternative"
 stopifnot(length(plot_hypothesis) == 1L, plot_hypothesis %in% c("null", "alternative"))
 plot_saved <- character()
 
+# JOINT LRC-BART MODIFICATION START
 plot_scenario_id <- function(cfg) {
-  tag <- paste0("sc", cfg$sc)
+  variant <- cfg$variant %||% ""
+  tag <- paste0("sc", cfg$sc, variant)
   if (cfg$sc == 3) tag <- paste0(tag, "_cor", cfg$cor)
-  if (cfg$sc == 4) tag <- paste0(tag, "_d", cfg$delta_rwd)
-  if (cfg$sc == 5) tag <- paste0(tag, "_", cfg$region, "_d", cfg$delta_rwd)
+  if (variant == "b") tag <- paste0(tag, "_", cfg$region)
+  if (nzchar(variant)) tag <- paste0(tag, "_d", cfg$delta_rwd)
   tag
 }
 selected_sc <- function(default) {
   if (is.null(plot_context$scenarios)) return(default)
-  unique(vapply(plot_context$scenarios, function(x) as.integer(x$sc), integer(1)))
+  chosen <- vapply(plot_context$scenarios, function(x)
+    paste0(x$sc, x$variant %||% ""), character(1))
+  default[default %in% chosen]
 }
 selected_configurations <- function(sc, default) {
-  if (is.null(plot_context$scenarios) || sc <= 3) return(default)
-  chosen <- Filter(function(x) x$sc == sc, plot_context$scenarios)
-  vapply(chosen, function(x) if (sc == 4) paste0("d", x$delta_rwd) else
-    paste0(x$region, "_d", x$delta_rwd), character(1))
+  if (is.null(plot_context$scenarios) || sc %in% c("1", "2", "3")) return(default)
+  chosen <- Filter(function(x) paste0(x$sc, x$variant %||% "") == sc,
+                   plot_context$scenarios)
+  unique(vapply(chosen, function(x) if (sc == "1b")
+    paste0(x$region, "_d", x$delta_rwd) else paste0("d", x$delta_rwd), character(1)))
 }
+# JOINT LRC-BART MODIFICATION END
 selected_correlations <- function(sc, default) {
   if (is.null(plot_context$scenarios) || sc != 3) return(default)
   unique(vapply(Filter(function(x) x$sc == sc, plot_context$scenarios), `[[`, numeric(1), "cor"))
@@ -92,12 +100,12 @@ plot_path_allowed <- function(path, check_failures = FALSE) {
   if (!is.null(plot_context$n_T) && !is.na(plot_context$n_T) &&
       !grepl(paste0("_n", plot_context$n_T, "_"), name, fixed = TRUE)) return(FALSE)
   if (check_failures) for (failure in plot_context$failed_results) {
-    method <- if (failure$method == "lrcBART") "LRC-BART" else failure$method
+    method <- if (failure$method == "lrcBART") "LRC-BART-joint" else failure$method
     if (!startsWith(name, paste0(method, "_")) ||
         !grepl(paste0("_", failure$scenario, "_"), name, fixed = TRUE) ||
         !grepl(paste0("_", failure$hypothesis, "_"), paste0(sub("\\.RData$", "", name), "_"), fixed = TRUE)) next
     if (!is.na(failure$n_T) && !grepl(paste0("_n", failure$n_T, "_"), name, fixed = TRUE)) next
-    if (method != "LRC-BART") return(FALSE)
+    if (method != "LRC-BART-joint") return(FALSE)
     tail <- strsplit(name, paste0("_", failure$scenario, "_"), fixed = TRUE)[[1]][2]
     if (failure$config == "default" && startsWith(tail, "N") && !startsWith(tail, "Ns0min_")) return(FALSE)
     if (failure$config == "s0min" && startsWith(tail, "Ns0min_")) return(FALSE)
@@ -167,21 +175,21 @@ weight_labels <- function(method, weights) {
 }
 # ---- End local plot helpers ----
 
-iter_rct <- 50
-iter_rwd <- 50
+iter_rct <- 100
+iter_rwd <- 100
 
 # Load data for all scenarios and configurations
 # Try to load both null and alternative data
 all_data <- data.frame()
 
-for (sc in selected_sc(1:5)) {
-  if (sc %in% c(1, 2, 4, 5)){
+for (sc in selected_sc(c("1", "1a", "1b", "1c", "1c-i", "1c-ii", "2", "3"))) {
+  if (sc %in% c("1", "2", "1a", "1b", "1c", "1c-i", "1c-ii")){
     # LRC-BART ADDITION START
     # Non-correlation scenarios use their scenario-specific shift/region
     # configurations as plotting rows.
     if (sc %in% c(1, 2)) configurations <- c("Base")
-    if (sc == 4) configurations <- c("d1", "d2")
-    if (sc == 5)
+    if (sc %in% c("1a", "1c", "1c-i", "1c-ii")) configurations <- if (sc == "1a") c("d1", "d2") else "d2"
+    if (sc == "1b")
       configurations <- c("X5_d0.5", "X5_d1", "X5_d2", "X7_d1", "X7_d2")
     # LRC-BART ADDITION END
     cor <- 1
@@ -191,7 +199,7 @@ for (sc in selected_sc(1:5)) {
     cor <- c(-0.5, 0, 0.5)
   }
 
-  if (sc %in% c(1, 2, 4, 5)) {
+  if (sc %in% c("1", "2", "1a", "1b", "1c", "1c-i", "1c-ii")) {
     for (configuration in selected_configurations(sc, configurations)) {
       for (c in selected_correlations(sc, cor)) {
         # Try both null and alternative
@@ -202,12 +210,12 @@ for (sc in selected_sc(1:5)) {
             scenario_tag <- paste0("sc", sc)
             configuration_label <- "Base"
           }
-          if (sc == 4) {
-            scenario_tag <- paste0("sc4_", configuration)
+          if (sc %in% c("1a", "1c", "1c-i", "1c-ii")) {
+            scenario_tag <- paste0("sc", sc, "_", configuration)
             configuration_label <- paste0("delta RWD = ", sub("^d", "", configuration))
           }
-          if (sc == 5) {
-            scenario_tag <- paste0("sc5_", configuration)
+          if (sc == "1b") {
+            scenario_tag <- paste0("sc1b_", configuration)
             configuration_parts <- strsplit(configuration, "_d", fixed = TRUE)[[1]]
             configuration_label <- paste0("region = ", configuration_parts[1],
                                   ", delta RWD = ", configuration_parts[2])
@@ -371,7 +379,7 @@ all_data$Group_Hypo <- interaction(all_data$Group, all_data$Hypothesis, sep = " 
 all_data$Scenario_Label <- NA
 
 # Get unique combinations that actually exist in the data
-existing_noncor <- unique(all_data[all_data$Scenario %in% c(1, 2, 4, 5),
+existing_noncor <- unique(all_data[all_data$Scenario %in% c("1", "2", "1a", "1b", "1c", "1c-i", "1c-ii"),
                                    c("Scenario", "Configuration")])
 existing_sc3 <- unique(all_data[all_data$Scenario == 3, c("Scenario", "Configuration", "Correlation")])
 
@@ -409,10 +417,10 @@ sc3_labels <- paste0("Scenario 3.", sc3_labels$configuration, "\nρ=", sc3_label
 all_scenario_labels <- c(paste0("Scenario 1.", c("Base")),
                          paste0("Scenario 2.", c("Base")),
                          sc3_labels,
-                         paste0("Scenario 4\ndelta RWD = ", c(1, 2)),
-                         paste0("Scenario 5\nregion = X5, delta RWD = ",
+                         paste0("Scenario 1a\ndelta RWD = ", c(1, 2)),
+                         paste0("Scenario 1b\nregion = X5, delta RWD = ",
                                 c(0.5, 1, 2)),
-                         paste0("Scenario 5\nregion = X7, delta RWD = ",
+                         paste0("Scenario 1b\nregion = X7, delta RWD = ",
                                 c(1, 2)))
 # Keep only labels that actually exist in the data
 existing_labels <- all_scenario_labels[all_scenario_labels %in% unique(all_data$Scenario_Label)]
@@ -423,7 +431,7 @@ all_data_reordered <- all_data %>% arrange(desc(Group == "External Control"))
 
 # Create factor for Scenario to ensure proper ordering
 all_data_reordered$Scenario_F <- factor(paste0("Scenario ", all_data_reordered$Scenario),
-                                         levels = paste0("Scenario ", 1:5))
+                                         levels = paste0("Scenario ", c("1", "1a", "1b", "1c", "1c-i", "1c-ii", "2", "3")))
 
 # Create factor for Configuration to ensure proper ordering
 all_data_reordered$Configuration_F <- plot_factor(all_data_reordered$Configuration,
@@ -541,7 +549,7 @@ sc1_data <- all_data_reordered[all_data_reordered$Scenario == 1, ]
 sc2_data <- all_data_reordered[all_data_reordered$Scenario == 2, ]
 sc3_data <- all_data_reordered[all_data_reordered$Scenario == 3, ]
 # LRC-BART ADDITION START
-sc45_data <- all_data_reordered[all_data_reordered$Scenario %in% c(4, 5), ]
+sc45_data <- all_data_reordered[all_data_reordered$Scenario %in% c("1a", "1b", "1c", "1c-i", "1c-ii"), ]
 # LRC-BART ADDITION END
 
 # For sc == 1: reshape X5, X6 and include outcome y
@@ -595,12 +603,12 @@ if (nrow(sc3_data) > 0 && "U1" %in% colnames(sc3_data)) {
 # the global-shift and regional-partial-compatibility configurations by row.
 if (nrow(sc45_data) > 0) {
   sc45_long <- sc45_data %>%
-    dplyr::select(Scenario_F, Configuration_F, Cor_Label, Group, X5, X6, y) %>%
-    pivot_longer(cols = c(X5, X6),
+    dplyr::select(Scenario_F, Configuration_F, Cor_Label, Group, X5, X6, X7, y) %>%
+    pivot_longer(cols = c(X5, X6, X7),
                  names_to = "Covariate",
                  values_to = "Value")
   sc45_long$Covariate <- factor(sc45_long$Covariate,
-                                levels = c("X5", "X6"))
+                                levels = c("X5", "X6", "X7"))
 } else {
   sc45_long <- NULL
 }
@@ -783,7 +791,7 @@ if (!is.null(sc45_long) && nrow(sc45_long) > 0) {
                  scales = "free",
                  nest_line = element_line(linewidth = 1, color = "black")) +
     scale_fill_manual(values = group_colors, name = "Group") +
-    labs(title = "Covariate Distributions: Scenarios 4 and 5",
+    labs(title = "Covariate Distributions: Sc1 child scenarios",
          x = "Value", y = "Density") +
     theme_classic(base_size = 9) +
     theme(legend.position = "none",
@@ -855,3 +863,5 @@ save_pipeline_plot(paste0(file.path(mainDir),"/lrcbart-sim-gaussian/inserts/bala
        limitsize = FALSE)
 
 finish_pipeline_plot()
+
+# JOINT LRC-BART MODIFICATION END

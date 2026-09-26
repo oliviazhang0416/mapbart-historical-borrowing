@@ -49,8 +49,13 @@ cat(sprintf("=== km.R: OUTCOME = %s ===\n", OUTCOME))
 # ============================================================
 # Select the merged cohort by FILE NAME via MERGED_FILE; default is the
 # triplet-only cohort. The n<N> token from the file name tags the output plot.
+# JOINT LRC-BART MODIFICATION START
+# Read the existing merged cohort without copying patient data.
 merged_file <- Sys.getenv("MERGED_FILE",
-                          unset = file.path(mainDir, "data_cleaned/merged_elokrd_ucmm_n230.RData"))
+                          unset = file.path(dirname(.lrcRoot), "lrcbart-historical-borrowing",
+                     "lrcbart-case-study-mm", "data_cleaned",
+                     "merged_elokrd_ucmm_n230.RData"))
+# JOINT LRC-BART MODIFICATION END
 # Allow a bare filename: resolve against data_cleaned/.
 if (!file.exists(merged_file) &&
     file.exists(file.path(mainDir, "data_cleaned", basename(merged_file))))
@@ -230,7 +235,6 @@ km_results <- list(
   rmst_ucmm_population = "UCMM",
   sigma_trt_est  = c(est = NA_real_, lo = NA_real_, hi = NA_real_),  # KM: nonparametric, no residual sigma
   sigma_ctrl_est = c(est = NA_real_, lo = NA_real_, hi = NA_real_),
-  rmst_fit  = sel$fit,
   settings  = list(target_N = NA_integer_, tau_rmst = sel$tau,
                    estimand = "RMST ratio (EloKRd/UCMM)")
 )

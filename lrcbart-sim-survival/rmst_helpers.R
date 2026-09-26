@@ -1,5 +1,5 @@
 # =============================================================================
-# RMST(tau)-ratio helpers for the survival single-arm borrowing methods.
+# RMST(tau)-ratio helpers for the survival borrowing methods.
 #
 # The default estimand in these scripts is the population MEDIAN-survival ratio,
 # computed from the mixture-of-lognormals survival curve S_mix(t) = mean_i
@@ -20,7 +20,26 @@
 # degenerate draws clamped to the cap). `sig_vec` is recycled to nrow(mu_mat) so the
 # control surface draws can be paired with the TREATMENT model's sigma draws even
 # when the two chains have different lengths.
-pop_median_draws <- function(mu_mat, sig_vec, lower = 0.05, cap = 30) {
+# JOINT LRC-BART MODIFICATION START
+# log_scale=TRUE is used by joint fits: bracket on log time instead of
+# clipping arm medians, preserving the common-shift median-ratio identity.
+# Existing comparator calls retain their original numerical path.
+pop_median_draws <- function(mu_mat, sig_vec, lower = 0.05, cap = 30,
+                             log_scale = FALSE) {
+  if (log_scale) {
+    stopifnot(is.matrix(mu_mat), all(is.finite(mu_mat)), ncol(mu_mat) > 0,
+              length(sig_vec) == nrow(mu_mat), all(is.finite(sig_vec)), all(sig_vec > 0))
+    return(vapply(seq_len(nrow(mu_mat)), function(m) {
+      center <- mean(mu_mat[m, ])
+      mu <- mu_mat[m, ] - center
+      limits <- range(mu)
+      med_log <- if (diff(limits) == 0) limits[1] else
+        uniroot(function(t) mean(pnorm(t, mu, sig_vec[m], lower.tail = FALSE)) - 0.5,
+                limits, tol = 1e-10)$root
+      exp(center + med_log)
+    }, numeric(1)))
+  }
+  # JOINT LRC-BART MODIFICATION END
   w <- rep(1 / ncol(mu_mat), ncol(mu_mat))
   Smix <- function(t, mu, sig) sum(w * pnorm(log(t), mu, sig, lower.tail = FALSE))
   n <- nrow(mu_mat)
@@ -82,8 +101,11 @@ true_rmst_arms <- function(data_tmp, tau = 3, K = 120) {
     return(c(trt = unname(data_tmp$true_rmst_trt_pop), ctrl = unname(data_tmp$true_rmst_ctrl_pop)))
   }
   rct <- data_tmp$X$D == 1
-  MUt <- data_tmp$lp[rct]
-  MUc <- MUt - data_tmp$eff_i
+  # JOINT LRC-BART MODIFICATION START
+  # lp is the assigned-arm mean; subtract effects only from treated rows.
+  MUc <- data_tmp$lp[rct] - data_tmp$X$Z[rct] * data_tmp$eff_i
+  MUt <- MUc + data_tmp$eff_i
+  # JOINT LRC-BART MODIFICATION END
   sig <- data_tmp$sigma_rct
   lg  <- log(seq(1e-3, tau, length.out = K))
   c(trt = .rmst_pop_grid(MUt, sig, lg, tau), ctrl = .rmst_pop_grid(MUc, sig, lg, tau))
@@ -109,7 +131,9 @@ true_rmst_ratio <- function(data_tmp, tau = 3, K = 120, effect = NULL) {
     return(unname(a["trt"] / a["ctrl"]))
   }
   rct <- data_tmp$X$D == 1
-  MUc <- data_tmp$lp[rct] - data_tmp$eff_i              # control counterfactual (per subject)
+  # JOINT LRC-BART MODIFICATION START
+  MUc <- log(data_tmp$true_median_ctrl)  # control counterfactual at ALL trial profiles
+  # JOINT LRC-BART MODIFICATION END
   MUt <- MUc + effect
   sig <- data_tmp$sigma_rct
   lg  <- log(seq(1e-3, tau, length.out = K))
@@ -126,9 +150,15 @@ true_rmst_ratio <- function(data_tmp, tau = 3, K = 120, effect = NULL) {
 #   "adaptive" pick whichever arm has the smaller central sigma-hat (the less-inflated
 #              one): trt at large n, control at small n. Robust across sample sizes.
 # NOTE: pass the CONTROL model's own sigma-hat as sig_c for "own"/"adaptive" to work.
+# JOINT LRC-BART MODIFICATION START
 compute_rmst_metrics <- function(mu_t, sig_t, mu_c, sig_c, data_tmp,
                                  tau = 3, K = 120, threshold = 0.95, floor = 0.05,
-                                 control_sigma = "own") {
+                                 control_sigma = "own", joint = FALSE) {
+  # JOINT LRC-BART MODIFICATION END
+  # JOINT LRC-BART ADDITION START
+  if (joint && (!identical(sig_t, sig_c) || control_sigma != "own"))
+    stop("Joint predictions require the same trial residual draws for both arms")
+  # JOINT LRC-BART ADDITION END
   sig_ctrl <- switch(control_sigma,
                      own      = sig_c,
                      adaptive = if (median(sig_t, na.rm = TRUE) <= median(sig_c, na.rm = TRUE)) sig_t else sig_c,
@@ -151,7 +181,9 @@ compute_rmst_metrics <- function(mu_t, sig_t, mu_c, sig_c, data_tmp,
   delta_i <- apply(Rt / pmax(Rc, floor), 2, median, na.rm = TRUE)   # n_subjects
   eff_i   <- true_rmst_subject(data_tmp, tau, K)                    # per-subject truth
 
-  list(rmst_tau      = tau,
+  # JOINT LRC-BART MODIFICATION START
+  metrics <- list(rmst_tau      = tau,
+  # JOINT LRC-BART MODIFICATION END
        rmst_true     = eff,
        rmst_hat      = delta,
        bias_rmst     = delta - eff,
@@ -174,4 +206,12 @@ compute_rmst_metrics <- function(mu_t, sig_t, mu_c, sig_c, data_tmp,
        # subject-wise RMST: bias and PEHE over subjects (mirrors bias_subj / pehe_subj)
        bias_subj_rmst = mean(delta_i - eff_i, na.rm = TRUE),
        pehe_subj_rmst = sqrt(mean((delta_i - eff_i)^2, na.rm = TRUE)))
+  # JOINT LRC-BART ADDITION START
+  if (joint) {
+    metrics$rmst_lower <- unname(qs[1])
+    metrics$rmst_upper <- unname(qs[2])
+    metrics$rmst_interval_excludes_one <- as.numeric(qs[1] > 1 || qs[2] < 1)
+  }
+  metrics
+  # JOINT LRC-BART ADDITION END
 }

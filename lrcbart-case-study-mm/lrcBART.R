@@ -44,10 +44,15 @@ suppressPackageStartupMessages({
 
 OUTCOME <- Sys.getenv("OUTCOME", unset = "PFS")
 stopifnot(OUTCOME %in% c("PFS", "OS"))
+# JOINT LRC-BART MODIFICATION START
+# Read the existing merged cohort without copying patient data.
 merged_file <- Sys.getenv(
   "MERGED_FILE",
-  unset = file.path(projDir, "data_cleaned", "merged_elokrd_ucmm_n230.RData")
+  unset = file.path(dirname(.lrcRoot), "lrcbart-historical-borrowing",
+                     "lrcbart-case-study-mm", "data_cleaned",
+                     "merged_elokrd_ucmm_n230.RData")
 )
+# JOINT LRC-BART MODIFICATION END
 if (!file.exists(merged_file) &&
     file.exists(file.path(projDir, "data_cleaned", basename(merged_file))))
   merged_file <- file.path(projDir, "data_cleaned", basename(merged_file))
@@ -132,9 +137,7 @@ Rcpp::sourceCpp(file.path(mainDir, "aBART", "cabart.cpp"),
 source(file.path(mainDir, "bartModelMatrix.R"), local = TRUE)
 
 resultDir <- file.path(projDir, "res")
-cacheDir <- file.path(resultDir, "cache")
 essDir <- file.path(projDir, "res", "ess")
-dir.create(cacheDir, recursive = TRUE, showWarnings = FALSE)
 dir.create(essDir, recursive = TRUE, showWarnings = FALSE)
 
 # #------------------------------------------------
@@ -164,25 +167,10 @@ for (H_f_value in unique(configuration_table$H_f)) {
 # #------------------------------------------------
 # #---------------- RCT Treatment -----------------
 # #------------------------------------------------
-# Fit the inherited 50-tree EloKRd treatment AFT-BART once per chain and cache
-# it for all LRC-BART configurations and targets.
-treatment_settings <- list(
-  H_f = 50L, n_chains = n_chains, n_burn = n_burn,
-  n_draw = n_draw, coding = "harmonized", outcome = OUTCOME
-)
-treatment_cache_file <- file.path(
-  cacheDir, paste0("lrcbart_treatment_", tolower(OUTCOME), "_", data_tag,
-                   ".RData")
-)
-treatment_cache_valid <- FALSE
-if (file.exists(treatment_cache_file) &&
-    file.info(treatment_cache_file)$mtime >= file.info(merged_file)$mtime) {
-  treatment_cached <- readRDS(treatment_cache_file)
-  treatment_cache_valid <- identical(treatment_cached$settings,
-                                     treatment_settings) &&
-    identical(treatment_cached$data_file, normalizePath(merged_file))
-}
-
+# JOINT LRC-BART MODIFICATION START
+# Retain the independent treatment fit in memory for all configurations.
+# The revised shared engine supplies the separate-treatment control model.
+# JOINT LRC-BART MODIFICATION END
 fit_treatment_chain <- function(chain_id) {
   x_train_frame <- data.frame(X = X_all[trt_idx, , drop = FALSE])
   x_test_frame <- data.frame(X = X_all[trt_idx, , drop = FALSE])
@@ -224,16 +212,9 @@ fit_treatment_chain <- function(chain_id) {
   list(mu = fit$yhat.test, sigma = fit$sigma)
 }
 
-if (treatment_cache_valid) {
-  treatment_chains <- treatment_cached$fit
-} else {
-  treatment_chains <- lapply(seq_len(n_chains), fit_treatment_chain)
-  saveRDS(
-    list(fit = treatment_chains, settings = treatment_settings,
-         data_file = normalizePath(merged_file)),
-    treatment_cache_file
-  )
-}
+# JOINT LRC-BART MODIFICATION START
+treatment_chains <- lapply(seq_len(n_chains), fit_treatment_chain)
+# JOINT LRC-BART MODIFICATION END
 
 compute_pop_rmst <- function(mu_draws, sigma_draws, tau) {
   lt <- log(tau)
@@ -282,6 +263,7 @@ for (configuration_index in seq_len(nrow(configuration_table))) {
     ))
 
     control_rmst <- vector("list", n_chains)
+    ucmm_rmst <- vector("list", n_chains)
     ratio_chains <- matrix(NA_real_, n_draw, n_chains)
     difference_chains <- matrix(NA_real_, n_draw, n_chains)
     sigma_control_chains <- matrix(NA_real_, n_draw, n_chains)
@@ -291,7 +273,6 @@ for (configuration_index in seq_len(nrow(configuration_table))) {
     tau0_mean <- numeric(n_chains)
     w_mean <- numeric(n_chains)
     spike_fraction <- numeric(n_chains)
-    acceptance <- vector("list", n_chains)
 
     x_train_control <- X_all[ctrl_idx, , drop = FALSE]
     x_test_control <- X_all[trt_idx, , drop = FALSE]
@@ -363,6 +344,12 @@ for (configuration_index in seq_len(nrow(configuration_table))) {
       control_rmst[[chain_id]] <- compute_pop_rmst(
         control_prediction, sigma_control, tau_rmst
       )
+      # JOINT LRC-BART ADDITION START
+      # External control standardized to the same EloKRd profiles.
+      ucmm_rmst[[chain_id]] <- compute_pop_rmst(
+        fit_control$f_test + y_center, sqrt(fit_control$sigma2_sq), tau_rmst
+      )
+      # JOINT LRC-BART ADDITION END
       ratio_chains[, chain_id] <-
         treatment_rmst[[chain_id]] / control_rmst[[chain_id]]
       difference_chains[, chain_id] <-
@@ -393,7 +380,6 @@ for (configuration_index in seq_len(nrow(configuration_table))) {
       spike_fraction[chain_id] <- mean(
         fit_control$K0 / pmax(fit_control$L_g, 1)
       )
-      acceptance[[chain_id]] <- fit_control$accept
     }
 
     post_ratio <- as.vector(ratio_chains)
@@ -415,29 +401,20 @@ for (configuration_index in seq_len(nrow(configuration_table))) {
       ess = profile_ess_sum / n_chains
     )
 
-    diagnostic <- c(rhat = NA_real_, ess_bulk = NA_real_, ess_tail = NA_real_)
-    if (requireNamespace("posterior", quietly = TRUE)) {
-      diagnostic <- c(
-        rhat = posterior::rhat(log(ratio_chains)),
-        ess_bulk = posterior::ess_bulk(log(ratio_chains)),
-        ess_tail = posterior::ess_tail(log(ratio_chains))
-      )
-    }
-
+    # JOINT LRC-BART MODIFICATION START
+    # Save only summaries used for reporting and plotting.
     results <- list(
-      post_ratio = post_ratio,
       delta_hat = median(post_ratio, na.rm = TRUE),
       ci_95 = quantile(post_ratio, c(0.025, 0.975), na.rm = TRUE),
       delta_diff = median(post_difference, na.rm = TRUE),
       ci_diff_95 = quantile(post_difference, c(0.025, 0.975), na.rm = TRUE),
       tau_rmst = tau_rmst,
-      rmst_ctrl = rmst_ctrl, rmst_trt = rmst_trt,
       rmst_trt_est = arm_summary(rmst_trt),
       rmst_ctrl_est = arm_summary(rmst_ctrl),
+      rmst_ucmm_est = arm_summary(unlist(ucmm_rmst, use.names = FALSE)),
+      rmst_ucmm_population = "EloKRd",
       sigma_trt_est = arm_summary(sigma_trt),
       sigma_ctrl_est = arm_summary(sigma_ctrl),
-      ratio_chains = ratio_chains,
-      difference_chains = difference_chains,
       g_summary = g_summary, ess_map = ess_map,
       calibration = list(
         target_name = target_name,
@@ -451,21 +428,22 @@ for (configuration_index in seq_len(nrow(configuration_table))) {
         sigma1_sq = calibration$sigma1_sq,
         c_g = calibration$c_g
       ),
-      diagnostics = diagnostic,
       sampler = list(
         ess_realized = mean(realized_ess),
         tau0_sq_post = mean(tau0_mean), w = mean(w_mean),
-        spike_fraction = mean(spike_fraction), acceptance = acceptance
+        spike_fraction = mean(spike_fraction)
       ),
       settings = list(
         outcome = OUTCOME, data_tag = data_tag, coding = "harmonized",
         config = configuration$config, H_f = configuration$H_f,
-        H_g = H_g, w = configuration$w,
+        H_g = H_g, w = configuration$w, joint_model = FALSE,
         n_chains = n_chains, n_burn = n_burn, n_draw = n_draw,
         target = target_name,
         target_N = target_row$target, tau_rmst = tau_rmst
       )
     )
+
+    # JOINT LRC-BART MODIFICATION END
 
     config_suffix <- switch(
       configuration$config,

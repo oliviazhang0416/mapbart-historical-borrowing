@@ -1,6 +1,6 @@
 # Master script: EloKRd plus UCMM myeloma application.
 #
-#   1. Clean and merge the private source data
+#   1. Read the existing merged analysis data
 #   2. Run both PFS and OS analyses
 #   3. Construct the ESS plots after all requested LRC-BART fits finish
 #   4. Print the result summary (no extra summary files)
@@ -37,11 +37,17 @@ rm(list = ls())
 mainDir <- .lrcRoot
 projectDir <- file.path(mainDir, "lrcbart-case-study-mm")
 
-# All pipeline stages are on by default.
-run_data_prep <- TRUE
+# JOINT LRC-BART MODIFICATION START
+# Use the existing merged cohort; fit both endpoints by default.
+run_data_prep <- FALSE
 run_analysis <- TRUE
 run_ess_plot <- TRUE
 run_summary <- TRUE
+args <- commandArgs(trailingOnly = TRUE)
+if (any(!args %in% "--plots-only"))
+  stop("Unknown argument(s): ", paste(args[!args %in% "--plots-only"], collapse = ", "))
+if ("--plots-only" %in% args) run_analysis <- FALSE
+# JOINT LRC-BART MODIFICATION END
 
 outcomes <- toupper(strsplit(
   Sys.getenv("OUTCOMES", unset = "PFS,OS"), "[, ]+"
@@ -49,11 +55,15 @@ outcomes <- toupper(strsplit(
 outcomes <- outcomes[nzchar(outcomes)]
 stopifnot(length(outcomes) >= 1L, all(outcomes %in% c("PFS", "OS")))
 
+# JOINT LRC-BART MODIFICATION START
+# Read the existing merged cohort without copying patient data.
 merged_file <- Sys.getenv(
   "MERGED_FILE",
-  unset = file.path(projectDir, "data_cleaned",
+  unset = file.path(dirname(.lrcRoot), "lrcbart-historical-borrowing",
+                     "lrcbart-case-study-mm", "data_cleaned",
                      "merged_elokrd_ucmm_n230.RData")
 )
+# JOINT LRC-BART MODIFICATION END
 if (!grepl("^/", merged_file))
   merged_file <- file.path(projectDir, "data_cleaned", basename(merged_file))
 data_tag <- regmatches(
@@ -136,7 +146,7 @@ run_case_study_pipeline <- function() {
       ready <- merged$status == "OK"
     } else blocked("data", "data_merge.R")
   }
-  if (!file.exists(merged_file)) {
+  if (run_analysis && !file.exists(merged_file)) {
     record("data", pipeline_result("merged data", "FAILED: requested merged file is missing"))
     ready <- FALSE
   }

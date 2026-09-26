@@ -1,3 +1,5 @@
+# JOINT LRC-BART MODIFICATION START
+# Matching original survival single-arm plot, adapted to the agreed Sc1 descendants.
 rm(list=ls())
 
 # Resolve the repository root: walk up from this script's own location first,
@@ -46,7 +48,7 @@ stopifnot(n_T %in% c(30L, 200L))
 size_suffix <- paste0("_n", n_T)
 p_obs <- 10L
 # Pipeline selection; standalone runs use the same alternative-hypothesis default.
-plot_context <- NULL
+plot_context <- list(hypothesis = if ("--null" %in% commandArgs(TRUE)) "null" else "alternative")
 # ---- Local plot selection and result readers ----
 # Plot selection is independent of which comparison methods were fitted today.
 `%||%` <- function(x, default) if (is.null(x)) default else x
@@ -56,22 +58,27 @@ stopifnot(length(plot_hypothesis) == 1L, plot_hypothesis %in% c("null", "alterna
 plot_saved <- character()
 
 plot_scenario_id <- function(cfg) {
-  tag <- paste0("sc", cfg$sc)
+  variant <- cfg$variant %||% ""
+  tag <- paste0("sc", cfg$sc, variant)
   if (cfg$sc == 3) tag <- paste0(tag, "_cor", cfg$cor)
-  if (cfg$sc == 4) tag <- paste0(tag, "_d", cfg$delta_rwd)
-  if (cfg$sc == 5) tag <- paste0(tag, "_", cfg$region, "_d", cfg$delta_rwd)
+  if (variant == "b") tag <- paste0(tag, "_", cfg$region)
+  if (nzchar(variant)) tag <- paste0(tag, "_d", cfg$delta_rwd)
   tag
 }
 selected_sc <- function(default) {
   if (is.null(plot_context$scenarios)) return(default)
-  unique(vapply(plot_context$scenarios, function(x) as.integer(x$sc), integer(1)))
+  chosen <- vapply(plot_context$scenarios, function(x)
+    paste0(x$sc, x$variant %||% ""), character(1))
+  default[default %in% chosen]
 }
 selected_configurations <- function(sc, default) {
-  if (is.null(plot_context$scenarios) || sc <= 3) return(default)
-  chosen <- Filter(function(x) x$sc == sc, plot_context$scenarios)
-  vapply(chosen, function(x) if (sc == 4) paste0("d", x$delta_rwd) else
-    paste0(x$region, "_d", x$delta_rwd), character(1))
+  if (is.null(plot_context$scenarios) || sc %in% c("1", "2", "3")) return(default)
+  chosen <- Filter(function(x) paste0(x$sc, x$variant %||% "") == sc,
+                   plot_context$scenarios)
+  unique(vapply(chosen, function(x) if (sc == "1b")
+    paste0(x$region, "_d", x$delta_rwd) else paste0("d", x$delta_rwd), character(1)))
 }
+# JOINT LRC-BART MODIFICATION END
 selected_correlations <- function(sc, default) {
   if (is.null(plot_context$scenarios) || sc != 3) return(default)
   unique(vapply(Filter(function(x) x$sc == sc, plot_context$scenarios), `[[`, numeric(1), "cor"))
@@ -177,11 +184,16 @@ weight_labels <- function(method, weights) {
 # Load the final requested replicate for each approved scenario. Each saved
 # object already contains the treated trial arm and external controls.
 all_data <- data.frame()
-for (sc in selected_sc(1:2)) {
+for (sc in selected_sc(c("1", "1a", "1b", "1c", "1c-i", "1c-ii", "2"))) {
+  configurations <- if (sc == "1a") c("d1", "d2") else
+    if (sc == "1b") c("X5_d0.5", "X5_d1", "X5_d2", "X7_d1", "X7_d2") else
+    if (sc %in% c("1c", "1c-i", "1c-ii")) "d2" else "Base"
+  for (configuration in selected_configurations(sc, configurations)) {
+  scenario_tag <- paste0("sc", sc, if (sc %in% c("1", "2")) "" else paste0("_", configuration))
   for (hypo in plot_hypothesis) {
     filename <- file.path(
       projectDir, data_folder,
-      paste0("data_p", p_obs, size_suffix, "_sc", sc, "_", hypo, "_",
+      paste0("data_p", p_obs, size_suffix, "_", scenario_tag, "_", hypo, "_",
              n_replicates, ".RData")
     )
     data_full <- tryCatch(read_plot_data(filename), error = function(e) NULL)
@@ -201,11 +213,12 @@ for (sc in selected_sc(1:2)) {
     data$U1 <- NA_real_
     data$U2 <- NA_real_
     data$Scenario <- sc
-    data$Configuration <- "Default"
+    data$Configuration <- if (configuration == "Base") "Default" else configuration
     data$Correlation <- NA_real_
     data$Hypothesis <- hypo
     all_data <- rbind(all_data, data)
   }
+}
 }
 # LRC-BART MODIFICATION END
 
@@ -232,16 +245,16 @@ all_data$Group_Hypo <- interaction(all_data$Group, all_data$Hypothesis, sep = " 
 
 # LRC-BART MODIFICATION START
 # The migrated design has one configuration and no configuration variable.
-all_data$Scenario_Label <- factor(
-  paste0("Scenario ", all_data$Scenario),
-  levels = c("Scenario 1", "Scenario 2")
-)
+all_data$Scenario_Label <- plot_factor(
+  paste0("Scenario ", all_data$Scenario,
+    ifelse(all_data$Configuration == "Default", "", paste0("\n", all_data$Configuration))),
+  levels = character())
 
 # Reorder data so External Control is plotted last (on top).
 all_data_reordered <- all_data %>% arrange(desc(Group == "External Control"))
 all_data_reordered$Scenario_F <- factor(
   paste0("Scenario ", all_data_reordered$Scenario),
-  levels = c("Scenario 1", "Scenario 2")
+  levels = paste0("Scenario ", c("1", "1a", "1b", "1c", "1c-i", "1c-ii", "2"))
 )
 all_data_reordered$Configuration_F <- plot_factor(
   all_data_reordered$Configuration, levels = "Default"
@@ -385,18 +398,18 @@ library(tidyr)
 
 # Create long format data for covariates
 # Handle sc == 1, sc == 2, and sc == 3 separately
-sc1_data <- all_data_reordered[all_data_reordered$Scenario == 1, ]
+sc1_data <- all_data_reordered[all_data_reordered$Scenario %in% c("1", "1a", "1b", "1c", "1c-i", "1c-ii"), ]
 sc2_data <- all_data_reordered[all_data_reordered$Scenario == 2, ]
 sc3_data <- all_data_reordered[all_data_reordered$Scenario == 3, ]
 
 # For sc == 1: reshape X5, X6 and include outcome y
 if (nrow(sc1_data) > 0) {
   sc1_long <- sc1_data %>%
-    dplyr::select(Scenario_F, Configuration_F, Cor_Label, Group, X5, X6, y) %>%
-    pivot_longer(cols = c(X5, X6),
+    dplyr::select(Scenario_F, Configuration_F, Cor_Label, Group, X5, X6, X7, y) %>%
+    pivot_longer(cols = c(X5, X6, X7),
                  names_to = "Covariate",
                  values_to = "Value")
-  sc1_long$Covariate <- factor(sc1_long$Covariate, levels = c("X5", "X6"))
+  sc1_long$Covariate <- factor(sc1_long$Covariate, levels = c("X5", "X6", "X7"))
 } else {
   sc1_long <- NULL
 }
@@ -447,7 +460,7 @@ if (!is.null(sc1_long) && nrow(sc1_long) > 0) {
   p_cov_sc1_main <- ggplot(sc1_long_clean, aes(x = Value, y = log(y), color = Group)) +
     geom_point(alpha = 0.1, size = 0.5, na.rm = TRUE) +
     geom_density_2d(alpha = 0.8, linewidth = 0.5, na.rm = TRUE) +
-    facet_nested(Configuration_F + Covariate ~ Cor_Label, scales = "free",
+    facet_nested(Scenario_F + Configuration_F + Covariate ~ Cor_Label, scales = "free",
                  nest_line = element_line(linewidth = 1, color = "black")) +
     labs(x = "Covariate Value", y = "log(Y)") +
     scale_color_manual(values = group_colors, name = "Group") +
@@ -462,10 +475,10 @@ if (!is.null(sc1_long) && nrow(sc1_long) > 0) {
   # Top marginal: Covariate distribution histogram (one per covariate and configuration)
   p_cov_sc1_top <- ggplot(sc1_long_clean, aes(x = Value, fill = Group)) +
     geom_histogram(aes(y = after_stat(density)), binwidth = 0.3, alpha = 0.6, position = "identity", na.rm = TRUE) +
-    facet_nested(Configuration_F + Covariate ~ Cor_Label, scales = "free",
+    facet_nested(Scenario_F + Configuration_F + Covariate ~ Cor_Label, scales = "free",
                  nest_line = element_line(linewidth = 1, color = "black")) +
     scale_fill_manual(values = group_colors, name = "Group") +
-    labs(title = "Covariate Distributions: Scenario 1", x = "Value", y = "Density") +
+    labs(title = "Covariate Distributions: Sc1 and child scenarios", x = "Value", y = "Density") +
     theme_classic(base_size = 9) +
     theme(legend.position = "none",
           plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
@@ -491,7 +504,7 @@ if (!is.null(sc2_long) && nrow(sc2_long) > 0) {
   p_cov_sc2_main <- ggplot(sc2_long_clean, aes(x = Value, y = log(y), color = Group)) +
     geom_point(alpha = 0.1, size = 0.5, na.rm = TRUE) +
     geom_density_2d(alpha = 0.8, linewidth = 0.5, na.rm = TRUE) +
-    facet_nested(Configuration_F + Covariate ~ Cor_Label, scales = "free",
+    facet_nested(Scenario_F + Configuration_F + Covariate ~ Cor_Label, scales = "free",
                  nest_line = element_line(linewidth = 1, color = "black")) +
     labs(x = "Covariate Value", y = "log(Y)") +
     scale_color_manual(values = group_colors, name = "Group") +
@@ -506,7 +519,7 @@ if (!is.null(sc2_long) && nrow(sc2_long) > 0) {
   # Top marginal: Covariate distribution histogram (one per covariate and configuration)
   p_cov_sc2_top <- ggplot(sc2_long_clean, aes(x = Value, fill = Group)) +
     geom_histogram(aes(y = after_stat(density)), binwidth = 0.3, alpha = 0.6, position = "identity", na.rm = TRUE) +
-    facet_nested(Configuration_F + Covariate ~ Cor_Label, scales = "free",
+    facet_nested(Scenario_F + Configuration_F + Covariate ~ Cor_Label, scales = "free",
                  nest_line = element_line(linewidth = 1, color = "black")) +
     scale_fill_manual(values = group_colors, name = "Group") +
     labs(title = "Covariate Distributions: Scenario 2", x = "Value", y = "Density") +
@@ -549,7 +562,7 @@ if (!is.null(sc3_long) && nrow(sc3_long) > 0) {
   p_cov_sc3_main <- ggplot(sc3_long_clean, aes(x = Value, y = log(y), color = Group)) +
     geom_point(alpha = 0.1, size = 0.5, na.rm = TRUE) +
     geom_density_2d(alpha = 0.8, linewidth = 0.5, na.rm = TRUE) +
-    facet_nested(Configuration_F + Covariate ~ Cor_Label, scales = "free",
+    facet_nested(Scenario_F + Configuration_F + Covariate ~ Cor_Label, scales = "free",
                  nest_line = element_line(linewidth = 1, color = "black")) +
     labs(x = "Covariate Value", y = "log(Y)") +
     scale_color_manual(values = group_colors, name = "Group") +
@@ -564,7 +577,7 @@ if (!is.null(sc3_long) && nrow(sc3_long) > 0) {
   # Top marginal: Covariate distribution histogram (one per covariate and configuration)
   p_cov_sc3_top <- ggplot(sc3_long_clean, aes(x = Value, fill = Group)) +
     geom_histogram(aes(y = after_stat(density)), binwidth = 0.3, alpha = 0.6, position = "identity", na.rm = TRUE) +
-    facet_nested(Configuration_F + Covariate ~ Cor_Label, scales = "free",
+    facet_nested(Scenario_F + Configuration_F + Covariate ~ Cor_Label, scales = "free",
                  nest_line = element_line(linewidth = 1, color = "black")) +
     scale_fill_manual(values = group_colors, name = "Group") +
     labs(title = "Covariate Distributions: Scenario 3", x = "Value", y = "Density") +
@@ -636,3 +649,5 @@ save_pipeline_plot(file.path(projectDir, "inserts", paste0("balance_all_scenario
        limitsize = FALSE)
 
 finish_pipeline_plot()
+
+# JOINT LRC-BART MODIFICATION END

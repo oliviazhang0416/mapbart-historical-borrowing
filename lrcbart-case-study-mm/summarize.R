@@ -29,10 +29,15 @@
 
 projectDir <- file.path(.lrcRoot, "lrcbart-case-study-mm")
 resultDir <- file.path(projectDir, "res")
+# JOINT LRC-BART MODIFICATION START
+# Read the existing merged cohort without copying patient data.
 merged_file <- Sys.getenv(
   "MERGED_FILE",
-  unset = file.path(projectDir, "data_cleaned", "merged_elokrd_ucmm_n230.RData")
+  unset = file.path(dirname(.lrcRoot), "lrcbart-historical-borrowing",
+                     "lrcbart-case-study-mm", "data_cleaned",
+                     "merged_elokrd_ucmm_n230.RData")
 )
+# JOINT LRC-BART MODIFICATION END
 data_tag <- regmatches(
   basename(merged_file), regexpr("n[0-9]+", basename(merged_file))
 )
@@ -64,12 +69,15 @@ add_result <- function(method, outcome, path, coding = "harmonized",
   if (!file.exists(path)) return(invisible(NULL))
   result <- readRDS(path)
   calibration <- result$calibration
-  diagnostics <- result$diagnostics
   sampler <- result$sampler
-  # Only KM reports RMST for the observed UCMM population. Adjusted methods
-  # report treatment and hypothetical control RMST standardized to EloKRd.
-  ucmm_est <- if (method == "KM") result$rmst_ctrl_est else NULL
-  ucmm_population <- if (method == "KM") "UCMM" else NA_character_
+  # JOINT LRC-BART MODIFICATION START
+  # Adjusted UCMM estimates use the EloKRd profiles; KM uses observed UCMM.
+  ucmm_est <- result$rmst_ucmm_est
+  ucmm_population <- result$rmst_ucmm_population
+  if (is.null(ucmm_est) && method == "KM") ucmm_est <- result$rmst_ctrl_est
+  if (is.null(ucmm_population))
+    ucmm_population <- if (method == "KM") "UCMM" else NA_character_
+  # JOINT LRC-BART MODIFICATION END
   rows[[length(rows) + 1L]] <<- data.frame(
     outcome = outcome, method = method, coding = coding,
     config = config, target = target, prior = prior,
@@ -102,12 +110,6 @@ add_result <- function(method, outcome, path, coding = "harmonized",
       as.numeric(sampler$ess_realized) else NA_real_,
     ess_ceiling = if (!is.null(calibration$ceiling))
       as.numeric(calibration$ceiling) else NA_real_,
-    rhat = if (!is.null(diagnostics["rhat"]))
-      as.numeric(diagnostics["rhat"]) else NA_real_,
-    ess_bulk = if (!is.null(diagnostics["ess_bulk"]))
-      as.numeric(diagnostics["ess_bulk"]) else NA_real_,
-    ess_tail = if (!is.null(diagnostics["ess_tail"]))
-      as.numeric(diagnostics["ess_tail"]) else NA_real_,
     file = basename(path), stringsAsFactors = FALSE
   )
   invisible(NULL)
@@ -186,9 +188,9 @@ arm_table <- results_table[, c(
 )]
 arm_table$treatment <- format_rmst("rmst_trt")
 arm_table$hypothetical_control <- format_rmst("rmst_hyp_ctrl")
-arm_table$observed_ucmm <- format_rmst("rmst_ucmm")
+arm_table$ucmm_control <- format_rmst("rmst_ucmm")
 cat("\nRMST in years: estimate [95% interval]\n",
-    "Only KM reports observed, unadjusted UCMM RMST and has no hypothetical control.\n",
+    "Adjusted UCMM RMST is standardized to EloKRd; KM uses observed UCMM and has no hypothetical control.\n",
     sep = "")
 print(arm_table, row.names = FALSE)
 

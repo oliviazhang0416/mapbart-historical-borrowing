@@ -157,6 +157,10 @@ compute_rmst_metrics <- function(mu_t, sig_t, mu_c, sig_c, data_tmp,
        rmst_hat      = delta,
        bias_rmst     = delta - eff,
        sd_rmst       = sqrt(var(ps, na.rm = TRUE)),
+       # JOINT LRC-BART ADDITION START
+       rmst_lower = unname(qs[1]), rmst_upper = unname(qs[2]),
+       rmst_interval_excludes_one = as.numeric(qs[1] > 1 || qs[2] < 1),
+       # JOINT LRC-BART ADDITION END
        ci_rmst       = unname(diff(qs)),
        coverage_rmst = unname(qs[1] <= eff & qs[2] >= eff),
        # additional within/across-replicate metrics, mirroring the median-ratio ones

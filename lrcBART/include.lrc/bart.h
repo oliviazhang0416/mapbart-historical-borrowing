@@ -58,8 +58,11 @@ public:
    xinfo& getxinfo() {return xi;}
    void setxinfo(xinfo& _xi);
 
-   // offset is the other ensemble: I(RCT)*g when drawing f, and f when
-   // drawing g.  K0/Lg/S0 are active only for the g instance.
+   // JOINT LRC-BART MODIFICATION START
+   // offset is S*g + A*psi for f and f + A*psi for g in joint mode;
+   // the original non-joint caller omits A*psi. Source-1 includes both arms.
+   // K0/Lg/S0 accumulate for g and must be reset before every forest sweep.
+   // JOINT LRC-BART MODIFICATION END
    void draw(double sigma1_sq, double sigma2_sq, const double *offset,
              int& K0, int& Lg, double& S0,
              rn& gen);

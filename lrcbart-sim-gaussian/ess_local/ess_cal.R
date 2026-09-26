@@ -39,14 +39,20 @@ ess_settings <- list(
   grid = as.numeric(ess_grid), n_blocks = as.integer(ess_n_blocks),
   n_tau = as.integer(ess_n_tau), n_cg = as.integer(ess_n_cg),
   n_burn = as.integer(ess_n_burn), n_draw = as.integer(ess_n_draw),
-  seed = as.integer(ess_seed)
+  seed = as.integer(ess_seed),
+  # JOINT LRC-BART ADDITION START
+  data_hash = digest::digest(file = ess_data_file, algo = "sha256"),
+  code_hash = digest::digest(unname(tools::md5sum(sort(c(
+    list.files(file.path(.lrcRoot, "lrcBART"), pattern = "\\.(cpp|h)$", full.names = TRUE, recursive = TRUE),
+    file.path(projectDir, "ess_local", "ess_cal.R"))))), algo = "sha256")
+  # JOINT LRC-BART ADDITION END
 )
 
 ess_use_checkpoint <- FALSE
 if (file.exists(ess_checkpoint) &&
     file.info(ess_checkpoint)$mtime >= ess_data_mtime) {
-  ess_cached <- readRDS(ess_checkpoint)
-  ess_use_checkpoint <- identical(ess_cached$settings, ess_settings) &&
+  ess_cached <- tryCatch(readRDS(ess_checkpoint), error = function(e) NULL)
+  ess_use_checkpoint <- is.list(ess_cached) && identical(ess_cached$settings, ess_settings) &&
     identical(normalizePath(ess_cached$data_file),
               normalizePath(ess_data_file)) &&
     all(c("100", "75", "50", "f90", "f50", "f25") %in%
@@ -315,13 +321,11 @@ if (ess_use_checkpoint) {
     grid = ess_grid, targets = ess_targets, s0_sq = ess_s0_sq,
     ceiling = ess_ceiling, V_mu_f = ess_V_whole,
     V_mu_f_region = ess_V_region,
-    V_blocks = ess_V_blocks, V_blocks_raw = ess_V_raw,
     ess_tau0_blocks = ess_tau0_blocks,
     ess_tau0_grid = colMeans(ess_tau0_blocks),
     sigma1_sq = ess_sigma1_sq,
-    sigma1_sq_blocks = ess_sigma1_blocks, c_g = ess_c_g,
-    stage1_mu_draws = ess_mu_draws,
-    stage1_sigma2_sq = ess_stage1_fit$sigma2_sq,
+    c_g = ess_c_g,
+    # Reporting-only storage: omit preliminary posterior draws.
     checkpoint = ess_checkpoint
   )
   saveRDS(ess_calibration, ess_checkpoint)

@@ -62,8 +62,13 @@ cat(sprintf("=== hierAFT.R: OUTCOME = %s ===\n", OUTCOME))
 # ============================================================
 # Select the merged cohort by FILE NAME via MERGED_FILE; default is the
 # triplet-only cohort. The n<N> token from the file name tags all outputs.
+# JOINT LRC-BART MODIFICATION START
+# Read the existing merged cohort without copying patient data.
 merged_file <- Sys.getenv("MERGED_FILE",
-                          unset = file.path(projDir, "data_cleaned/merged_elokrd_ucmm_n230.RData"))
+                          unset = file.path(dirname(.lrcRoot), "lrcbart-historical-borrowing",
+                     "lrcbart-case-study-mm", "data_cleaned",
+                     "merged_elokrd_ucmm_n230.RData"))
+# JOINT LRC-BART MODIFICATION END
 # Allow a bare filename: resolve against data_cleaned/.
 if (!file.exists(merged_file) &&
     file.exists(file.path(projDir, "data_cleaned", basename(merged_file))))
@@ -338,6 +343,13 @@ for (i in 1:n_samples) {
   mu_pred_ctrl[i, ] <- samples_ctrl$alpha1[i] +
                        x_test %*% samples_ctrl$beta1[i, ]
 }
+# JOINT LRC-BART ADDITION START
+mu_pred_ucmm <- matrix(NA, n_samples, n_test)
+for (i in 1:n_samples) {
+  mu_pred_ucmm[i, ] <- samples_ctrl$alpha2[i] +
+                       x_test %*% samples_ctrl$beta2[i, ]
+}
+# JOINT LRC-BART ADDITION END
 sig_draw_ctrl <- sqrt(samples_ctrl$sigma_sq)   # shared sigma^2 across s=0 and s=1
 
 cat(sprintf("  Control model done. sigma (shared): mean=%.3f\n",
@@ -475,6 +487,11 @@ arm_summ <- function(x) {
   q <- quantile(x, c(0.025, 0.975), na.rm = TRUE)
   c(est = median(x, na.rm = TRUE), lo = unname(q[1]), hi = unname(q[2]))
 }
+# JOINT LRC-BART ADDITION START
+rmst_ucmm <- compute_pop_rmst(mu_pred_ucmm, sig_draw_ctrl, tau_rmst,
+                              "UCMM (standardized to EloKRd)")
+rmst_ucmm_est <- arm_summ(rmst_ucmm)
+# JOINT LRC-BART ADDITION END
 rmst_trt_est   <- arm_summ(rmst_trt)
 rmst_ctrl_est  <- arm_summ(rmst_ctrl)
 sigma_trt_est  <- arm_summ(sig_draw_trt)
@@ -490,25 +507,20 @@ cat(sprintf("  sigma control  : %.3f  [%.3f, %.3f]\n", sigma_ctrl_est["est"], si
 # ============================================================
 out_dir <- file.path(projDir, "res")
 if (!dir.exists(out_dir)) dir.create(out_dir, recursive = TRUE)
+# JOINT LRC-BART MODIFICATION START
+# Retain reporting summaries; posterior draws stay in memory.
 results <- list(
-  post_ratio    = post_ratio_valid,
+  rmst_ucmm_est = rmst_ucmm_est,
+  rmst_ucmm_population = "EloKRd",
   delta_hat     = delta_hat,
   ci_95         = ci_95,
   delta_diff    = delta_diff,
   ci_diff_95    = ci_diff_95,
-  rmst_ctrl     = rmst_ctrl,
-  rmst_trt      = rmst_trt,
   tau_rmst      = tau_rmst,
-  mu_pred_ctrl  = mu_pred_ctrl,
-  mu_pred_trt   = mu_pred_trt,
-  sig_draw_ctrl = sig_draw_ctrl,
-  sig_draw_trt  = sig_draw_trt,
   rmst_trt_est   = rmst_trt_est,
   rmst_ctrl_est  = rmst_ctrl_est,
   sigma_trt_est  = sigma_trt_est,
   sigma_ctrl_est = sigma_ctrl_est,
-  samples_ctrl  = samples_ctrl,
-  samples_trt   = samples_trt,
   calibration   = list(prior      = prior,
                        E_tau2     = 3 * prior,   # IG(3/2, 3*prior/2) mean
                        ntree_ref  = ntree),
@@ -516,6 +528,7 @@ results <- list(
                        n_warmup = n_warmup, nu = nu, sigquant = sigquant,
                        k = k, w_alpha = w_alpha, w_beta = w_beta)
 )
+# JOINT LRC-BART MODIFICATION END
 out_file <- file.path(out_dir, sprintf("HierAFT_results_%s_%s_prior%g.RData", OUTCOME, data_tag, prior))
 saveRDS(results, file = out_file)
 cat(sprintf("\nResults saved to: %s\n", out_file))

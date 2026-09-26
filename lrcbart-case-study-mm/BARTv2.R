@@ -59,8 +59,13 @@ cat(sprintf("=== BARTv2.R: OUTCOME = %s ===\n", OUTCOME))
 # ============================================================
 # 1. LOAD MERGED DATA
 # ============================================================
+# JOINT LRC-BART MODIFICATION START
+# Read the existing merged cohort without copying patient data.
 merged_file <- Sys.getenv("MERGED_FILE",
-                          unset = file.path(projDir, "data_cleaned/merged_elokrd_ucmm_n230.RData"))
+                          unset = file.path(dirname(.lrcRoot), "lrcbart-historical-borrowing",
+                     "lrcbart-case-study-mm", "data_cleaned",
+                     "merged_elokrd_ucmm_n230.RData"))
+# JOINT LRC-BART MODIFICATION END
 if (!file.exists(merged_file) &&
     file.exists(file.path(projDir, "data_cleaned", basename(merged_file))))
   merged_file <- file.path(projDir, "data_cleaned", basename(merged_file))
@@ -279,24 +284,24 @@ cat(sprintf("  sigma control  : %.3f  [%.3f, %.3f]\n", sigma_ctrl_est["est"], si
 # ============================================================
 out_dir <- file.path(projDir, "res")
 if (!dir.exists(out_dir)) dir.create(out_dir, recursive = TRUE)
+# JOINT LRC-BART MODIFICATION START
+# Retain reporting summaries; posterior draws stay in memory.
 results <- list(
-  post_ratio = post_ratio_valid,
+  rmst_ucmm_est = rmst_ctrl_est,
+  rmst_ucmm_population = "EloKRd",
   delta_hat  = delta_hat,
   ci_95      = ci_95,
   delta_diff = delta_diff,
   ci_diff_95 = ci_diff_95,
   tau_rmst   = tau_rmst,
-  rmst_ctrl  = rmst_ctrl,
-  rmst_trt   = rmst_trt,
   rmst_trt_est   = rmst_trt_est,
   rmst_ctrl_est  = rmst_ctrl_est,
   sigma_trt_est  = sigma_trt_est,
   sigma_ctrl_est = sigma_ctrl_est,
-  res_ctrl   = res_ctrl,
-  res_trt    = res_trt,
   settings   = list(ndpost = ndpost, nskip = nskip, ntree = ntree, k = k,
                     alpha = alpha, beta = beta_tree, target_N = NA_integer_)
 )
+# JOINT LRC-BART MODIFICATION END
 out_file <- file.path(out_dir, sprintf("BARTv2_results_%s_%s.RData", OUTCOME, data_tag))
 saveRDS(results, file = out_file)
 cat(sprintf("\nResults saved to: %s\n", out_file))

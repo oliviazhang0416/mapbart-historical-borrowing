@@ -1,3 +1,5 @@
+# JOINT LRC-BART MODIFICATION START
+# Fresh original plotting script, adapted for joint results and Sc1 children.
 rm(list=ls())
 
 # Resolve the repository root: walk up from this script's own location first,
@@ -40,7 +42,7 @@ mainDir <- .lrcRoot
 
 p_obs <- 10
 # Pipeline selection; standalone runs use the same alternative-hypothesis default.
-plot_context <- NULL
+plot_context <- list(hypothesis = if ("--null" %in% commandArgs(TRUE)) "null" else "alternative")
 # ---- Local plot selection and result readers ----
 # Plot selection is independent of which comparison methods were fitted today.
 `%||%` <- function(x, default) if (is.null(x)) default else x
@@ -49,23 +51,29 @@ plot_hypothesis <- plot_context$hypothesis %||% "alternative"
 stopifnot(length(plot_hypothesis) == 1L, plot_hypothesis %in% c("null", "alternative"))
 plot_saved <- character()
 
+# JOINT LRC-BART MODIFICATION START
 plot_scenario_id <- function(cfg) {
-  tag <- paste0("sc", cfg$sc)
+  variant <- cfg$variant %||% ""
+  tag <- paste0("sc", cfg$sc, variant)
   if (cfg$sc == 3) tag <- paste0(tag, "_cor", cfg$cor)
-  if (cfg$sc == 4) tag <- paste0(tag, "_d", cfg$delta_rwd)
-  if (cfg$sc == 5) tag <- paste0(tag, "_", cfg$region, "_d", cfg$delta_rwd)
+  if (variant == "b") tag <- paste0(tag, "_", cfg$region)
+  if (nzchar(variant)) tag <- paste0(tag, "_d", cfg$delta_rwd)
   tag
 }
 selected_sc <- function(default) {
   if (is.null(plot_context$scenarios)) return(default)
-  unique(vapply(plot_context$scenarios, function(x) as.integer(x$sc), integer(1)))
+  chosen <- vapply(plot_context$scenarios, function(x)
+    paste0(x$sc, x$variant %||% ""), character(1))
+  default[default %in% chosen]
 }
 selected_configurations <- function(sc, default) {
-  if (is.null(plot_context$scenarios) || sc <= 3) return(default)
-  chosen <- Filter(function(x) x$sc == sc, plot_context$scenarios)
-  vapply(chosen, function(x) if (sc == 4) paste0("d", x$delta_rwd) else
-    paste0(x$region, "_d", x$delta_rwd), character(1))
+  if (is.null(plot_context$scenarios) || sc %in% c("1", "2", "3")) return(default)
+  chosen <- Filter(function(x) paste0(x$sc, x$variant %||% "") == sc,
+                   plot_context$scenarios)
+  unique(vapply(chosen, function(x) if (sc == "1b")
+    paste0(x$region, "_d", x$delta_rwd) else paste0("d", x$delta_rwd), character(1)))
 }
+# JOINT LRC-BART MODIFICATION END
 selected_correlations <- function(sc, default) {
   if (is.null(plot_context$scenarios) || sc != 3) return(default)
   unique(vapply(Filter(function(x) x$sc == sc, plot_context$scenarios), `[[`, numeric(1), "cor"))
@@ -90,12 +98,12 @@ plot_path_allowed <- function(path, check_failures = FALSE) {
   if (!is.null(plot_context$n_T) && !is.na(plot_context$n_T) &&
       !grepl(paste0("_n", plot_context$n_T, "_"), name, fixed = TRUE)) return(FALSE)
   if (check_failures) for (failure in plot_context$failed_results) {
-    method <- if (failure$method == "lrcBART") "LRC-BART" else failure$method
+    method <- if (failure$method == "lrcBART") "LRC-BART-joint" else failure$method
     if (!startsWith(name, paste0(method, "_")) ||
         !grepl(paste0("_", failure$scenario, "_"), name, fixed = TRUE) ||
         !grepl(paste0("_", failure$hypothesis, "_"), paste0(sub("\\.RData$", "", name), "_"), fixed = TRUE)) next
     if (!is.na(failure$n_T) && !grepl(paste0("_n", failure$n_T, "_"), name, fixed = TRUE)) next
-    if (method != "LRC-BART") return(FALSE)
+    if (method != "LRC-BART-joint") return(FALSE)
     tail <- strsplit(name, paste0("_", failure$scenario, "_"), fixed = TRUE)[[1]][2]
     if (failure$config == "default" && startsWith(tail, "N") && !startsWith(tail, "Ns0min_")) return(FALSE)
     if (failure$config == "s0min" && startsWith(tail, "Ns0min_")) return(FALSE)
@@ -110,6 +118,11 @@ read_plot_data <- function(path) {
 read_plot_result <- function(path) {
   if (!plot_path_allowed(path, TRUE)) stop("Result excluded by the current plot selection or a failed fit")
   result <- readRDS(path)
+  # JOINT LRC-BART ADDITION START
+  if (identical(attr(result, "complete"), FALSE))
+    stop("Incomplete reporting file: ", basename(path))
+  message("Plot input: ", basename(path), " (", nrow(result), " replicates)")
+  # JOINT LRC-BART ADDITION END
   if (is.data.frame(result) && "iteration" %in% names(result) && !is.null(plot_context$n_replicates))
     result <- result[!is.na(result$iteration) & result$iteration <= plot_context$n_replicates, , drop = FALSE]
   if (is.data.frame(result) && !nrow(result)) stop("No requested replicates in result")
@@ -145,7 +158,7 @@ lrc_plot_configurations <- function(single_arm, sc) {
   configs <- plot_context$lrc_configs %||% defaults
   # Match the runner's sensitivity scope, including in standalone plot runs.
   sensitivity_scenarios <- plot_context$lrc_sensitivity_scenarios %||% 1:3
-  if (!single_arm && !sc %in% sensitivity_scenarios)
+  if (!single_arm && !sc %in% as.character(sensitivity_scenarios))
     configs <- configs[configs == "default"]
   do.call(rbind, lapply(configs, function(config) {
     if (single_arm) {
@@ -205,11 +218,11 @@ add_configuration_separators <- function(df, configuration_col = "Configuration_
   return(result)
 }
 
-for (sc in selected_sc(1:5)) {
+for (sc in selected_sc(c("1", "1a", "1b", "1c", "1c-i", "1c-ii", "2", "3"))) {
 lrcbart_configurations <- lrc_plot_configurations(FALSE, sc)
 tryCatch({
 
-if (sc %in% c(1, 2, 4, 5)){
+if (sc %in% c("1", "2", "1a", "1b", "1c", "1c-i", "1c-ii")){
 
   # Initialize empty data frames
   all_res_ATE <- data.frame()
@@ -219,8 +232,8 @@ if (sc %in% c(1, 2, 4, 5)){
   # Sc1/Sc2 use the Base label. Sc4 rows distinguish the global
   # RWD shift, while Sc5 rows distinguish both compatible region and shift.
   if (sc %in% c(1, 2)) configurations <- c("Base")
-  if (sc == 4) configurations <- c("d1", "d2")
-  if (sc == 5)
+  if (sc %in% c("1a", "1c", "1c-i", "1c-ii")) configurations <- if (sc == "1a") c("d1", "d2") else "d2"
+  if (sc == "1b")
     configurations <- c("X5_d0.5", "X5_d1", "X5_d2", "X7_d1", "X7_d2")
   # LRC-BART ADDITION END
 
@@ -236,12 +249,12 @@ if (sc %in% c(1, 2, 4, 5)){
       scenario_suffix <- paste0("_sc", sc)
       configuration_label <- "Default"
     }
-    if (sc == 4) {
-      scenario_suffix <- paste0("_sc4_", configuration)
+    if (sc %in% c("1a", "1c", "1c-i", "1c-ii")) {
+      scenario_suffix <- paste0("_sc", sc, "_", configuration)
       configuration_label <- paste0("delta RWD = ", sub("^d", "", configuration))
     }
-    if (sc == 5) {
-      scenario_suffix <- paste0("_sc5_", configuration)
+    if (sc == "1b") {
+      scenario_suffix <- paste0("_sc1b_", configuration)
       configuration_parts <- strsplit(configuration, "_d", fixed = TRUE)[[1]]
       configuration_label <- paste0("region = ", configuration_parts[1],
                             ", delta RWD = ", configuration_parts[2])
@@ -404,7 +417,7 @@ if (sc %in% c(1, 2, 4, 5)){
 
       tryCatch({
         # Construct file path with target N.
-        lrcbart_file <- paste0(mainDir,"/lrcbart-sim-gaussian/res/LRC-BART_p",p_obs,
+        lrcbart_file <- paste0(mainDir,"/lrcbart-sim-gaussian/res/LRC-BART-joint_p",p_obs,
                                scenario_suffix,lrc_suffix,"_N",target_N,
                                paste0("_", plot_hypothesis, ".RData"))
 
@@ -456,12 +469,12 @@ if (sc %in% c(1, 2, 4, 5)){
       scenario_suffix <- paste0("_sc", sc)
       configuration_label <- "Default"
     }
-    if (sc == 4) {
-      scenario_suffix <- paste0("_sc4_", configuration)
+    if (sc %in% c("1a", "1c", "1c-i", "1c-ii")) {
+      scenario_suffix <- paste0("_sc", sc, "_", configuration)
       configuration_label <- paste0("delta RWD = ", sub("^d", "", configuration))
     }
-    if (sc == 5) {
-      scenario_suffix <- paste0("_sc5_", configuration)
+    if (sc == "1b") {
+      scenario_suffix <- paste0("_sc1b_", configuration)
       configuration_parts <- strsplit(configuration, "_d", fixed = TRUE)[[1]]
       configuration_label <- paste0("region = ", configuration_parts[1],
                             ", delta RWD = ", configuration_parts[2])
@@ -480,7 +493,7 @@ if (sc %in% c(1, 2, 4, 5)){
       list(name = "BARTv1", file_prefix = "BARTv1"),
       list(name = "BARTv2", file_prefix = "BARTv2"),
       list(name = "BARTv3", file_prefix = "BARTv3"),
-      list(name = "lrcBART", file_prefix = "LRC-BART")
+      list(name = "lrcBART", file_prefix = "LRC-BART-joint")
     )
 
     for (method_info in methods_list) {
@@ -717,9 +730,9 @@ if (sc == 3){
         tryCatch({
           # Construct file path with target N
           if (configuration == "Base") {
-            lrcbart_file <- paste0(mainDir,"/lrcbart-sim-gaussian/res/LRC-BART_p",p_obs,"_sc",sc,"_cor",cor_val,lrc_suffix,"_N",target_N,paste0("_", plot_hypothesis, ".RData"))
+            lrcbart_file <- paste0(mainDir,"/lrcbart-sim-gaussian/res/LRC-BART-joint_p",p_obs,"_sc",sc,"_cor",cor_val,lrc_suffix,"_N",target_N,paste0("_", plot_hypothesis, ".RData"))
           } else {
-            lrcbart_file <- paste0(mainDir,"/lrcbart-sim-gaussian/res/LRC-BART_p",p_obs,"_sc",sc,configuration,"_cor",cor_val,lrc_suffix,"_N",target_N,paste0("_", plot_hypothesis, ".RData"))
+            lrcbart_file <- paste0(mainDir,"/lrcbart-sim-gaussian/res/LRC-BART-joint_p",p_obs,"_sc",sc,configuration,"_cor",cor_val,lrc_suffix,"_N",target_N,paste0("_", plot_hypothesis, ".RData"))
           }
 
           if (file.exists(lrcbart_file)) {
@@ -782,7 +795,7 @@ if (sc == 3){
     list(name = "BARTv1", file_prefix = "BARTv1"),
     list(name = "BARTv2", file_prefix = "BARTv2"),
     list(name = "BARTv3", file_prefix = "BARTv3"),
-    list(name = "lrcBART", file_prefix = "LRC-BART")
+    list(name = "lrcBART", file_prefix = "LRC-BART-joint")
   )
 
   for (configuration in selected_configurations(sc, configurations)) {
@@ -832,11 +845,11 @@ if (nrow(res) == 0) {
 }
 
 # Create plotting-row labels for all scenarios.
-if (sc %in% 1:5) {
+if (sc %in% c("1", "1a", "1b", "1c", "1c-i", "1c-ii", "2", "3")) {
   configuration_levels <- "Default"
-  if (sc == 4)
+  if (sc %in% c("1a", "1c", "1c-i", "1c-ii"))
     configuration_levels <- paste0("delta RWD = ", c(1, 2))
-  if (sc == 5)
+  if (sc == "1b")
     configuration_levels <- c(
       paste0("region = X5, delta RWD = ", c(0.5, 1, 2)),
       paste0("region = X7, delta RWD = ", c(1, 2))
@@ -872,7 +885,7 @@ n_methods <- length(all_method_levels)
 default_colors <- scales::hue_pal()(n_methods)
 method_colors <- setNames(default_colors, all_method_levels)
 
-if (sc %in% c(1, 2, 4, 5)){
+if (sc %in% c("1", "2", "1a", "1b", "1c", "1c-i", "1c-ii")){
 
   summary_table <- res %>%
     filter(!is.na(bias)) %>%
@@ -1568,8 +1581,10 @@ if (sc == 3){
 }
 
 }, error = function(e) {
-  message(sprintf("Skipped sc = %d: %s", sc, conditionMessage(e)))
+  message(sprintf("Skipped sc = %s: %s", sc, conditionMessage(e)))
 })
 }
 
 finish_pipeline_plot()
+
+# JOINT LRC-BART MODIFICATION END

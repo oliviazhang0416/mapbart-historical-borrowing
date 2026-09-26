@@ -29,6 +29,9 @@ rm(list = ls())
 mainDir <- .lrcRoot
 projectDir <- file.path(mainDir, "lrcbart-sim-survival")
 n_replicates <- 100L
+# JOINT LRC-BART MODIFICATION START
+dir.create(file.path(projectDir, "res"), recursive = TRUE, showWarnings = FALSE)
+# JOINT LRC-BART MODIFICATION END
 # LRC-BART MODIFICATION END
 .scpp_cache <- file.path(tempdir(), "scpp_BARTv3")
 dir.create(.scpp_cache, showWarnings = FALSE, recursive = TRUE)
@@ -48,7 +51,10 @@ rmst_control_sigma <- "own"  # use the control model's own residual SD for contr
 data_folder <- "data"
 # LRC-BART MODIFICATION END
 
+# JOINT LRC-BART MODIFICATION START
 sc <- 1
+variant <- ""
+# JOINT LRC-BART MODIFICATION END
 # Infer p_obs from any data file in the folder (count columns named X1, X2, ...)
 sample_files <- list.files(file.path(projectDir, data_folder),
                            pattern = "^data_.*\\.RData$", full.names = TRUE)
@@ -65,7 +71,9 @@ threshold <- 0.95
 
 # Strength of unmeasured confounding
 # LRC-BART MODIFICATION START
-if (sc %in% c(1, 2, 4, 5)){
+# JOINT LRC-BART MODIFICATION START
+if (sc %in% c(1, 2)){
+# JOINT LRC-BART MODIFICATION END
   cor <- 1
 }
 # LRC-BART MODIFICATION END
@@ -75,10 +83,30 @@ if (sc == 3){
 
 # Validate the configured replicate count against this scenario
 # LRC-BART MODIFICATION START
-scenario_id <- paste0("sc", sc)
+# JOINT LRC-BART MODIFICATION START
+stopifnot(length(sc) == 1L, sc %in% 1:3,
+          length(variant) == 1L, variant %in% c("", "a", "b", "c", "c-i", "c-ii"),
+          sc == 1 || variant == "", hypo %in% c("null", "alternative"),
+          length(delta_rwd) == 1L, is.finite(delta_rwd))
+if (variant == "c-ii" && hypo != "null")
+  stop("Sc1c-ii requires hypo = 'null'")
+if (variant == "c-i" && hypo != "alternative")
+  stop("Sc1c-i requires hypo = 'alternative'; use Sc1c-ii for the null study")
+if (variant == "") {
+  delta_rwd <- 0
+  region <- "none"
+} else if (variant == "a") {
+  region <- "none"
+} else if (variant == "b") {
+  stopifnot(region %in% c("X5", "X7"))
+} else {
+  stopifnot(region == "X5X7", delta_rwd == 2)
+}
+scenario_id <- paste0("sc", sc, variant)
 if (sc == 3) scenario_id <- paste0(scenario_id, "_cor", cor)
-if (sc == 4) scenario_id <- paste0(scenario_id, "_d", delta_rwd)
-if (sc == 5) scenario_id <- paste0(scenario_id, "_", region, "_d", delta_rwd)
+if (variant == "b") scenario_id <- paste0(scenario_id, "_", region)
+if (nzchar(variant)) scenario_id <- paste0(scenario_id, "_d", delta_rwd)
+# JOINT LRC-BART MODIFICATION END
 data_prefix <- paste0("data_p", p_obs, "_", scenario_id, "_", hypo, "_")
 replicate_files <- Sys.glob(file.path(projectDir, data_folder,
                                       paste0(data_prefix, "*.RData")))

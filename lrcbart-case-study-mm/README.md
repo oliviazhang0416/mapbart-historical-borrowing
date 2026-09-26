@@ -14,17 +14,17 @@ The application does not construct or run an original-coding analysis.
 ## Run the full application
 
 ```bash
-cd /Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm
+cd /Users/oliviazhang/Desktop/lrcbart-joint-model/lrcbart-case-study-mm
 Rscript run_all.R
 ```
 
-`run_all.R` cleans and merges the private data, runs PFS and OS, constructs
+`run_all.R` reads the existing merged cohort, runs PFS and OS, constructs
 the ESS plots after all model fits finish, and prints the result summary.
 
 ## Run settings
 
 All configured methods run by default. `SCRIPTS` can select case-study
-analysis methods while leaving data preparation, available ESS plotting,
+analysis methods while leaving available ESS plotting,
 and the printed result summary enabled.
 
 `OUTCOMES` and `LRC_CONFIGS` select both analyses and summary rows. For example,
@@ -55,7 +55,7 @@ calibration range is `s_0^2 = 10^seq(-6, 1, length.out=141)`.
 
 ## Control estimates and RMST reporting
 
-For PFS and OS, every model reports treatment, hypothetical-control, and
+For PFS and OS, every adjusted model reports treatment, hypothetical-control, and
 UCMM-control RMST up to five years. All three use the **EloKRd patients'
 covariates**, including the same centering used for model fitting. Each
 posterior draw averages individual patients' RMSTs over EloKRd; predictions
@@ -71,11 +71,12 @@ to EloKRd, rather than an average over the observed UCMM population:
 - AFT-CP and Standard BART have no discrepancy layer, so their UCMM and
   hypothetical-control estimates are identical.
 
-Model result files save `rmst_ucmm` posterior draws and `rmst_ucmm_est`
-(`est`, `lo`, `hi`: posterior median and 95% equal-tailed credible interval),
-with `rmst_ucmm_population = "EloKRd"`. Existing `rmst_ctrl` and `rmst_ctrl_est`
-continue to represent hypothetical control. The treatment/control ratio and
-difference continue to use that hypothetical control.
+Model files save arm RMST estimates and 95% intervals, treatment contrasts,
+profile discrepancy and ESS summaries, calibration quantities and run settings.
+`rmst_ucmm_est` describes UCMM standardized to EloKRd, with
+`rmst_ucmm_population = "EloKRd"`; `rmst_ctrl_est` describes hypothetical
+control. Ratios and differences use hypothetical control. Posterior draws,
+chain summaries, diagnostics and treatment-fit caches are not saved.
 
 KM is unadjusted: its `rmst_ucmm_est` describes the observed UCMM cohort,
 with `rmst_ucmm_population = "UCMM"` and a 95% confidence interval. Its horizon
@@ -86,46 +87,35 @@ uses observed UCMM control. KM has no hypothetical-control estimate.
 estimates and intervals. It does not write extra summary files. Manuscript
 builders construct this summary in memory directly from the saved model fits.
 
-## Private-data preparation
+## Existing input and outputs
 
-The source data and cleaning scripts are under `private_data/`:
-
-```bash
-Rscript private_data/data_cleaning_ucmm.R
-Rscript private_data/data_cleaning_elokrd.R
-Rscript private_data/data_merge.R
-```
-
-The last command writes the de-identified merged analysis files and the seven
-harmonized model columns under `data_cleaned/`. Model results go to `res/`;
-KM plots go to `res/`; ESS checkpoints go to `res/ess/`, and ESS plots
-go to `inserts/`.
-
-The active model sources are loaded directly from:
+The default input is read directly from:
 
 ```text
-/Users/oliviazhang/Desktop/lrcBART/clrcbart.cpp
-/Users/oliviazhang/Desktop/lrcBART/cess.cpp
+/Users/oliviazhang/Desktop/lrcbart-historical-borrowing/lrcbart-case-study-mm/data_cleaned/merged_elokrd_ucmm_n230.RData
 ```
 
-## Triplet-only analysis cohort
+Set `MERGED_FILE` to an absolute path to use another prepared cohort. Automatic
+private-data preparation is disabled. Patient data, old results and figures are
+not copied. New results and KM plots go to `res/`, compact ESS checkpoints to
+`res/ess/`, and ESS plots to `inserts/`.
 
-C2 contains 302 patients after excluding E-Rd/Elo-Rd. Retaining verified
-three-agent treatments gives an analysis cohort of 200 UCMM controls.
-These controls are merged with 30 EloKRd patients in
-`data_cleaned/merged_elokrd_ucmm_n230.RData`, which is the default input for all
-case-study scripts.
+To regenerate ESS plots and print summaries from existing results:
 
-Regimen rules are defined directly in `private_data/data_cleaning_ucmm.R`
-and were checked against `induction_abstracted`. Steroids count as treatment
-agents; supportive zoledronic acid does not. The source `dtq` flag is not used.
-Superseded cohort datasets are outside the active merge-file search. Cohort
-counts are checked in memory; no separate configuration or audit files are
-required.
+```bash
+Rscript run_all.R --plots-only
+```
 
-After running the cleaning and merge scripts, regenerate the shared PDF
-chart and HTML codebook with `manuscript/source/scripts/build_cohort_selection.py`
-(using Python with reportlab; cohort counts are read directly from the cleaning
-code without intermediate files), then compile the manuscripts with
-`manuscript/source/scripts/build_pdfs.py`. The chart is embedded in both main
-and appendix PDFs.
+This does not refit models or regenerate KM plots. `OUTCOMES` and `LRC_CONFIGS`
+also apply in this mode.
+
+The shared sources are `lrcBART/clrcbart.cpp` and `lrcBART/cess.cpp` in the
+joint-model repository. The case study retains PR#2's separate-treatment
+formulation: independent EloKRd AFT-BART and historical `f` plus prior-only `g`
+for hypothetical control. Its residual variance equals the external-control
+variance; the treatment fit has its own variance. Each configuration fixes
+`tau0_sq = min(s0_sq, tau1_sq/2)` and uses its specified fixed `w`.
+There are 24 LRC fits per endpoint (four configurations times six targets).
+
+Manuscript migration remains deferred. This migration has not been run or
+validated, as requested.

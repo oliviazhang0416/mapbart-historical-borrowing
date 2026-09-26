@@ -1,3 +1,5 @@
+# JOINT LRC-BART MODIFICATION START
+# Matching original single-arm plot, adapted to the agreed Sc1 descendants.
 rm(list=ls())
 
 # Resolve the repository root: walk up from this script's own location first,
@@ -38,7 +40,7 @@ mainDir <- .lrcRoot
 
 p_obs <- 10
 # Pipeline selection; standalone runs use the same alternative-hypothesis default.
-plot_context <- NULL
+plot_context <- list(hypothesis = if ("--null" %in% commandArgs(TRUE)) "null" else "alternative")
 # ---- Local plot selection and result readers ----
 # Plot selection is independent of which comparison methods were fitted today.
 `%||%` <- function(x, default) if (is.null(x)) default else x
@@ -48,22 +50,27 @@ stopifnot(length(plot_hypothesis) == 1L, plot_hypothesis %in% c("null", "alterna
 plot_saved <- character()
 
 plot_scenario_id <- function(cfg) {
-  tag <- paste0("sc", cfg$sc)
+  variant <- cfg$variant %||% ""
+  tag <- paste0("sc", cfg$sc, variant)
   if (cfg$sc == 3) tag <- paste0(tag, "_cor", cfg$cor)
-  if (cfg$sc == 4) tag <- paste0(tag, "_d", cfg$delta_rwd)
-  if (cfg$sc == 5) tag <- paste0(tag, "_", cfg$region, "_d", cfg$delta_rwd)
+  if (variant == "b") tag <- paste0(tag, "_", cfg$region)
+  if (nzchar(variant)) tag <- paste0(tag, "_d", cfg$delta_rwd)
   tag
 }
 selected_sc <- function(default) {
   if (is.null(plot_context$scenarios)) return(default)
-  unique(vapply(plot_context$scenarios, function(x) as.integer(x$sc), integer(1)))
+  chosen <- vapply(plot_context$scenarios, function(x)
+    paste0(x$sc, x$variant %||% ""), character(1))
+  default[default %in% chosen]
 }
 selected_configurations <- function(sc, default) {
-  if (is.null(plot_context$scenarios) || sc <= 3) return(default)
-  chosen <- Filter(function(x) x$sc == sc, plot_context$scenarios)
-  vapply(chosen, function(x) if (sc == 4) paste0("d", x$delta_rwd) else
-    paste0(x$region, "_d", x$delta_rwd), character(1))
+  if (is.null(plot_context$scenarios) || sc %in% c("1", "2", "3")) return(default)
+  chosen <- Filter(function(x) paste0(x$sc, x$variant %||% "") == sc,
+                   plot_context$scenarios)
+  unique(vapply(chosen, function(x) if (sc == "1b")
+    paste0(x$region, "_d", x$delta_rwd) else paste0("d", x$delta_rwd), character(1)))
 }
+# JOINT LRC-BART MODIFICATION END
 selected_correlations <- function(sc, default) {
   if (is.null(plot_context$scenarios) || sc != 3) return(default)
   unique(vapply(Filter(function(x) x$sc == sc, plot_context$scenarios), `[[`, numeric(1), "cor"))
@@ -108,6 +115,9 @@ read_plot_data <- function(path) {
 read_plot_result <- function(path) {
   if (!plot_path_allowed(path, TRUE)) stop("Result excluded by the current plot selection or a failed fit")
   result <- readRDS(path)
+  if (identical(attr(result, "complete"), FALSE))
+    stop("Incomplete reporting file: ", basename(path))
+  message("Plot input: ", basename(path), " (", nrow(result), " replicates)")
   if (is.data.frame(result) && "iteration" %in% names(result) && !is.null(plot_context$n_replicates))
     result <- result[!is.na(result$iteration) & result$iteration <= plot_context$n_replicates, , drop = FALSE]
   if (is.data.frame(result) && !nrow(result)) stop("No requested replicates in result")
@@ -202,16 +212,18 @@ add_configuration_separators <- function(df, configuration_col = "Configuration_
   return(result)
 }
 
-for (sc in selected_sc(1:2)) {
+for (sc in selected_sc(c("1", "1a", "1b", "1c", "1c-i", "1c-ii", "2"))) {
 tryCatch({
 
-if (sc %in% c(1, 2)){
+if (sc %in% c("1", "1a", "1b", "1c", "1c-i", "1c-ii", "2")){
 
   # Initialize empty data frames
   all_res_ATE <- data.frame()
   all_res_sigma <- data.frame()
 
-  configurations <- "Base"
+  configurations <- if (sc == "1a") c("d1", "d2") else
+    if (sc == "1b") c("X5_d0.5", "X5_d1", "X5_d2", "X7_d1", "X7_d2") else
+    if (sc %in% c("1c", "1c-i", "1c-ii")) "d2" else "Base"
 
   for (configuration in selected_configurations(sc, configurations)) {
 
@@ -220,8 +232,9 @@ if (sc %in% c(1, 2)){
     configuration_res_list_sigma <- list()
 
     # LRC-BART MODIFICATION START
-    scenario_suffix <- paste0("_sc", sc)
-    configuration_label <- "Default"
+    scenario_suffix <- paste0("_sc", sc,
+      if (sc %in% c("1", "2")) "" else paste0("_", configuration))
+    configuration_label <- if (sc %in% c("1", "2")) "Default" else configuration
     file_suffix <- paste0(scenario_suffix, paste0("_", plot_hypothesis, ".RData"))
     # LRC-BART MODIFICATION END
 
@@ -354,8 +367,9 @@ if (sc %in% c(1, 2)){
   # Load Type I error from null hypothesis files (if current hypo is not null)
   all_null_FP <- data.frame()
   for (configuration in selected_configurations(sc, configurations)) {
-    scenario_suffix <- paste0("_sc", sc)
-    configuration_label <- "Default"
+    scenario_suffix <- paste0("_sc", sc,
+      if (sc %in% c("1", "2")) "" else paste0("_", configuration))
+    configuration_label <- if (sc %in% c("1", "2")) "Default" else configuration
     null_file_suffix <- paste0(scenario_suffix, "_null.RData")
 
     # Try to load null results for each method
@@ -405,7 +419,7 @@ if (nrow(res) == 0) {
 }
 
 # Create plotting-row labels for all scenarios.
-if (sc %in% c(1, 2)) {
+if (sc %in% c("1", "1a", "1b", "1c", "1c-i", "1c-ii", "2")) {
   configuration_levels <- "Default"
   if (nrow(res) > 0 && "Configuration" %in% colnames(res)) {
     res$Configuration_Label <- if (sc <= 3)
@@ -438,7 +452,7 @@ n_methods <- length(all_method_levels)
 default_colors <- scales::hue_pal()(n_methods)
 method_colors <- setNames(default_colors, all_method_levels)
 
-if (sc %in% c(1, 2)){
+if (sc %in% c("1", "1a", "1b", "1c", "1c-i", "1c-ii", "2")){
 
   summary_table <- res %>%
     filter(!is.na(bias)) %>%
@@ -770,8 +784,10 @@ if (sc %in% c(1, 2)){
          limitsize = FALSE)
 }
 }, error = function(e) {
-  message(sprintf("Skipped sc = %d: %s", sc, conditionMessage(e)))
+  message(sprintf("Skipped sc = %s: %s", sc, conditionMessage(e)))
 })
 }
 
 finish_pipeline_plot()
+
+# JOINT LRC-BART MODIFICATION END

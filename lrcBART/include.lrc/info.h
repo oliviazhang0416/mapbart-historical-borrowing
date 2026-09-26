@@ -22,7 +22,9 @@ public:
   size_t n;
   double *x;
   double *y;
-  int *source; // 1 = RCT control, 2 = RWD control
+  // JOINT LRC-BART MODIFICATION START
+  int *source; // 1 = trial (both arms in joint mode), 2 = external control
+  // JOINT LRC-BART MODIFICATION END
 };
 
 class pinfo {

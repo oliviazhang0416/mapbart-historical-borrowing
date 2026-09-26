@@ -32,9 +32,42 @@ library(Rlab)
 mainDir <- .lrcRoot
 projectDir <- file.path(mainDir, "lrcbart-sim-survival-single-arm")
 n_replicates <- 100L
+# JOINT LRC-BART MODIFICATION START
+dir.create(file.path(projectDir, "data"), recursive = TRUE, showWarnings = FALSE)
+# JOINT LRC-BART MODIFICATION END
 
 sc <- 1
+# JOINT LRC-BART MODIFICATION START
+variant <- ""
+delta_rwd <- 0
+region <- "none"
+# JOINT LRC-BART MODIFICATION END
 hypo <- "alternative"
+# JOINT LRC-BART MODIFICATION START
+stopifnot(length(sc) == 1L, sc %in% c(1, 2),
+          length(variant) == 1L, variant %in% c("", "a", "b", "c", "c-i", "c-ii"),
+          sc == 1 || variant == "", hypo %in% c("null", "alternative"),
+          length(delta_rwd) == 1L, is.finite(delta_rwd))
+if (variant == "c-ii" && hypo != "null")
+  stop("Sc1c-ii requires hypo = 'null'")
+if (variant == "c-i" && hypo != "alternative")
+  stop("Sc1c-i requires hypo = 'alternative'; use Sc1c-ii for the null study")
+if (variant == "") {
+  delta_rwd <- 0
+  region <- "none"
+} else if (variant == "a") {
+  region <- "none"
+} else if (variant == "b") {
+  stopifnot(region %in% c("X5", "X7"))
+} else {
+  stopifnot(region == "X5X7", delta_rwd == 2)
+}
+scenario_id <- paste0("sc", sc, variant)
+if (sc == 3) scenario_id <- paste0(scenario_id, "_cor", cor)
+if (variant == "b") scenario_id <- paste0(scenario_id, "_", region)
+if (nzchar(variant)) scenario_id <- paste0(scenario_id, "_d", delta_rwd)
+# JOINT LRC-BART MODIFICATION END
+
 
 # The approved survival single-arm designs use 30 or 200 treated trial
 # participants and 300 external controls. run_all.R supplies n_T.
@@ -238,8 +271,7 @@ for (ci in seq_along(cor)) {
   # and the iter-1 skip check, so the two can never drift.
   iter_file <- function(it)
     paste0(projectDir, "/data/data_p", p_obs, size_suffix,
-           "_sc", sc,
-           if (sc == 1 | sc == 2) "" else paste0("_cor", c),
+           "_", scenario_id,
            "_", hypo, if (rwd_frozen) "_fz" else "", "_", it, ".RData")
 
   #===========================================================================
@@ -249,18 +281,9 @@ for (ci in seq_along(cor)) {
   for (iter in seq_len(n_replicates)){
   # LRC-BART MODIFICATION END
 
-    # Skip regenerating iteration 1 when its data file already exists (e.g. the
-    # single-iteration file the ess calibration was run on).  Each iteration
-    # fully resets the RNG via set.seed(seed[ee]) with no carryover, and seed[1]
-    # is independent of the requested replicate count, so the existing first
-    # replicate is exactly what this loop would regenerate.
-    if (iter == 1 && file.exists(iter_file(1))) {
-      cat(sprintf("data_gen: iter 1 exists (%s) -- skipping regeneration\n",
-                  basename(iter_file(1))))
-      ee <- ee + 1
-      next
-    }
-
+# JOINT LRC-BART MODIFICATION START
+    # Regenerate selected datasets using the configured generator settings.
+# JOINT LRC-BART MODIFICATION END
     # Per-iteration mode: fresh RWD pool each iteration. Kept BEFORE set.seed(seed[ee])
     # so the RCT stream (and thus the RCT data) is identical to frozen mode.
     if (!rwd_frozen) { gen_rwd_pool(seed_rwd_iter[ee], seed_rwd_iter[ee] + 1000); X_rwd_pool <- X_rwd_pool_by_c[[ci]] }
@@ -398,7 +421,10 @@ for (ci in seq_along(cor)) {
         beta_rct[9] * x_vec[9] +
         beta_rct[10] * x_vec[10]
 
-      eff_i <- eff
+      # JOINT LRC-BART MODIFICATION START
+      eff_i <- if (variant == "c-i")
+        eff + 0.5 * (X_rct_sel[i, 5] - mean(X_rct_sel[, 5])) else eff
+      # JOINT LRC-BART MODIFICATION END
       
       if(Z_rct[i] == 1){
         lp_rct[i] <- lp + modifier + eff_i
@@ -478,6 +504,40 @@ for (ci in seq_along(cor)) {
     label_rwd <- label_rwd_pool[pool_indices]
     lp_rwd <- lp_rwd_pool[pool_indices]
     Z_rwd <- rep(0, n_rwd)
+# JOINT LRC-BART MODIFICATION START
+    if (region == "X5") {
+      region_rwd <- X_rwd[, 5] > 2
+      region_rct <- X_rct_sel[, 5] > 2
+    } else if (region == "X7") {
+      region_rwd <- X_rwd[, 7] <= 2
+      region_rct <- X_rct_sel[, 7] <= 2
+    } else if (region == "X5X7") {
+      # JOINT LRC-BART ADDITION START
+      # PR#2's compatible region is equality (same-side quadrants).
+      region_rwd <- (X_rwd[, 5] > 2) == (X_rwd[, 7] > 2)
+      region_rct <- (X_rct_sel[, 5] > 2) == (X_rct_sel[, 7] > 2)
+      # JOINT LRC-BART ADDITION END
+    } else {
+      region_rwd <- rep(FALSE, n_rwd)
+      region_rct <- rep(FALSE, n_rct)
+    }
+    # JOINT LRC-BART MODIFICATION START
+    shift_rwd <- if (variant == "a") rep(delta_rwd, n_rwd) else
+      if (variant %in% c("b", "c", "c-i", "c-ii")) delta_rwd * (!region_rwd) else rep(0, n_rwd)
+    shift_at_rct <- if (variant == "a") rep(delta_rwd, n_rct) else
+      if (variant %in% c("b", "c", "c-i", "c-ii")) delta_rwd * (!region_rct) else rep(0, n_rct)
+    # JOINT LRC-BART MODIFICATION END
+    y_rwd <- y_rwd * exp(shift_rwd)
+    lp_rwd <- lp_rwd + shift_rwd
+    # Preserve the original censoring times after shifting latent survival.
+    C_rwd_sel <- C_rwd_pool[pool_indices]
+    admin_rwd_sel <- admin_rwd_pool[pool_indices]
+    yobs_rwd <- pmin(y_rwd, C_rwd_sel, admin_rwd_sel)
+    censor_rwd <- as.integer(y_rwd <= C_rwd_sel & y_rwd <= admin_rwd_sel)
+    label_rwd <- ifelse(censor_rwd == 1, "observed",
+      ifelse(C_rwd_sel <= admin_rwd_sel, "dropout", "admin"))
+# JOINT LRC-BART MODIFICATION END
+
     
     n_rct_trt <- sum(Z_rct == 1)
     n_rct_ctrl <- sum(Z_rct == 0)
@@ -512,11 +572,22 @@ for (ci in seq_along(cor)) {
                 y_true = c(y_rct, y_rwd),
                 delta = c(censor_rct, censor_rwd),
                 label = c(label_rct, label_rwd),
+                # JOINT LRC-BART ADDITION START
+                scenario_id = scenario_id, base_sc = sc, variant = variant,
+                hypothesis = hypo, region = region, delta_rwd = delta_rwd,
+                region_rct = region_rct, region_rwd = region_rwd,
+                shift_rwd = shift_rwd, shift_at_rct = shift_at_rct,
+                censor_dropout = c(C_rct_sel, C_rwd_sel),
+                censor_admin = c(admin_rct_sel, admin_rwd_sel),
+                mean_log_time_effect = mean(eff_i_rct),
+                true_median_ratio = median_trt_pop / median_ctrl_pop,
+                true_rmst_ratio = rmst_trt_pop / rmst_ctrl_pop,
+                # JOINT LRC-BART ADDITION END
                 treat_eff = eff,
                 treat_eff_true = log(median_trt_pop / median_ctrl_pop),
                 treat_eff_star = eff_star,
                 gamma_eff = gamma,  # modifier coefficient
-                eta_eff = if (exists("eta")) eta else 0,  # HTE coefficient for treatment effect
+                eta_eff = if (variant == "c-i") 0.5 else eta,  # HTE coefficient for treatment effect
                 sigma_rct = sd_Y_rct,
                 sigma_rwd = sd_Y_rwd,
                 true_median_trt = true_median_trt,

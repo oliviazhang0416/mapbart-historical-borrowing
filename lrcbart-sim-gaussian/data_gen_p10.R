@@ -32,23 +32,41 @@ library(Rlab)
 mainDir <- .lrcRoot
 projectDir <- file.path(mainDir, "lrcbart-sim-gaussian")
 n_replicates <- 100L
+# JOINT LRC-BART MODIFICATION START
+dir.create(file.path(projectDir, "data"), recursive = TRUE, showWarnings = FALSE)
+# JOINT LRC-BART MODIFICATION END
 # LRC-BART MODIFICATION END
 
 sc <- 3
+# JOINT LRC-BART MODIFICATION START
+variant <- ""
+# JOINT LRC-BART MODIFICATION END
 hypo <- "alternative"
 
 # LRC-BART ADDITION START
-# Sc4 is the global RWD shift; Sc5 is regional partial compatibility.
-delta_rwd <- 1
-region <- "X5"
-if (sc <= 3) {
+# JOINT LRC-BART MODIFICATION START
+# Original source mechanisms remain sc=1,2,3; descendants use variant.
+delta_rwd <- 0
+region <- "none"
+stopifnot(length(sc) == 1L, sc %in% 1:3,
+          length(variant) == 1L, variant %in% c("", "a", "b", "c", "c-i", "c-ii"),
+          sc == 1 || variant == "", hypo %in% c("null", "alternative"),
+          length(delta_rwd) == 1L, is.finite(delta_rwd))
+if (variant == "c-ii" && hypo != "null")
+  stop("Sc1c-ii requires hypo = 'null'")
+if (variant == "c-i" && hypo != "alternative")
+  stop("Sc1c-i requires hypo = 'alternative'; use Sc1c-ii for the null study")
+if (variant == "") {
   delta_rwd <- 0
   region <- "none"
+} else if (variant == "a") {
+  region <- "none"
+} else if (variant == "b") {
+  stopifnot(region %in% c("X5", "X7"))
+} else {
+  stopifnot(region == "X5X7", delta_rwd == 2)
 }
-if (sc == 4) region <- "none"
-stopifnot(sc %in% 1:5, region %in% c("none", "X5", "X7"),
-          length(delta_rwd) == 1, is.finite(delta_rwd))
-
+# JOINT LRC-BART MODIFICATION END
 # Region indicators and scenario filename tags are assembled inline where
 # they are used below.
 # LRC-BART ADDITION END
@@ -72,7 +90,9 @@ conf_cols <- c(5, 6)
 extreme_cols <- c(1)
 
 # LRC-BART MODIFICATION START
-if (sc %in% c(1, 2, 4, 5)){
+# JOINT LRC-BART MODIFICATION START
+if (sc %in% c(1, 2)){
+# JOINT LRC-BART MODIFICATION END
   cor <- 1
 }
 # LRC-BART MODIFICATION END
@@ -113,7 +133,9 @@ if (hypo == "null") {
 eff_star <- 0.5
 
 # LRC-BART MODIFICATION START
-if (sc %in% c(1, 4, 5)) {
+# JOINT LRC-BART MODIFICATION START
+if (sc == 1) {
+# JOINT LRC-BART MODIFICATION END
   b0_rct <- 3.0
   b0_rwd <- 3.0
   
@@ -284,7 +306,9 @@ for (ci in seq_along(cor)) {
     #========================== Generate D ==========================
     n_total_pool <- n_rct_pool + n_rwd_pool
     # LRC-BART MODIFICATION START
-    if (sc %in% c(1, 4, 5)) {
+    # JOINT LRC-BART MODIFICATION START
+    if (sc == 1) {
+    # JOINT LRC-BART MODIFICATION END
       D <- rbern(n_total_pool, prob = (n1+n2)/(n1+n2+n3))
     }
     # LRC-BART MODIFICATION END
@@ -357,7 +381,11 @@ for (ci in seq_along(cor)) {
         beta_rct[9] * x_vec[9] +
         beta_rct[10] * x_vec[10]
 
-      eff_i <- eff
+      # JOINT LRC-BART MODIFICATION START
+      # PR#2 heterogeneous truth is centered over ALL selected trial rows.
+      eff_i <- if (variant == "c-i")
+        eff + 0.5 * (X_rct_sel[i, 5] - mean(X_rct_sel[, 5])) else eff
+      # JOINT LRC-BART MODIFICATION END
 
       if(Z_rct[i] == 1){
         lp_rct[i] <- lp + modifier + eff_i
@@ -406,28 +434,32 @@ for (ci in seq_along(cor)) {
     } else if (region == "X7") {
       region_rwd <- X_rwd[, 7] <= 2
       region_rct <- X_rct_sel[, 7] <= 2
+    } else if (region == "X5X7") {
+      # JOINT LRC-BART ADDITION START
+      # PR#2's compatible region is equality (same-side quadrants).
+      region_rwd <- (X_rwd[, 5] > 2) == (X_rwd[, 7] > 2)
+      region_rct <- (X_rct_sel[, 5] > 2) == (X_rct_sel[, 7] > 2)
+      # JOINT LRC-BART ADDITION END
     } else {
       region_rwd <- rep(FALSE, n_rwd)
       region_rct <- rep(FALSE, n_rct)
     }
-    shift_rwd <- if (sc == 4) rep(delta_rwd, n_rwd) else
-      if (sc == 5) delta_rwd * (!region_rwd) else rep(0, n_rwd)
-    shift_at_rct <- if (sc == 4) rep(delta_rwd, n_rct) else
-      if (sc == 5) delta_rwd * (!region_rct) else rep(0, n_rct)
+    # JOINT LRC-BART MODIFICATION START
+    shift_rwd <- if (variant == "a") rep(delta_rwd, n_rwd) else
+      if (variant %in% c("b", "c", "c-i", "c-ii")) delta_rwd * (!region_rwd) else rep(0, n_rwd)
+    shift_at_rct <- if (variant == "a") rep(delta_rwd, n_rct) else
+      if (variant %in% c("b", "c", "c-i", "c-ii")) delta_rwd * (!region_rct) else rep(0, n_rct)
+    # JOINT LRC-BART MODIFICATION END
     y_rwd <- y_rwd + shift_rwd
     lp_rwd <- lp_rwd + shift_rwd
     true_mean_rwd_at_rct <- true_mean_ctrl + shift_at_rct
     # LRC-BART MODIFICATION START
-    this_scenario_id <- paste0("sc", sc)
-    # LRC-BART MODIFICATION END
-    if (sc == 3)
-      this_scenario_id <- paste0(this_scenario_id, "_cor", c)
-    if (sc == 4)
-      this_scenario_id <- paste0(this_scenario_id, "_d", delta_rwd)
-    if (sc == 5)
-      this_scenario_id <- paste0(
-        this_scenario_id, "_", region, "_d", delta_rwd
-      )
+    # JOINT LRC-BART MODIFICATION START
+    this_scenario_id <- paste0("sc", sc, variant)
+    if (sc == 3) this_scenario_id <- paste0(this_scenario_id, "_cor", c)
+    if (variant == "b") this_scenario_id <- paste0(this_scenario_id, "_", region)
+    if (nzchar(variant)) this_scenario_id <- paste0(this_scenario_id, "_d", delta_rwd)
+    # JOINT LRC-BART MODIFICATION END
     # LRC-BART ADDITION END
 
     n_rct_trt <- sum(Z_rct == 1)
@@ -465,7 +497,9 @@ for (ci in seq_along(cor)) {
                 treat_eff_true = mean_trt_pop - mean_ctrl_pop,
                 treat_eff_star = eff_star,
                 gamma_eff = gamma,  # modifier coefficient
-                eta_eff = if (exists("eta")) eta else 0,  # HTE coefficient for treatment effect
+                # JOINT LRC-BART MODIFICATION START
+                eta_eff = if (variant == "c-i") 0.5 else eta,
+                # JOINT LRC-BART MODIFICATION END
                 sigma_rct = sd_Y_rct,
                 sigma_rwd = sd_Y_rwd,
                 true_mean_trt = true_mean_trt,
@@ -477,7 +511,11 @@ for (ci in seq_along(cor)) {
                 n_rct = n_rct,
                 n_rwd = n_rwd,
                 # LRC-BART ADDITION START
+                # JOINT LRC-BART ADDITION START
                 scenario_id = this_scenario_id,
+                base_sc = sc, variant = variant, hypothesis = hypo,
+                region_rwd = region_rwd,
+                # JOINT LRC-BART ADDITION END
                 delta_rwd = delta_rwd,
                 region = region,
                 region_rct = region_rct,

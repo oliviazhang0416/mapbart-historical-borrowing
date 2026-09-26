@@ -66,8 +66,11 @@ void getsuff(tree& x,
   }
 }
 
-// The applicable minimum count differs by ensemble: pooled controls for f,
-// RCT controls only for g.  A prior-only single-arm g forest sets n_min=0.
+// JOINT LRC-BART MODIFICATION START
+// Minimum counts: all supplied observations for f, source-1 trial rows for g.
+// In joint mode these include treated trial rows even without trial controls.
+// Only a forest with no trial observations uses the prior-only n_min=0 path.
+// JOINT LRC-BART MODIFICATION END
 bool min_leaf_ok(size_t n1, size_t n2, const pinfo& pi)
 {
   if(pi.kind==G_ENSEMBLE) return n1>=pi.n_min;

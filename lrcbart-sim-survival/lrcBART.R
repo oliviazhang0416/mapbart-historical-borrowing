@@ -28,12 +28,15 @@ rm(list = ls())
 })
 # LRC-BART MODIFICATION START
 # This file began as the survival two-arm mBART.R. It retains that script's
-# censored AFT treatment fit, replicate, median-ratio/RMST metric, threshold,
-# and result-file roles while replacing only the MAP-BART control fit with the
-# approved LRC-BART f+g fit and replicate-specific ESS calibration.
+# replicate, median-ratio/RMST metric, threshold, and result-file roles.
+# The joint revision replaces independent treatment/control fits with one
+# treatment-aware censored AFT model and retains control-only ESS calibration.
 mainDir <- .lrcRoot
 projectDir <- file.path(mainDir, "lrcbart-sim-survival")
 n_replicates <- 100L
+# JOINT LRC-BART MODIFICATION START
+dir.create(file.path(projectDir, "res"), recursive = TRUE, showWarnings = FALSE)
+# JOINT LRC-BART MODIFICATION END
 data_folder <- "data"
 
 library(Rcpp)
@@ -41,9 +44,14 @@ library(RcppEigen)
 library(survival)
 source(file.path(projectDir, "rmst_helpers.R"))
 rmst_tau <- 3
-rmst_control_sigma <- "own"
+# JOINT LRC-BART MODIFICATION START
+rmst_control_sigma <- "own"  # both trial arms use the same sigma1 draw
+# JOINT LRC-BART MODIFICATION END
 
+# JOINT LRC-BART MODIFICATION START
 sc <- 3
+variant <- ""
+# JOINT LRC-BART MODIFICATION END
 hypo <- "alternative"
 cor <- if (sc == 3) 0.5 else 1
 delta_rwd <- 1
@@ -60,20 +68,51 @@ lrc_result_config <- if (lrc_config == "default") "" else
   paste0("_", lrc_config)
 # LRC-BART MODIFICATION END
 
-# The revision's production workflow uses 1,000 post-warm-up draws after
-# 1,000 burn-in iterations for LRC-BART.
-ndpost <- 1000L
-nskip <- 1000L
-keepevery <- 1L
+# JOINT LRC-BART MODIFICATION START
+# Sampling schedule matches lrcbart-historical-borrowing; AFT fitting remains joint.
+n_chains <- 1L
+joint_n_burn <- 1000L
+joint_n_draw <- 1000L
+joint_thin <- 1L
+g_sweeps <- 1L
+calibration_n_burn <- 1000L
+calibration_n_draw <- 1000L
+stopifnot(n_chains >= 1L, n_chains == as.integer(n_chains),
+          joint_n_burn >= 0L, joint_n_burn == as.integer(joint_n_burn),
+          joint_n_draw >= 4L, joint_n_draw == as.integer(joint_n_draw),
+          joint_thin >= 1L, joint_thin == as.integer(joint_thin),
+          g_sweeps >= 1L, g_sweeps == as.integer(g_sweeps))
+if (!requireNamespace("digest", quietly = TRUE))
+  stop("Joint result provenance requires the digest package")
+# JOINT LRC-BART MODIFICATION END
 alpha_beta <- data.frame(alpha = 0.95, beta = 2)
 ntree <- 50L
 threshold <- 0.95
 
-scenario_id <- paste0("sc", sc)
+# JOINT LRC-BART MODIFICATION START
+stopifnot(length(sc) == 1L, sc %in% 1:3,
+          length(variant) == 1L, variant %in% c("", "a", "b", "c", "c-i", "c-ii"),
+          sc == 1 || variant == "", hypo %in% c("null", "alternative"),
+          length(delta_rwd) == 1L, is.finite(delta_rwd))
+if (variant == "c-ii" && hypo != "null")
+  stop("Sc1c-ii requires hypo = 'null'")
+if (variant == "c-i" && hypo != "alternative")
+  stop("Sc1c-i requires hypo = 'alternative'; use Sc1c-ii for the null study")
+if (variant == "") {
+  delta_rwd <- 0
+  region <- "none"
+} else if (variant == "a") {
+  region <- "none"
+} else if (variant == "b") {
+  stopifnot(region %in% c("X5", "X7"))
+} else {
+  stopifnot(region == "X5X7", delta_rwd == 2)
+}
+scenario_id <- paste0("sc", sc, variant)
 if (sc == 3) scenario_id <- paste0(scenario_id, "_cor", cor)
-if (sc == 4) scenario_id <- paste0(scenario_id, "_d", delta_rwd)
-if (sc == 5)
-  scenario_id <- paste0(scenario_id, "_", region, "_d", delta_rwd)
+if (variant == "b") scenario_id <- paste0(scenario_id, "_", region)
+if (nzchar(variant)) scenario_id <- paste0(scenario_id, "_d", delta_rwd)
+# JOINT LRC-BART MODIFICATION END
 
 sample_files <- list.files(file.path(projectDir, data_folder),
                            pattern = "^data_.*\\.RData$", full.names = TRUE)
@@ -96,11 +135,18 @@ Rcpp::sourceCpp(file.path(.lrcRoot, "lrcBART", "clrcbart.cpp"),
 Rcpp::sourceCpp(file.path(.lrcRoot, "lrcBART", "cess.cpp"),
                 cacheDir = lrc_cpp_cache)
 
-treatment_cpp_cache <- file.path(tempdir(), "sourceCpp_lrcBART_treatment")
-dir.create(treatment_cpp_cache, showWarnings = FALSE, recursive = TRUE)
-Rcpp::sourceCpp(file.path(.lrcRoot, "aBART", "cabart.cpp"),
-                cacheDir = treatment_cpp_cache)
-source(file.path(.lrcRoot, "bartModelMatrix.R"), local = TRUE)
+# JOINT LRC-BART MODIFICATION START
+# The joint call replaces the independent treated-arm fit and its cache.
+model_sources <- c(list.files(file.path(.lrcRoot, "lrcBART"),
+                              pattern = "\\.(cpp|h)$", full.names = TRUE, recursive = TRUE),
+                   file.path(projectDir, "lrcBART.R"),
+                   file.path(projectDir, "rmst_helpers.R"),
+                   file.path(projectDir, "ess_local", "ess_cal.R"))
+source_hash <- digest::digest(unname(tools::md5sum(sort(model_sources))),
+                              algo = "sha256")
+# Reporting-only storage: chain draws and intermediate summaries remain in memory.
+# No chain checkpoint or diagnostic files are written.
+# JOINT LRC-BART MODIFICATION END
 
 H_g <- if (lrc_config == "Hg10") 10L else 5L
 w_fixed <- if (lrc_config == "w0") 0 else
@@ -125,6 +171,9 @@ result_columns <- c(
   "ess_target_requested", "ess_capped", "w", "spike_frac",
   "map_mean", "map_region", "map_outside", "g_region",
   "g_outside", "ess_region", "ess_outside",
+  "estimate", "lower", "upper", "median_interval_excludes_one", "p_above_eff_star",
+  "psi_hat", "psi_truth", "psi_bias", "psi_lower", "psi_upper",
+  "psi_interval_excludes_zero", "rmst_lower", "rmst_upper", "rmst_interval_excludes_one",
   "rmst_tau", "rmst_true", "rmst_hat", "bias_rmst", "sd_rmst",
   "ci_rmst", "coverage_rmst", "decision_rmst", "tp_rmst",
   "rmse_rmst", "w1distance_rmst", "w2distance_rmst",
@@ -141,6 +190,25 @@ for (target_name in target_names) {
     results[[target_name]][[result_name]] <- NA_real_
   results[[target_name]]$lrc_config <- lrc_config
   results[[target_name]]$target <- target_name
+  # JOINT LRC-BART ADDITION START
+  results[[target_name]]$scenario_id <- scenario_id
+  results[[target_name]]$hypothesis <- hypo
+  results[[target_name]]$joint_model <- TRUE
+  results[[target_name]]$effect_estimand <- "trial-standardized population median ratio"
+  results[[target_name]]$n_chains <- n_chains
+  results[[target_name]]$n_burn <- joint_n_burn
+  results[[target_name]]$n_draw <- joint_n_draw
+  results[[target_name]]$thin <- joint_thin
+  results[[target_name]]$g_sweeps <- g_sweeps
+  results[[target_name]]$tau_prior_var <- 100
+  results[[target_name]]$data_hash <- NA_character_
+  results[[target_name]]$source_hash <- source_hash
+  results[[target_name]]$calibration_hash <- NA_character_
+  # A previous aggregate is not a completed summary of this invocation.
+  old_summary <- file.path(projectDir, "res", paste0("LRC-BART-joint_p", p_obs,
+    "_", scenario_id, lrc_result_config, "_N", target_name, "_", hypo, ".RData"))
+  if (file.exists(old_summary)) unlink(old_summary)
+  # JOINT LRC-BART ADDITION END
   decisions[[target_name]] <- numeric(n_replicates)
 }
 
@@ -152,6 +220,11 @@ for (replicate_id in seq_len(n_replicates)) {
   )
   dat <- readRDS(data_file)
   this_seed <- seed[replicate_id]
+  # JOINT LRC-BART ADDITION START
+  stopifnot(identical(dat$scenario_id, scenario_id),
+            identical(dat$hypothesis, hypo))
+  data_hash <- digest::digest(file = data_file, algo = "sha256")
+  # JOINT LRC-BART ADDITION END
 
   # #------------------------------------------------
   # #------------ ESS Curve Construction ------------
@@ -160,135 +233,19 @@ for (replicate_id in seq_len(n_replicates)) {
   ess_data_file <- data_file
   ess_H_g <- H_g
   ess_H_f <- ntree
-  ess_n_burn <- nskip
-  ess_n_draw <- ndpost
+  # JOINT LRC-BART MODIFICATION START
+  ess_n_burn <- calibration_n_burn
+  ess_n_draw <- calibration_n_draw
+  # JOINT LRC-BART MODIFICATION END
   ess_seed <- this_seed
   ess_checkpoint_dir <- file.path(projectDir, "res", "ess")
   source(file.path(projectDir, "ess_local", "ess_cal.R"), local = TRUE)
   calibration <- ess_calibration
 
-  # #------------------------------------------------
-  # #---------------- RCT Treatment -----------------
-  # #------------------------------------------------
-  # Fit the inherited treated-arm BART once for this replicate, or load the
-  # saved fit for a sensitivity invocation.
-  # LRC-BART MODIFICATION START
-  # Keep internal treatment-fit checkpoints separate from scientific results.
-  treatment_cache_dir <- file.path(projectDir, "res", "cache")
-  if (!dir.exists(treatment_cache_dir))
-    dir.create(treatment_cache_dir, recursive = TRUE)
-  treatment_cache_file <- file.path(
-    treatment_cache_dir,
-    paste0("lrcbart_trt_p", p_obs, "_", scenario_id, "_",
-           hypo, "_", replicate_id, ".RData")
-  )
-  # LRC-BART MODIFICATION END
-  treatment_settings <- list(
-    ndpost = ndpost, nskip = nskip, keepevery = keepevery,
-    ntree = ntree, alpha = 0.95, beta = 2,
-    seed = as.integer(this_seed)
-  )
-  treatment_cache_valid <- FALSE
-  if (file.exists(treatment_cache_file)) {
-    treatment_cached <- readRDS(treatment_cache_file)
-    treatment_cache_valid <-
-      identical(treatment_cached$settings, treatment_settings) &&
-      identical(normalizePath(treatment_cached$data_file),
-                normalizePath(data_file)) &&
-      file.info(treatment_cache_file)$mtime >= file.info(data_file)$mtime
-  }
-
-  if (treatment_cache_valid) {
-    treatment <- treatment_cached$fit
-  } else {
-    if (lrc_config != "default")
-      stop("Run the default lrcBART.R configuration before ", lrc_config,
-           " so the saved treatment draws are available")
-
-    d <- dat$X[, "D"]
-    z <- dat$X[, "Z"]
-    x_names <- paste0("X", seq_len(p_obs))
-    # LRC-BART MODIFICATION START
-    # Retain the original survival project's treated-arm AFT-BART fit.
-    y.train <- log(dat$y[d == 1 & z == 1])
-    event <- as.integer(dat$delta[d == 1 & z == 1])
-    x.train <- data.frame(
-      X = as.matrix(dat$X[d == 1 & z == 1, x_names, drop = FALSE])
-    )
-    x.test <- data.frame(
-      X = as.matrix(dat$X[d == 1, x_names, drop = FALSE])
-    )
-    ntype <- 1
-    sparse <- FALSE
-    theta <- 0
-    omega <- 1
-    a <- 0.5
-    b <- 1
-    augment <- FALSE
-    rho <- NULL
-    xinfo <- matrix(0.0, 0, 0)
-    usequants <- FALSE
-    rm.const <- TRUE
-    sigest <- NA
-    sigdf <- 3
-    sigquant <- 0.90
-    k <- 2.0
-    sigmaf <- NA
-    lambda <- NA
-    offset <- 0
-    weights <- rep(1, length(y.train))
-    numcut <- 100L
-    printevery <- 10000L
-    n <- length(y.train)
-
-    temp <- bartModelMatrix(x.train, numcut, usequants = usequants,
-                            xinfo = xinfo, rm.const = rm.const)
-    x.train <- t(temp$X)
-    numcut <- temp$numcut
-    xinfo <- temp$xinfo
-    x.test <- bartModelMatrix(x.test)
-    x.test <- t(x.test[, temp$rm.const, drop = FALSE])
-    rm.const <- temp$rm.const
-    grp <- temp$grp
-    p <- nrow(x.train)
-    np <- ncol(x.test)
-    if (!length(rho)) rho <- p
-    if (!length(rm.const)) rm.const <- seq_len(p)
-    if (!length(grp)) grp <- seq_len(p)
-    y.train <- y.train - offset
-
-    if (is.na(lambda)) {
-      aft_fit <- survreg(
-        Surv(exp(y.train), event) ~ .,
-        data = data.frame(t(x.train)), dist = "lognormal"
-      )
-      sigest <- aft_fit$scale
-      qchi <- qchisq(1.0 - sigquant, sigdf)
-      lambda <- sigest^2 * qchi / sigdf
-    } else {
-      sigest <- sqrt(lambda)
-    }
-    tau <- if (is.na(sigmaf))
-      (max(y.train) - min(y.train)) / (2 * k * sqrt(ntree)) else
-        sigmaf / sqrt(ntree)
-
-    set.seed(this_seed)
-    treatment <- cabart(
-      ntype, n, p, np, x.train, y.train, event, x.test,
-      ntree, numcut, ndpost * keepevery, nskip, keepevery,
-      2, 0.95, offset, tau, sigdf, lambda, sigest, weights,
-      sparse, theta, omega, grp, a, b, rho, augment,
-      printevery, xinfo, as.integer(this_seed)
-    )
-    if (nskip > 0)
-      treatment$sigma <- treatment$sigma[-seq_len(nskip)]
-    # LRC-BART MODIFICATION END
-    saveRDS(
-      list(fit = treatment, settings = treatment_settings,
-           data_file = normalizePath(data_file)),
-      treatment_cache_file
-    )
-  }
+  # JOINT LRC-BART MODIFICATION START
+  # Calibrate once per dataset; every target and chain shares this checkpoint.
+  calibration_hash <- digest::digest(calibration, algo = "sha256")
+  # JOINT LRC-BART MODIFICATION END
 
   # #------------------------------------------------
   # #--------------- ESS Calibration ----------------
@@ -302,14 +259,19 @@ for (replicate_id in seq_len(n_replicates)) {
       stop("Missing ESS calibration target ", target_name)
 
     # #------------------------------------------------
-    # #----------- RCT + Historical Control -----------
+    # #-------------- Joint LRC-BART Fit --------------
     # #------------------------------------------------
-    # LRC-BART control fit, written inline in the inherited replicate/target
-    # loop so the data preparation and C++ call remain visible together.
+    # JOINT LRC-BART MODIFICATION START
+    # Joint likelihood: all trial rows and external controls, in original order.
+    # Model: f(X) + I(trial)*g(X) + A*psi.
+    # Model applies to latent log event times, with censoring augmentation.
     x_names <- paste0("X", seq_len(p_obs))
     d <- dat$X[, "D"]
     z <- dat$X[, "Z"]
-    idx_ctrl <- z == 0
+    stopifnot(all(d %in% c(0, 1)), all(z %in% c(0, 1)),
+              all(z[d == 0] == 0), any(d == 1 & z == 0), any(d == 1 & z == 1))
+    idx_ctrl <- rep(TRUE, length(z))  # inherited name now selects all training rows
+    treatment_joint <- as.numeric(z)
     x_train_control <- as.matrix(
       dat$X[idx_ctrl, x_names, drop = FALSE]
     )
@@ -321,6 +283,9 @@ for (replicate_id in seq_len(n_replicates)) {
     # LRC-BART MODIFICATION START
     # Censoring is represented by status=0 and a lower bound on latent log
     # survival time. clrcbart performs the truncated-normal augmentation.
+    stopifnot(length(dat$y) == length(d), all(is.finite(dat$y)), all(dat$y > 0),
+              length(dat$delta) == length(d), all(dat$delta %in% c(0, 1)))
+    # Only observed times and statuses enter the likelihood, never y_true.
     y_control <- log(as.numeric(dat$y[idx_ctrl]))
     status_control <- as.integer(dat$delta[idx_ctrl])
     source_control <- ifelse(d[idx_ctrl] == 1, 1L, 2L)
@@ -332,36 +297,50 @@ for (replicate_id in seq_len(n_replicates)) {
 
     y_sigma1 <- yc[source_control == 1L]
     x_sigma1 <- x_train_control[source_control == 1L, , drop = FALSE]
-    sigma_hat1 <- 1
+    event_sigma1 <- status_control[source_control == 1L]
+    sigma_hat1 <- if (length(y_sigma1) < 2L) 1 else
+      if (any(event_sigma1 == 0L)) sd(y_sigma1[event_sigma1 == 1L]) else sd(y_sigma1)
     if (length(y_sigma1) > ncol(x_sigma1) + 5L) {
-      sigma_fit1 <- try(survreg(
-        Surv(exp(y_sigma1 + y_center),
-             status_control[source_control == 1L]) ~ .,
-        data = data.frame(x_sigma1), dist = "lognormal"
-      ), silent = TRUE)
-      if (!inherits(sigma_fit1, "try-error") &&
-          is.finite(sigma_fit1$scale) && sigma_fit1$scale > 0)
-        sigma_hat1 <- sigma_fit1$scale
-    } else if (is.finite(sd(y_sigma1)) && sd(y_sigma1) > 0) {
-      sigma_hat1 <- sd(y_sigma1)
+      if (any(event_sigma1 == 0L)) {
+        sigma_fit1 <- try(survreg(
+          Surv(exp(y_sigma1), event_sigma1) ~ .,
+          data = data.frame(x_sigma1), dist = "lognormal"), silent = TRUE)
+        if (!inherits(sigma_fit1, "try-error") &&
+            is.finite(sigma_fit1$scale) && sigma_fit1$scale > 0)
+          sigma_hat1 <- sigma_fit1$scale
+      } else {
+        sigma_fit1 <- try(lm(y_sigma1 ~ ., data = data.frame(y_sigma1, x_sigma1)), silent = TRUE)
+        if (!inherits(sigma_fit1, "try-error") &&
+            is.finite(summary(sigma_fit1)$sigma) && summary(sigma_fit1)$sigma > 0)
+          sigma_hat1 <- summary(sigma_fit1)$sigma
+      }
     }
 
     y_sigma2 <- yc[source_control == 2L]
     x_sigma2 <- x_train_control[source_control == 2L, , drop = FALSE]
-    sigma_hat2 <- 1
+    event_sigma2 <- status_control[source_control == 2L]
+    sigma_hat2 <- if (length(y_sigma2) < 2L) 1 else
+      if (any(event_sigma2 == 0L)) sd(y_sigma2[event_sigma2 == 1L]) else sd(y_sigma2)
     if (length(y_sigma2) > ncol(x_sigma2) + 5L) {
-      sigma_fit2 <- try(survreg(
-        Surv(exp(y_sigma2 + y_center),
-             status_control[source_control == 2L]) ~ .,
-        data = data.frame(x_sigma2), dist = "lognormal"
-      ), silent = TRUE)
-      if (!inherits(sigma_fit2, "try-error") &&
-          is.finite(sigma_fit2$scale) && sigma_fit2$scale > 0)
-        sigma_hat2 <- sigma_fit2$scale
-    } else if (is.finite(sd(y_sigma2)) && sd(y_sigma2) > 0) {
-      sigma_hat2 <- sd(y_sigma2)
+      if (any(event_sigma2 == 0L)) {
+        sigma_fit2 <- try(survreg(
+          Surv(exp(y_sigma2), event_sigma2) ~ .,
+          data = data.frame(x_sigma2), dist = "lognormal"), silent = TRUE)
+        if (!inherits(sigma_fit2, "try-error") &&
+            is.finite(sigma_fit2$scale) && sigma_fit2$scale > 0)
+          sigma_hat2 <- sigma_fit2$scale
+      } else {
+        sigma_fit2 <- try(lm(y_sigma2 ~ ., data = data.frame(y_sigma2, x_sigma2)), silent = TRUE)
+        if (!inherits(sigma_fit2, "try-error") &&
+            is.finite(summary(sigma_fit2)$sigma) && summary(sigma_fit2)$sigma > 0)
+          sigma_hat2 <- summary(sigma_fit2)$sigma
+      }
     }
 
+    if (!is.finite(outcome_range) || outcome_range <= 0 ||
+        !is.finite(sigma_hat1) || sigma_hat1 <= 0 ||
+        !is.finite(sigma_hat2) || sigma_hat2 <= 0)
+      stop("Joint AFT fitting requires positive range and estimable source residual scales")
     qchi <- qchisq(0.10, df = 3) / 3
     tau1_sq <- outcome_range^2 / (4 * 2^2 * H_g)
     cutpoints <- vector("list", ncol(x_train_control))
@@ -385,7 +364,7 @@ for (replicate_id in seq_len(n_replicates)) {
       lambda_sigma1 = sigma_hat1^2 * qchi,
       lambda_sigma2 = sigma_hat2^2 * qchi,
       nu0 = 3, s0_sq = as.numeric(target_row$s0_sq),
-      tau1_sq = tau1_sq,
+      tau1_sq = tau1_sq, tau_prior_var = 100,
       a_w = w_prior[1], b_w = w_prior[2], update_tau0 = TRUE,
       augmentation = TRUE, p_grow = 0.3, p_prune = 0.3,
       n_min = 5L, n_min_g = 5L,
@@ -394,61 +373,118 @@ for (replicate_id in seq_len(n_replicates)) {
       w_fixed = w_fixed
     )
     control <- list(
-      n_burn = as.integer(nskip), n_draw = as.integer(ndpost), thin = 1L,
-      verbose = FALSE, keep_trees = TRUE, keep_train = FALSE,
-      keep_test = TRUE, seed = as.integer(this_seed + 100L + target_index)
+      n_burn = as.integer(joint_n_burn), n_draw = as.integer(joint_n_draw),
+      thin = as.integer(joint_thin), g_sweeps = as.integer(g_sweeps),
+      verbose = FALSE, keep_trees = TRUE, keep_train = FALSE, keep_test = TRUE
     )
-    ctrl <- clrcbart(
-      t(x_train_control), yc, as.integer(source_control),
-      status_control, censor_control, t(x_test_control),
-      cutpoints, hyper, control
-    )
-    ctrl$f_test <- ctrl$f_test + y_center
-    ctrl$control_test <- ctrl$f_test + ctrl$g_test
-    ctrl$y_center <- y_center
-    ctrl$H_g <- H_g
-    ctrl$cutpoints <- cutpoints
-    ctrl$calibration <- calibration
-    # LRC-BART MODIFICATION END
+    chain_results <- vector("list", n_chains)
+    for (chain_id in seq_len(n_chains)) {
+      # Stable target/configuration seeds, independent of loop ordering.
+      seed_key <- list(this_seed, scenario_id, hypo, replicate_id, target_name, lrc_config)
+      seed_base <- strtoi(substr(digest::digest(seed_key, algo = "sha256"), 1, 7), 16L)
+      control$seed <- as.integer((seed_base + chain_id) %% 2147483646 + 1)
+      fit_chain <- clrcbart(
+        t(x_train_control), yc, as.integer(source_control),
+        status_control, censor_control, t(x_test_control),
+        cutpoints, hyper, control, treatment = treatment_joint
+      )
+      stopifnot(isTRUE(fit_chain$joint_model), length(fit_chain$tau) == joint_n_draw)
+      fit_chain$control_test <- fit_chain$f_test + fit_chain$g_test + y_center
+      # Consume forests for inherited borrowing summaries before discarding them.
+      fit_chain$Vg <- cess_forest_gvar(fit_chain$g_draws, cutpoints,
+        t(x_test_control), fit_chain$tau0_sq, fit_chain$tau1_sq)
+      fit_chain$Vg_region <- fit_chain$Vg_outside <- rep(NA_real_, joint_n_draw)
+      R <- dat$region_rct
+      if (!is.null(R) && any(R) && any(!R)) {
+        if (target_name == "100") {
+          fit_chain$Vg_region <- cess_forest_gvar(fit_chain$g_draws, cutpoints,
+            t(x_test_control[R, , drop = FALSE]), fit_chain$tau0_sq, fit_chain$tau1_sq)
+          fit_chain$Vg_outside <- cess_forest_gvar(fit_chain$g_draws, cutpoints,
+            t(x_test_control[!R, , drop = FALSE]), fit_chain$tau0_sq, fit_chain$tau1_sq)
+        }
+      }
+      fit_chain <- fit_chain[c("tau", "control_test", "g_test", "sigma1_sq",
+        "sigma2_sq", "tau0_sq", "tau1_sq", "w", "K0", "L_g", "Vg",
+        "Vg_region", "Vg_outside")]
+      chain_results[[chain_id]] <- fit_chain
+      cat("Completed", scenario_id, "target", target_name,
+          "replicate", replicate_id, "chain", chain_id, "of", n_chains, "\n")
+    }
+    # Pool all complete chains in memory for the final reporting calculations.
+    stopifnot(length(chain_results) == n_chains,
+      all(vapply(chain_results, function(x) length(x$tau) == joint_n_draw, logical(1))))
+    ctrl <- list()
+    for (field in c("control_test", "g_test"))
+      ctrl[[field]] <- do.call(rbind, lapply(chain_results, `[[`, field))
+    for (field in c("tau", "sigma1_sq", "sigma2_sq", "w", "K0", "L_g",
+                    "Vg", "Vg_region", "Vg_outside"))
+      ctrl[[field]] <- unlist(lapply(chain_results, `[[`, field), use.names = FALSE)
+    rm(chain_results, fit_chain)
+    # JOINT LRC-BART MODIFICATION END
 
-    #-------------------------------------
-    #---------- Calculate ATE ------------
-    #-------------------------------------
-    post_trt <- treatment$yhat.test
+    # JOINT LRC-BART MODIFICATION START
+    # #------------------------------------------------
+    # #--------------- RCT Control --------------------
+    # #------------------------------------------------
+    # Control log-time means: f(X) + g(X), with centering restored.
     post_ctrl <- ctrl$control_test
-    nd <- min(nrow(post_trt), nrow(post_ctrl))
-    post_trt <- post_trt[seq_len(nd), , drop = FALSE]
-    post_ctrl <- post_ctrl[seq_len(nd), , drop = FALSE]
-    # LRC-BART MODIFICATION START
-    # Preserve the original survival project's population median-ratio
-    # estimand, now using the LRC-BART control log-time surface.
-    sigma_trt <- treatment$sigma[seq_len(nd)]
-    sigma_ctrl <- sqrt(ctrl$sigma1_sq[seq_len(nd)])
-    median_survival_trt <- pop_median_draws(post_trt, sigma_trt)
-    median_survival_ctrl <- pop_median_draws(post_ctrl, sigma_ctrl)
+
+    # #------------------------------------------------
+    # #-------------- RCT Treatment -------------------
+    # #------------------------------------------------
+    # Treatment log-time means: f(X) + g(X) + psi.
+    post_trt <- sweep(post_ctrl, 1L, ctrl$tau, "+")
+    # Both trial arms share the same posterior residual variance.
+
+    # #------------------------------------------------
+    # #---------- Calculate Population Median Ratio ----------
+    # #------------------------------------------------
+    nd <- length(ctrl$tau)
+    sigma_trt <- sigma_ctrl <- sqrt(ctrl$sigma1_sq)
+    # Solve both mixture medians on log time without the legacy 0.05/30 clips.
+    median_survival_trt <- pop_median_draws(post_trt, sigma_trt, log_scale = TRUE)
+    median_survival_ctrl <- pop_median_draws(post_ctrl, sigma_ctrl, log_scale = TRUE)
     post_samples <- median_survival_trt / median_survival_ctrl
+    if (any(!is.finite(post_samples)) ||
+        max(abs(log(post_samples) - ctrl$tau)) > 1e-7)
+      stop("Joint population median ratio is inconsistent with exp(psi)")
     eff <- exp(dat$treat_eff_true)
+    # JOINT LRC-BART MODIFICATION END
     eff_star <- exp(dat$treat_eff_star)
     delta_hat <- median(post_samples, na.rm = TRUE)
     decision <- mean(post_samples > eff_star, na.rm = TRUE)
     threshold_file <- file.path(
       projectDir, "res",
-      paste0("LRC-BART_p", p_obs, "_", scenario_id,
+      paste0("LRC-BART-joint_p", p_obs, "_", scenario_id,
              lrc_result_config, "_N", target_name, "_threshold.RData")
     )
     threshold_this <- if (hypo == "alternative" && file.exists(threshold_file))
       readRDS(threshold_file) else threshold
 
     row <- results[[target_name]][replicate_id, , drop = FALSE]
+    # JOINT LRC-BART MODIFICATION START
+    row$estimate <- delta_hat
+    row$psi_hat <- mean(ctrl$tau)
+    row$psi_truth <- dat$mean_log_time_effect
+    row$psi_bias <- row$psi_hat - row$psi_truth
+    row$psi_lower <- unname(quantile(ctrl$tau, 0.025))
+    row$psi_upper <- unname(quantile(ctrl$tau, 0.975))
+    row$psi_interval_excludes_zero <- as.numeric(row$psi_lower > 0 || row$psi_upper < 0)
+    row$lower <- exp(row$psi_lower)
+    row$upper <- exp(row$psi_upper)
+    row$median_interval_excludes_one <- as.numeric(row$lower > 1 || row$upper < 1)
+    row$p_above_eff_star <- decision
+    row$data_hash <- data_hash
+    row$calibration_hash <- calibration_hash
     row$bias <- delta_hat - eff
+    # JOINT LRC-BART MODIFICATION END
     row$sd <- sd(post_samples, na.rm = TRUE)
     row$rmse <- (delta_hat - eff)^2
     row$w1distance <- mean(abs(post_samples - eff), na.rm = TRUE)
     row$w2distance <- sqrt(mean((post_samples - eff)^2, na.rm = TRUE))
-    row$ci <- diff(quantile(post_samples, c(0.025, 0.975), na.rm = TRUE))
+    row$ci <- row$upper - row$lower
     row$coverage <- as.numeric(
-      quantile(post_samples, 0.025, na.rm = TRUE) <= eff &&
-        quantile(post_samples, 0.975, na.rm = TRUE) >= eff
+      row$lower <= eff && row$upper >= eff
     )
     row$tp_calibrated <- as.numeric(decision > threshold_this)
     row$tp <- as.numeric(decision > 0.95)
@@ -491,21 +527,23 @@ for (replicate_id in seq_len(n_replicates)) {
     #-------------------------------------
     #---------- Calculate RMST -----------
     #-------------------------------------
+    # JOINT LRC-BART MODIFICATION START
+    # Match the generator's 200-point RMST grid. The machine floor only prevents
+    # division by zero; do not impose the legacy 0.05 floor on joint predictions.
     rmst_metrics <- compute_rmst_metrics(
       post_trt, sigma_trt, post_ctrl, sigma_ctrl, dat,
       tau = rmst_tau, threshold = threshold_this,
-      control_sigma = rmst_control_sigma
+      control_sigma = rmst_control_sigma, K = 200L,
+      floor = .Machine$double.xmin, joint = TRUE
     )
+    # JOINT LRC-BART MODIFICATION END
     for (rmst_name in names(rmst_metrics))
       row[[rmst_name]] <- rmst_metrics[[rmst_name]]
     # LRC-BART MODIFICATION END
 
-    Vg <- cess_forest_gvar(
-      ctrl$g_draws, ctrl$cutpoints,
-      t(dat$X[dat$X[, "D"] == 1,
-              paste0("X", seq_len(p_obs)), drop = FALSE]),
-      ctrl$tau0_sq, ctrl$tau1_sq
-    )
+    # JOINT LRC-BART MODIFICATION START
+    Vg <- ctrl$Vg
+    # JOINT LRC-BART MODIFICATION END
     row$s0_sq <- target_row$s0_sq
     row$ess_prior <- target_row$ess_tau0
     row$ess_realized <- mean(
@@ -546,20 +584,10 @@ for (replicate_id in seq_len(n_replicates)) {
         )
       }
       if (target_name == "100") {
-        xrct <- dat$X[
-          dat$X[, "D"] == 1,
-          paste0("X", seq_len(p_obs)), drop = FALSE
-        ]
-        Vg_region <- cess_forest_gvar(
-          ctrl$g_draws, ctrl$cutpoints,
-          t(xrct[rct_region, , drop = FALSE]),
-          ctrl$tau0_sq, ctrl$tau1_sq
-        )
-        Vg_outside <- cess_forest_gvar(
-          ctrl$g_draws, ctrl$cutpoints,
-          t(xrct[!rct_region, , drop = FALSE]),
-          ctrl$tau0_sq, ctrl$tau1_sq
-        )
+        # JOINT LRC-BART MODIFICATION START
+        Vg_region <- ctrl$Vg_region
+        Vg_outside <- ctrl$Vg_outside
+        # JOINT LRC-BART MODIFICATION END
         row$ess_region <- mean(
           ctrl$sigma1_sq /
             (calibration$V_mu_f_region[["region"]] + Vg_region)
@@ -573,6 +601,18 @@ for (replicate_id in seq_len(n_replicates)) {
 
     results[[target_name]][replicate_id, ] <- row
     decisions[[target_name]][replicate_id] <- decision
+    # JOINT LRC-BART ADDITION START
+    # Save completed reporting rows, never posterior draws or chain summaries.
+    report_file <- file.path(projectDir, "res", paste0("LRC-BART-joint_p", p_obs,
+      "_", scenario_id, lrc_result_config, "_N", target_name, "_", hypo, ".RData"))
+    report_rows <- results[[target_name]][seq_len(replicate_id), , drop = FALSE]
+    attr(report_rows, "planned_replicates") <- n_replicates
+    attr(report_rows, "complete") <- replicate_id == n_replicates
+    report_tmp <- tempfile("report-", tmpdir = file.path(projectDir, "res"))
+    saveRDS(report_rows, report_tmp)
+    if (!file.rename(report_tmp, report_file)) stop("Cannot publish reporting results")
+    rm(ctrl, post_ctrl, post_trt, post_samples, borrow_draw)
+    # JOINT LRC-BART ADDITION END
     cat("Done lrcBART",
         if (nzchar(lrc_config)) paste0(" ", lrc_config) else "",
         " target ", target_name, " replicate ", replicate_id, " of ", n_replicates,
@@ -583,7 +623,7 @@ for (replicate_id in seq_len(n_replicates)) {
 for (target_name in target_names) {
   threshold_file <- file.path(
     projectDir, "res",
-    paste0("LRC-BART_p", p_obs, "_", scenario_id,
+    paste0("LRC-BART-joint_p", p_obs, "_", scenario_id,
            lrc_result_config, "_N", target_name, "_threshold.RData")
   )
   if (hypo == "null") {
@@ -598,9 +638,11 @@ for (target_name in target_names) {
   }
   result_file <- file.path(
     projectDir, "res",
-    paste0("LRC-BART_p", p_obs, "_", scenario_id,
+    paste0("LRC-BART-joint_p", p_obs, "_", scenario_id,
            lrc_result_config, "_N", target_name, "_", hypo, ".RData")
   )
+  attr(results[[target_name]], "planned_replicates") <- n_replicates
+  attr(results[[target_name]], "complete") <- TRUE
   saveRDS(results[[target_name]], result_file)
 }
 # LRC-BART MODIFICATION END

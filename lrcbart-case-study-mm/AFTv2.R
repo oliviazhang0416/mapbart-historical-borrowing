@@ -58,8 +58,13 @@ cat(sprintf("=== AFTv2.R: OUTCOME = %s ===\n", OUTCOME))
 # ============================================================
 # Select the merged cohort by FILE NAME via MERGED_FILE; default is the
 # triplet-only cohort. The n<N> token from the file name tags all outputs.
+# JOINT LRC-BART MODIFICATION START
+# Read the existing merged cohort without copying patient data.
 merged_file <- Sys.getenv("MERGED_FILE",
-                          unset = file.path(projDir, "data_cleaned/merged_elokrd_ucmm_n230.RData"))
+                          unset = file.path(dirname(.lrcRoot), "lrcbart-historical-borrowing",
+                     "lrcbart-case-study-mm", "data_cleaned",
+                     "merged_elokrd_ucmm_n230.RData"))
+# JOINT LRC-BART MODIFICATION END
 # Allow a bare filename: resolve against data_cleaned/.
 if (!file.exists(merged_file) &&
     file.exists(file.path(projDir, "data_cleaned", basename(merged_file))))
@@ -346,30 +351,26 @@ cat(sprintf("  sigma control  : %.3f  [%.3f, %.3f]\n", sigma_ctrl_est["est"], si
 # ============================================================
 out_dir <- file.path(projDir, "res")
 if (!dir.exists(out_dir)) dir.create(out_dir, recursive = TRUE)
+# JOINT LRC-BART MODIFICATION START
+# Retain reporting summaries; posterior draws stay in memory.
 results <- list(
-  post_ratio    = post_ratio_valid,
+  rmst_ucmm_est = rmst_ctrl_est,
+  rmst_ucmm_population = "EloKRd",
   delta_hat     = delta_hat,
   ci_95         = ci_95,
   delta_diff    = delta_diff,
   ci_diff_95    = ci_diff_95,
   tau_rmst      = tau_rmst,
-  rmst_ctrl     = rmst_ctrl,
-  rmst_trt      = rmst_trt,
-  mu_pred_ctrl  = mu_pred_ctrl,
-  mu_pred_trt   = mu_pred_trt,
-  sig_draw_ctrl = sig_draw_ctrl,
-  sig_draw_trt  = sig_draw_trt,
   rmst_trt_est   = rmst_trt_est,
   rmst_ctrl_est  = rmst_ctrl_est,
   sigma_trt_est  = sigma_trt_est,
   sigma_ctrl_est = sigma_ctrl_est,
-  samples_ctrl  = samples_ctrl,
-  samples_trt   = samples_trt,
   settings      = list(n_chains = n_chains, n_iter = n_iter,
                        n_warmup = n_warmup, nu = nu, sigquant = sigquant,
                        k = k, w_alpha = w_alpha, w_beta = w_beta,
                        rwd_w = rwd_w, n_rwd = n_rwd, target_N = target_N)
 )
+# JOINT LRC-BART MODIFICATION END
 out_file <- file.path(out_dir, sprintf("AFTv2_results_%s_%s_w%g.RData",
                                        OUTCOME, data_tag, rwd_w))
 saveRDS(results, file = out_file)

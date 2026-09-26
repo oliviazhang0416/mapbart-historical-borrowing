@@ -1,3 +1,5 @@
+# JOINT LRC-BART MODIFICATION START
+# Matching original survival single-arm plot, adapted to the agreed Sc1 descendants.
 rm(list=ls())
 
 # Resolve the repository root: walk up from this script's own location first,
@@ -38,7 +40,7 @@ projectDir <- file.path(mainDir, "lrcbart-sim-survival-single-arm")
 
 p_obs <- 10L
 # Pipeline selection; standalone runs use the same alternative-hypothesis default.
-plot_context <- NULL
+plot_context <- list(hypothesis = if ("--null" %in% commandArgs(TRUE)) "null" else "alternative")
 # ---- Local plot selection and result readers ----
 # Plot selection is independent of which comparison methods were fitted today.
 `%||%` <- function(x, default) if (is.null(x)) default else x
@@ -48,22 +50,27 @@ stopifnot(length(plot_hypothesis) == 1L, plot_hypothesis %in% c("null", "alterna
 plot_saved <- character()
 
 plot_scenario_id <- function(cfg) {
-  tag <- paste0("sc", cfg$sc)
+  variant <- cfg$variant %||% ""
+  tag <- paste0("sc", cfg$sc, variant)
   if (cfg$sc == 3) tag <- paste0(tag, "_cor", cfg$cor)
-  if (cfg$sc == 4) tag <- paste0(tag, "_d", cfg$delta_rwd)
-  if (cfg$sc == 5) tag <- paste0(tag, "_", cfg$region, "_d", cfg$delta_rwd)
+  if (variant == "b") tag <- paste0(tag, "_", cfg$region)
+  if (nzchar(variant)) tag <- paste0(tag, "_d", cfg$delta_rwd)
   tag
 }
 selected_sc <- function(default) {
   if (is.null(plot_context$scenarios)) return(default)
-  unique(vapply(plot_context$scenarios, function(x) as.integer(x$sc), integer(1)))
+  chosen <- vapply(plot_context$scenarios, function(x)
+    paste0(x$sc, x$variant %||% ""), character(1))
+  default[default %in% chosen]
 }
 selected_configurations <- function(sc, default) {
-  if (is.null(plot_context$scenarios) || sc <= 3) return(default)
-  chosen <- Filter(function(x) x$sc == sc, plot_context$scenarios)
-  vapply(chosen, function(x) if (sc == 4) paste0("d", x$delta_rwd) else
-    paste0(x$region, "_d", x$delta_rwd), character(1))
+  if (is.null(plot_context$scenarios) || sc %in% c("1", "2", "3")) return(default)
+  chosen <- Filter(function(x) paste0(x$sc, x$variant %||% "") == sc,
+                   plot_context$scenarios)
+  unique(vapply(chosen, function(x) if (sc == "1b")
+    paste0(x$region, "_d", x$delta_rwd) else paste0("d", x$delta_rwd), character(1)))
 }
+# JOINT LRC-BART MODIFICATION END
 selected_correlations <- function(sc, default) {
   if (is.null(plot_context$scenarios) || sc != 3) return(default)
   unique(vapply(Filter(function(x) x$sc == sc, plot_context$scenarios), `[[`, numeric(1), "cor"))
@@ -108,6 +115,9 @@ read_plot_data <- function(path) {
 read_plot_result <- function(path) {
   if (!plot_path_allowed(path, TRUE)) stop("Result excluded by the current plot selection or a failed fit")
   result <- readRDS(path)
+  if (identical(attr(result, "complete"), FALSE))
+    stop("Incomplete reporting file: ", basename(path))
+  message("Plot input: ", basename(path), " (", nrow(result), " replicates)")
   if (is.data.frame(result) && "iteration" %in% names(result) && !is.null(plot_context$n_replicates))
     result <- result[!is.na(result$iteration) & result$iteration <= plot_context$n_replicates, , drop = FALSE]
   if (is.data.frame(result) && !nrow(result)) stop("No requested replicates in result")
@@ -221,9 +231,9 @@ build_rmst_column <- function(sc) {
     if (is.null(d) || !"bias_rmst" %in% names(d)) return(NULL)
     out <- d[, intersect(RMST_COLS, names(d)), drop = FALSE]; out$Method <- method; out
   }
-  build_one <- function(sc) {
+  build_one <- function(scenario_tag, configuration_label) {
     suf <- function(extra = "")
-      paste0("_sc", sc, extra, paste0("_", plot_hypothesis, ".RData"))
+      paste0("_", scenario_tag, extra, paste0("_", plot_hypothesis, ".RData"))
     fr <- list()
     for (.aw in aftv2_rwd_w_vals)
       fr <- c(fr, list(read_rmst(paste0(resdir,"AFTv2_p",p_obs,size_suffix,
@@ -234,19 +244,25 @@ build_rmst_column <- function(sc) {
       fr <- c(fr, list(read_rmst(paste0(resdir,"hierAFT_p",p_obs,size_suffix,suf(paste0("_prior",pr))), paste0("HierAFT(",pr,")"))))
     for (lrc_index in seq_len(nrow(lrcbart_configurations)))
       fr <- c(fr, list(read_rmst(
-        paste0(resdir, "LRC-BART_p", p_obs, size_suffix, "_sc", sc,
+        paste0(resdir, "LRC-BART_p", p_obs, size_suffix, "_", scenario_tag,
                lrcbart_configurations$suffix[lrc_index], "_N",
                lrcbart_configurations$target[lrc_index],
                paste0("_", plot_hypothesis, ".RData")),
         lrcbart_configurations$label[lrc_index]
       )))
     fr <- fr[!sapply(fr, is.null)]; if (!length(fr)) return(NULL)
-    out <- bind_rows(fr); out
+    out <- bind_rows(fr); out$Configuration <- configuration_label; out
   }
-  dat <- build_one(sc)
+  configurations <- if (sc == "1a") c("d1", "d2") else
+    if (sc == "1b") c("X5_d0.5", "X5_d1", "X5_d2", "X7_d1", "X7_d2") else
+    if (sc %in% c("1c", "1c-i", "1c-ii")) "d2" else "Base"
+  dat <- bind_rows(lapply(selected_configurations(sc, configurations), function(configuration) {
+    build_one(paste0("sc", sc, if (sc %in% c("1", "2")) "" else paste0("_", configuration)),
+      if (configuration == "Base") "Default" else configuration)
+  }))
   if (is.null(dat) || !nrow(dat)) return(NULL)
   dat$Method <- factor(dat$Method, levels = unique(dat$Method))
-  grp <- "Method"
+  grp <- c("Configuration", "Method")
   # Main table: SAME columns as the median main summary table. RMSE = sqrt(mean(.))
   # like the median table; metrics fall back to "-" if absent in old result files.
   for (.cc in c("rmse_rmst","w1distance_rmst","w2distance_rmst","tp_calibrated_rmst",
@@ -254,13 +270,13 @@ build_rmst_column <- function(sc) {
     if (!.cc %in% names(dat)) dat[[.cc]] <- NA_real_
   .fmt  <- function(x) { m <- mean(x, na.rm = TRUE); if (!is.finite(m)) "-" else sprintf("%.2f", m) }
   .fmtR <- function(x) { m <- mean(x, na.rm = TRUE); if (!is.finite(m)) "-" else sprintf("%.2f", sqrt(m)) }
-  rmst_main <- dat %>% group_by(Method) %>%
+  rmst_main <- dat %>% group_by(Configuration, Method) %>%
     summarise(Bias=.fmt(bias_rmst), SD=.fmt(sd_rmst), RMSE=.fmtR(rmse_rmst),
               W1Distance=.fmt(w1distance_rmst), W2Distance=.fmt(w2distance_rmst),
               CI_length=.fmt(ci_rmst), CI_coverage=.fmt(coverage_rmst),
               Power=.fmt(tp_rmst), Power_calib=.fmt(tp_calibrated_rmst),
               N=n(), N_bias_ge1=sum(abs(bias_rmst)>=1,na.rm=TRUE), .groups="drop") %>%
-    mutate(Configuration_Label=factor("Default"), .before=1)
+    mutate(Configuration_Label=factor(Configuration), .before=1)
   table_grob <- pipeline_table(
     add_configuration_separators(rmst_main, "Configuration_Label"),
     rows = NULL
@@ -271,19 +287,19 @@ build_rmst_column <- function(sc) {
   p <- ggplot(long, aes(Method,value,fill=Method)) + geom_hline(yintercept=0,linetype="dashed",color="black",alpha=0.6) +
     geom_boxplot(alpha=0.7,outlier.size=0.6) + stat_summary(fun=mean,geom="point",shape=23,size=2.5,fill="black") +
     labs(title=paste0("RMST(τ)-ratio performance — Scenario ",sc," (τ = ",sprintf("%.1f",mean(dat$rmst_tau,na.rm=TRUE)),")"), x=NULL, y=NULL) + thm
-  p <- p + facet_wrap(~metric,scales="free_y",nrow=1)
+  p <- p + facet_grid(Configuration~metric,scales="free_y")
   arm_long <- dat %>% pivot_longer(c(bias.trt.rmst.pop,w2distance.trt.rmst.pop,bias.ctrl.rmst.pop,w2distance.ctrl.rmst.pop), names_to="metric", values_to="value") %>% filter(!is.na(value)) %>%
     mutate(Arm=factor(ifelse(grepl("\\.trt\\.",metric),"Treatment","Control"), levels=c("Treatment","Control")), Metric=ifelse(grepl("^bias",metric),"Bias","W2Distance"))
   # Arm tables use the same columns as the median population-median tables.
-  arm_summary <- arm_long %>% group_by(Method, Arm, Metric) %>% summarise(m=sprintf("%.2f",mean(value,na.rm=TRUE)),.groups="drop") %>% pivot_wider(names_from=Metric, values_from=m)
+  arm_summary <- arm_long %>% group_by(Configuration, Method, Arm, Metric) %>% summarise(m=sprintf("%.2f",mean(value,na.rm=TRUE)),.groups="drop") %>% pivot_wider(names_from=Metric, values_from=m)
   # SD column: mean posterior SD of the per-arm estimate (matches the ATE table's
   # SD = mean(sd_rmst); uses per-replicate posterior SD cols sd.{trt,ctrl}.rmst.pop).
   arm_sd <- dat %>% pivot_longer(c(sd.trt.rmst.pop,sd.ctrl.rmst.pop), names_to="metric", values_to="value") %>% filter(!is.na(value)) %>%
     mutate(Arm=factor(ifelse(grepl("\\.trt\\.",metric),"Treatment","Control"), levels=c("Treatment","Control"))) %>%
-    group_by(Method, Arm) %>% summarise(SD=sprintf("%.2f",mean(value,na.rm=TRUE)),.groups="drop")
-  arm_summary <- dplyr::left_join(arm_summary, arm_sd, by=c("Method","Arm"))
-  arm_tab_trt <- arm_summary %>% filter(Arm=="Treatment") %>% dplyr::select(-Arm) %>% mutate(Configuration_Label=factor("Default"), Group="Treatment") %>% dplyr::select(Group, Configuration_Label, Method, Bias, SD, W2Distance)
-  arm_tab_ctrl <- arm_summary %>% filter(Arm=="Control") %>% dplyr::select(-Arm) %>% mutate(Configuration_Label=factor("Default"), Group="Control") %>% dplyr::select(Group, Configuration_Label, Method, Bias, SD, W2Distance)
+    group_by(Configuration, Method, Arm) %>% summarise(SD=sprintf("%.2f",mean(value,na.rm=TRUE)),.groups="drop")
+  arm_summary <- dplyr::left_join(arm_summary, arm_sd, by=c("Configuration","Method","Arm"))
+  arm_tab_trt <- arm_summary %>% filter(Arm=="Treatment") %>% dplyr::select(-Arm) %>% mutate(Configuration_Label=factor(Configuration), Group="Treatment") %>% dplyr::select(Group, Configuration_Label, Method, Bias, SD, W2Distance)
+  arm_tab_ctrl <- arm_summary %>% filter(Arm=="Control") %>% dplyr::select(-Arm) %>% mutate(Configuration_Label=factor(Configuration), Group="Control") %>% dplyr::select(Group, Configuration_Label, Method, Bias, SD, W2Distance)
   table_grob_arm <- wrap_plots(
     pipeline_table(add_configuration_separators(arm_tab_trt,"Configuration_Label"),rows=NULL),
     pipeline_table(add_configuration_separators(arm_tab_ctrl,"Configuration_Label"),rows=NULL),
@@ -292,7 +308,7 @@ build_rmst_column <- function(sc) {
   p_arm <- ggplot(arm_long, aes(Method,value,fill=Method)) + geom_hline(yintercept=0,linetype="dashed",color="black",alpha=0.6) +
     geom_boxplot(alpha=0.7,outlier.size=0.6) + stat_summary(fun=mean,geom="point",shape=23,size=2.5,fill="black") +
     labs(title=paste0("Arm-specific population RMST(τ) — Scenario ",sc,"  (estimate vs DGP truth, per arm)"), x=NULL,y=NULL) + thm
-  p_arm <- p_arm + facet_grid(Arm~Metric,scales="free_y")
+  p_arm <- p_arm + facet_grid(Configuration+Arm~Metric,scales="free_y")
   # Table-slot height grows with the number of methods so all rows show in full.
   .tbl_h <- max(2, length(unique(as.character(dat$Method))) * 0.16)
   has_subj <- all(c("bias_subj_rmst","pehe_subj_rmst") %in% names(dat))
@@ -300,13 +316,13 @@ build_rmst_column <- function(sc) {
     subj_long <- dat %>% pivot_longer(c(bias_subj_rmst,pehe_subj_rmst), names_to="metric", values_to="value") %>% filter(!is.na(value))
     subj_long$metric <- factor(subj_long$metric, levels=c("bias_subj_rmst","pehe_subj_rmst"), labels=c("Bias","PEHE"))
     # Subject-wise table uses the same columns as the median subject-wise table.
-    subj_tab <- subj_long %>% group_by(Method, metric) %>% summarise(m=sprintf("%.2f",mean(value,na.rm=TRUE)),.groups="drop") %>% pivot_wider(names_from=metric, values_from=m) %>%
-      mutate(Configuration_Label=factor("Default")) %>% dplyr::select(Configuration_Label, Method, Bias, PEHE)
+    subj_tab <- subj_long %>% group_by(Configuration, Method, metric) %>% summarise(m=sprintf("%.2f",mean(value,na.rm=TRUE)),.groups="drop") %>% pivot_wider(names_from=metric, values_from=m) %>%
+      mutate(Configuration_Label=factor(Configuration)) %>% dplyr::select(Configuration_Label, Method, Bias, PEHE)
     table_grob_subj <- pipeline_table(add_configuration_separators(subj_tab,"Configuration_Label"), rows = NULL)
     p_subj <- ggplot(subj_long, aes(Method,value,fill=Method)) + geom_hline(yintercept=0,linetype="dashed",color="black",alpha=0.6) +
       geom_boxplot(alpha=0.7,outlier.size=0.6) + stat_summary(fun=mean,geom="point",shape=23,size=2.5,fill="black") +
       labs(title=paste0("Subject-wise RMST(τ)-ratio — Scenario ",sc,"  (per-subject estimate vs truth)"), x=NULL,y=NULL) + thm
-    p_subj <- p_subj + facet_wrap(~metric,scales="free_y",nrow=1)
+    p_subj <- p_subj + facet_grid(Configuration~metric,scales="free_y")
     # Blank bottom section (matches the median column's variance/sigma section) so
     # the two columns have identical row layout and align horizontally.
     return(p / table_grob / p_arm / table_grob_arm / p_subj / table_grob_subj /
@@ -321,14 +337,19 @@ build_rmst_column <- function(sc) {
 # LRC-BART MODIFICATION START
 # Read the supported survival single-arm comparators and LRC-BART
 # configurations while retaining the inherited reporting sections below.
-for (sc in selected_sc(1:2)) {
+for (sc in selected_sc(c("1", "1a", "1b", "1c", "1c-i", "1c-ii", "2"))) {
 tryCatch({
 
-if (sc %in% c(1, 2)) {
+if (sc %in% c("1", "1a", "1b", "1c", "1c-i", "1c-ii", "2")) {
 
   all_res_ATE <- data.frame()
   all_res_sigma <- data.frame()
-  configuration_label <- "Default"
+  configurations <- if (sc == "1a") c("d1", "d2") else
+    if (sc == "1b") c("X5_d0.5", "X5_d1", "X5_d2", "X7_d1", "X7_d2") else
+    if (sc %in% c("1c", "1c-i", "1c-ii")) "d2" else "Base"
+  for (configuration in selected_configurations(sc, configurations)) {
+  scenario_tag <- paste0("sc", sc, if (sc %in% c("1", "2")) "" else paste0("_", configuration))
+  configuration_label <- if (configuration == "Base") "Default" else configuration
 
   method_files <- data.frame(
     method = c(
@@ -336,15 +357,15 @@ if (sc %in% c(1, 2)) {
       lrcbart_configurations$label
     ),
     path = c(
-      file.path(resultDir, paste0("AFTv2_p", p_obs, size_suffix, "_sc", sc,
+      file.path(resultDir, paste0("AFTv2_p", p_obs, size_suffix, "_", scenario_tag,
                                   paste0("_", plot_hypothesis, "_w", aftv2_rwd_w_vals, ".RData"))),
-      file.path(resultDir, paste0("BARTv2_p", p_obs, size_suffix, "_sc", sc,
+      file.path(resultDir, paste0("BARTv2_p", p_obs, size_suffix, "_", scenario_tag,
                                   paste0("_", plot_hypothesis, ".RData"))),
-      file.path(resultDir, paste0("hierAFT_p", p_obs, size_suffix, "_sc", sc,
+      file.path(resultDir, paste0("hierAFT_p", p_obs, size_suffix, "_", scenario_tag,
                                   "_prior", prior_vals,
                                   paste0("_", plot_hypothesis, ".RData"))),
       file.path(resultDir, paste0(
-        "LRC-BART_p", p_obs, size_suffix, "_sc", sc,
+        "LRC-BART_p", p_obs, size_suffix, "_", scenario_tag,
         lrcbart_configurations$suffix, "_N",
         lrcbart_configurations$target, paste0("_", plot_hypothesis, ".RData")
       ))
@@ -390,6 +411,7 @@ if (sc %in% c(1, 2)) {
     }
   }
 
+  }
   res <- all_res_ATE
   res_sigma <- all_res_sigma
   all_null_FP <- data.frame()
@@ -402,7 +424,7 @@ if (nrow(res) == 0) {
 }
 
 # Create the single retained configuration label.
-if (sc %in% c(1, 2)) {
+if (sc %in% c("1", "1a", "1b", "1c", "1c-i", "1c-ii", "2")) {
   if (nrow(res) > 0 && "Configuration" %in% colnames(res))
     res$Configuration_Label <- plot_factor(res$Configuration, levels = "Default")
   if (nrow(res_sigma) > 0 && "Configuration" %in% colnames(res_sigma))
@@ -429,7 +451,7 @@ n_methods <- length(all_method_levels)
 default_colors <- scales::hue_pal()(n_methods)
 method_colors <- setNames(default_colors, all_method_levels)
 
-if (sc == 1 | sc == 2 | sc == 3){
+if (sc %in% c("1", "1a", "1b", "1c", "1c-i", "1c-ii", "2")){
 
   summary_table <- res %>%
     filter(!is.na(bias)) %>%
@@ -767,8 +789,10 @@ if (sc == 1 | sc == 2 | sc == 3){
 }
 
 }, error = function(e) {
-  message(sprintf("Skipped sc = %d: %s", sc, conditionMessage(e)))
+  message(sprintf("Skipped sc = %s: %s", sc, conditionMessage(e)))
 })
 }
 
 finish_pipeline_plot()
+
+# JOINT LRC-BART MODIFICATION END

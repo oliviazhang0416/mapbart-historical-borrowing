@@ -73,16 +73,90 @@ n_replicates <- 100L
 n_T_values <- c(30L, 200L)
 hypo_values <- "alternative"
 
-# LRC-BART MODIFICATION START
-# Without RCT controls, Sc3's control discrepancy is not identifiable. The
-# approved single-arm analysis therefore runs only Sc1 and Sc2.
-data_configs <- list(list(sc = 1), list(sc = 2))
-analysis_scenarios <- list(
-  list(sc = 1, cor = 1),
-  list(sc = 2, cor = 1)
-)
-# LRC-BART MODIFICATION END
+# JOINT LRC-BART MODIFICATION START
+selected_scenarios <- NULL
+runner_args <- commandArgs(trailingOnly = TRUE)
+# JOINT LRC-BART ADDITION START
+if ("--plots-only" %in% runner_args) {
+  run_data_gen <- FALSE
+  run_analysis <- FALSE
+  runner_args <- runner_args[runner_args != "--plots-only"]
+}
+# JOINT LRC-BART ADDITION END
+while (length(runner_args)) {
+  if (!is.null(selected_scenarios))
+    stop("Supply --scenarios only once, followed by a comma-separated list")
+  if (runner_args[1] == "--scenarios") {
+    if (length(runner_args) < 2L)
+      stop("--scenarios requires a comma-separated list, e.g. sc1c,c-i,c-ii")
+    scenario_arg <- runner_args[2]
+    runner_args <- runner_args[-c(1L, 2L)]
+  } else if (startsWith(runner_args[1], "--scenarios=")) {
+    scenario_arg <- substring(runner_args[1], nchar("--scenarios=") + 1L)
+    runner_args <- runner_args[-1L]
+  } else {
+    stop("Unknown argument: ", runner_args[1],
+         ". Usage: Rscript run_all.R [--plots-only] [--scenarios sc1c,c-i,c-ii]")
+  }
+  scenario_arg <- gsub("[[:space:]]", "", tolower(scenario_arg))
+  if (!nzchar(scenario_arg) || grepl("^,|,,|,$", scenario_arg))
+    stop("--scenarios requires nonempty comma-separated scenario labels")
+  selected_scenarios <- strsplit(scenario_arg, ",", fixed = TRUE)[[1]]
+  # Accept c, c-i and c-ii as shorthand for the Sc1c family.
+  shorthand <- selected_scenarios %in% c("c", "c-i", "c-ii")
+  selected_scenarios[shorthand] <- paste0("sc1", selected_scenarios[shorthand])
+  selected_scenarios <- unique(selected_scenarios)
+}
+# JOINT LRC-BART ADDITION END
+# JOINT LRC-BART MODIFICATION END
 
+
+# LRC-BART MODIFICATION START
+# Sc1 descendants and Sc2 retain the original single-arm source mechanisms.
+data_configs <- list(
+  list(sc = 1, variant = "", delta_rwd = 0, region = "none"),
+  list(sc = 1, variant = "a", delta_rwd = 1, region = "none"),
+  list(sc = 1, variant = "a", delta_rwd = 2, region = "none"),
+  list(sc = 1, variant = "b", delta_rwd = 0.5, region = "X5"),
+  list(sc = 1, variant = "b", delta_rwd = 1, region = "X5"),
+  list(sc = 1, variant = "b", delta_rwd = 2, region = "X5"),
+  list(sc = 1, variant = "b", delta_rwd = 1, region = "X7"),
+  list(sc = 1, variant = "b", delta_rwd = 2, region = "X7"),
+  list(sc = 1, variant = "c", delta_rwd = 2, region = "X5X7"),
+  list(sc = 1, variant = "c-i", delta_rwd = 2, region = "X5X7", required_hypo = "alternative"),
+  list(sc = 1, variant = "c-ii", delta_rwd = 2, region = "X5X7", required_hypo = "null"),
+  list(sc = 2, variant = "", delta_rwd = 0, region = "none")
+)
+analysis_scenarios <- list(
+  list(sc = 1, variant = "", cor = 1, delta_rwd = 0, region = "none"),
+  list(sc = 1, variant = "a", cor = 1, delta_rwd = 1, region = "none"),
+  list(sc = 1, variant = "a", cor = 1, delta_rwd = 2, region = "none"),
+  list(sc = 1, variant = "b", cor = 1, delta_rwd = 0.5, region = "X5"),
+  list(sc = 1, variant = "b", cor = 1, delta_rwd = 1, region = "X5"),
+  list(sc = 1, variant = "b", cor = 1, delta_rwd = 2, region = "X5"),
+  list(sc = 1, variant = "b", cor = 1, delta_rwd = 1, region = "X7"),
+  list(sc = 1, variant = "b", cor = 1, delta_rwd = 2, region = "X7"),
+  list(sc = 1, variant = "c", cor = 1, delta_rwd = 2, region = "X5X7"),
+  list(sc = 1, variant = "c-i", cor = 1, delta_rwd = 2, region = "X5X7", required_hypo = "alternative"),
+  list(sc = 1, variant = "c-ii", cor = 1, delta_rwd = 2, region = "X5X7", required_hypo = "null"),
+  list(sc = 2, variant = "", cor = 1, delta_rwd = 0, region = "none")
+)
+# JOINT LRC-BART MODIFICATION END
+# LRC-BART ADDITION END
+
+# JOINT LRC-BART ADDITION START
+if (!is.null(selected_scenarios)) {
+  invalid_scenarios <- setdiff(selected_scenarios,
+    c("sc1", "sc1a", "sc1b", "sc1c", "sc1c-i", "sc1c-ii", "sc2"))
+  if (length(invalid_scenarios))
+    stop("Unknown scenario label(s): ", paste(invalid_scenarios, collapse = ", "))
+  data_configs <- Filter(function(cfg)
+    paste0("sc", cfg$sc, cfg$variant) %in% selected_scenarios, data_configs)
+  analysis_scenarios <- Filter(function(cfg)
+    paste0("sc", cfg$sc, cfg$variant) %in% selected_scenarios, analysis_scenarios)
+}
+# JOINT LRC-BART ADDITION END
+# JOINT LRC-BART MODIFICATION END
 # ---- Analysis files ----
 files <- c("AFTv2.R", "BARTv2.R", "hierAFT.R", "lrcBART.R")
 
@@ -99,7 +173,11 @@ common_overrides <- list(
 )
 method_overrides <- list(
   "AFTv2.R" = list(rwd_w_vals = 1),
-  "hierAFT.R" = list(prior_vals = 0.05)
+  "hierAFT.R" = list(prior_vals = 0.05),
+  # JOINT LRC-BART ADDITION START
+  "lrcBART.R" = list(nskip = 1000L, ndpost = 1000L, keepevery = 1L,
+    calibration_n_burn = 1000L, calibration_n_draw = 1000L)
+  # JOINT LRC-BART ADDITION END
 )
 data_gen_overrides <- list(
   seed_rct = seed_rct,
@@ -219,15 +297,17 @@ finish_pipeline <- function(log) {
 }
 
 scenario_id <- function(cfg) {
-  tag <- paste0("sc", cfg$sc)
+  tag <- paste0("sc", cfg$sc, cfg$variant %||% "")
   if (cfg$sc == 3) tag <- paste0(tag, "_cor", cfg$cor)
-  if (cfg$sc == 4) tag <- paste0(tag, "_d", cfg$delta_rwd)
-  if (cfg$sc == 5) tag <- paste0(tag, "_", cfg$region, "_d", cfg$delta_rwd)
+  if (identical(cfg$variant, "b")) tag <- paste0(tag, "_", cfg$region)
+  if (nzchar(cfg$variant %||% "")) tag <- paste0(tag, "_d", cfg$delta_rwd)
   tag
 }
 
 data_key <- function(cfg, hypothesis, size = NA_integer_)
-  paste(size, hypothesis, cfg$sc, cfg$delta_rwd %||% 0, cfg$region %||% "none", sep = "|")
+  paste(size, hypothesis, cfg$sc, cfg$variant %||% "",
+        cfg$delta_rwd %||% 0, cfg$region %||% "none", sep = "|")
+# JOINT LRC-BART MODIFICATION END
 
 # ---- Pipeline stages for this subproject ----
 # Called with the enclosing runner's configuration and stage flags.
@@ -246,6 +326,14 @@ run_simulation_pipeline <- function() {
     record(stage, pipeline_result(file, "BLOCKED: data generation failed"), detail)
   runner_env <- environment(run_simulation_pipeline)
   sizes <- get0("n_T_values", runner_env, inherits = FALSE, ifnotfound = NA_integer_)
+# JOINT LRC-BART MODIFICATION START
+  pipeline_hypotheses <- unique(c(hypo_values, "null"))
+  in_scope <- function(cfg, hypothesis) {
+    if (!is.null(cfg$required_hypo)) return(hypothesis == cfg$required_hypo)
+    hypothesis %in% hypo_values
+  }
+  # JOINT LRC-BART ADDITION END
+# JOINT LRC-BART MODIFICATION END
   lrc_configs <- c("default", if (run_lrc_sensitivities) sensitivity_configs)
   # Method-specific numerical settings remain defined once in each runner.
   plot_methods <- method_overrides
@@ -255,9 +343,10 @@ run_simulation_pipeline <- function() {
     failed_results = failed_results
   )
   allowed_scenarios <- function(hypothesis, size) Filter(function(cfg)
+    in_scope(cfg, hypothesis) &&
     !data_key(cfg, hypothesis, size) %in% failed_data, analysis_scenarios)
   plot_calls <- function(scripts, stage) {
-    for (size in sizes) for (hypothesis in hypo_values) {
+    for (size in sizes) for (hypothesis in pipeline_hypotheses) {
       scope <- allowed_scenarios(hypothesis, size)
       detail <- paste("n_T=", size, hypothesis)
       for (script in scripts) {
@@ -274,7 +363,8 @@ run_simulation_pipeline <- function() {
     }
   }
   if (run_data_gen) {
-    for (size in sizes) for (hypothesis in hypo_values) for (cfg in data_configs) {
+    for (size in sizes) for (hypothesis in pipeline_hypotheses) for (cfg in data_configs) {
+      if (!in_scope(cfg, hypothesis)) next
       overrides <- modifyList(common_overrides, data_gen_overrides)
       overrides <- modifyList(overrides, c(list(hypo = hypothesis), cfg))
       if (!is.na(size)) overrides$n_T <- size
@@ -287,7 +377,8 @@ run_simulation_pipeline <- function() {
   if (run_plot_balance) plot_calls(c("plot_balance.R", "plot_balance_simple.R"), "balance")
 
   if (run_analysis) {
-    for (size in sizes) for (hypothesis in hypo_values) for (cfg in analysis_scenarios) {
+    for (size in sizes) for (hypothesis in pipeline_hypotheses) for (cfg in analysis_scenarios) {
+      if (!in_scope(cfg, hypothesis)) next
       key <- data_key(cfg, hypothesis, size)
       detail <- paste(size, hypothesis, scenario_id(cfg))
       if (key %in% failed_data) {
@@ -325,7 +416,8 @@ run_simulation_pipeline <- function() {
     }
   }
   if (run_ess_plot) {
-    for (size in sizes) for (hypothesis in hypo_values) for (cfg in analysis_scenarios) {
+    for (size in sizes) for (hypothesis in pipeline_hypotheses) for (cfg in analysis_scenarios) {
+      if (!in_scope(cfg, hypothesis)) next
       detail <- paste(size, hypothesis, scenario_id(cfg))
       if (data_key(cfg, hypothesis, size) %in% failed_data) {
         blocked("ESS", "ess_local/ess_plot.R", detail)
